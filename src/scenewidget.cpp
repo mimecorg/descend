@@ -65,8 +65,6 @@ void SceneWidget::initializeGL()
 
     glShadeModel( GL_SMOOTH );
 
-    glEnable( GL_DEPTH_TEST );
-
     glPolygonOffset( 1.5f, 0.0f );
 
     glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
@@ -96,7 +94,29 @@ static const double LightAngle = 0.4363;
 
 void SceneWidget::paintGL()
 {
-    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    glClear( GL_DEPTH_BUFFER_BIT );
+
+    glMatrixMode( GL_PROJECTION );
+    glLoadIdentity();
+
+    glMatrixMode( GL_MODELVIEW );
+    glLoadIdentity();
+
+    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+
+    glDisable( GL_DEPTH_TEST );
+
+    glBegin( GL_QUADS );
+
+    glColor3f( 0.0f, 0.1f, 0.7f );
+    glVertex2f( 1.0f, 1.0f );
+    glVertex2f( -1.0f, 1.0f );
+
+    glColor3f( 0.2f, 0.5f, 1.0f );
+    glVertex2f( -1.0f, -1.0f );
+    glVertex2f( 1.0f, -1.0f );
+
+    glEnd();
 
     if ( m_indices.isEmpty() )
         return;
@@ -120,7 +140,7 @@ void SceneWidget::paintGL()
     glRotated( m_angle, 1.0, 0.0, 0.0 );
     glRotated( m_rotation, 0.0, 0.0, 1.0 );
 
-    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+    glEnable( GL_DEPTH_TEST );
 
     m_program->bind();
 
@@ -136,10 +156,11 @@ void SceneWidget::paintGL()
 
     if ( m_edges )
         glEnable( GL_POLYGON_OFFSET_FILL );
-    else
-        glDisable( GL_POLYGON_OFFSET_FILL );
 
     glDrawElements( GL_TRIANGLES, 3 * m_indices.count(), GL_UNSIGNED_INT, m_indices.constData() );
+
+    if ( m_edges )
+        glDisable( GL_POLYGON_OFFSET_FILL );
 
     if ( m_edges ) {
 	    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
@@ -149,6 +170,8 @@ void SceneWidget::paintGL()
 
         glDrawElements( GL_TRIANGLES, 3 * m_indices.count(), GL_UNSIGNED_INT, m_indices.constData() );
     }
+
+    m_program->release();
 }
 
 void SceneWidget::mousePressEvent( QMouseEvent* e )
