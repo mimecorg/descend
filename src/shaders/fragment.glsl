@@ -16,6 +16,8 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
+#version 330
+
 uniform vec4 Color;
 
 uniform vec3 LightDirection;
@@ -25,18 +27,20 @@ uniform float DiffuseIntensity;
 uniform float SpecularIntensity;
 uniform float Shininess;
 
-varying vec3 position;
-varying vec3 normal;
+in vec3 exPosition;
+in vec3 exNormal;
+
+out vec4 outColor;
 
 void main()
 {
-    vec3 faceNormal = gl_FrontFacing ? normal : -normal;
+    vec3 faceNormal = normalize( gl_FrontFacing ? exNormal : -exNormal );
 
-    vec3 eye = normalize( -position );
-    vec3 reflected = normalize( -reflect( LightDirection, faceNormal ) );
+    vec3 eye = normalize( -exPosition );
+    vec3 reflected = -reflect( LightDirection, faceNormal );
 
     float diffuse = AmbientIntensity + DiffuseIntensity * max( dot( faceNormal, LightDirection ), 0.0 );
     float specular = SpecularIntensity * pow( max( dot( reflected, eye ), 0.0 ), Shininess );
 
-    gl_FragColor = diffuse * Color + vec4( specular, specular, specular, 1.0 );
+    outColor = diffuse * Color + vec4( specular, specular, specular, 1.0 );
 }

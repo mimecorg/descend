@@ -55,16 +55,17 @@ private:
     };
 
 private:
-    QGLShaderProgram* m_program;
+    QGLShaderProgram m_program;
+
+    QGLBuffer m_vertexBuffer;
+    QGLBuffer m_indexBuffer;
+
+    int m_triangles;
 
     bool m_edges;
 
     float m_rotation;
     float m_angle;
-
-    QVector<QVector3D> m_vertices;
-    QVector<QVector3D> m_normals;
-    QVector<Triangle> m_indices;
 
     Tracking m_tracking;
     QPoint m_lastPos;

@@ -16,13 +16,24 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-varying vec3 position;
-varying vec3 normal;
+#version 330
+
+uniform mat4 ViewMatrix;
+uniform mat3 NormalMatrix;
+uniform mat4 ProjectionMatrix;
+
+in vec3 inPosition;
+in vec3 inNormal;
+
+out vec3 exPosition;
+out vec3 exNormal;
 
 void main()
 {
-    position = vec3( gl_ModelViewMatrix * gl_Vertex );
-    normal = gl_NormalMatrix * gl_Normal;
+    vec4 pos = ViewMatrix * vec4( inPosition, 1.0 );
 
-    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+    exPosition = vec3( pos );
+    exNormal = NormalMatrix * inNormal;
+
+    gl_Position = ProjectionMatrix * pos;
 }

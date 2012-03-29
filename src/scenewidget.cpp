@@ -24,7 +24,9 @@
 #include <math.h>
 
 SceneWidget::SceneWidget( QWidget* parent ) : QGLWidget( parent ),
-    m_program( NULL ),
+    m_vertexBuffer( QGLBuffer::VertexBuffer ),
+    m_indexBuffer( QGLBuffer::IndexBuffer ),
+    m_triangles( 0 ),
     m_edges( false ),
     m_rotation( 0.0 ),
     m_angle( -45.0 ),
@@ -38,15 +40,31 @@ SceneWidget::~SceneWidget()
 
 void SceneWidget::setSurface( const QVector<QVector3D>& vertices, const QVector<QVector3D>& normals, const QVector<Triangle>& indices )
 {
-    m_vertices = vertices;
-    m_normals = normals;
-    m_indices = indices;
+    makeCurrent();
 
-    glVertexPointer( 3, GL_FLOAT, 0, m_vertices.constData() );
-    glEnableClientState( GL_VERTEX_ARRAY );
+    int vcount = 3 * vertices.count() * sizeof( float );
 
-    glNormalPointer( GL_FLOAT, 0, m_normals.constData() );
-    glEnableClientState( GL_NORMAL_ARRAY );
+    m_vertexBuffer.bind();
+    m_vertexBuffer.allocate( 2 * vcount );
+    m_vertexBuffer.write( 0, vertices.constData(), vcount );
+    m_vertexBuffer.write( vcount, normals.constData(), vcount );
+
+    int icount = 3 * indices.count() * sizeof( int );
+
+    m_indexBuffer.bind();
+    m_indexBuffer.allocate( indices.constData(), icount );
+
+    m_program.bind();
+    m_program.setAttributeBuffer( "inPosition", GL_FLOAT, 0, 3 );
+    m_program.enableAttributeArray( "inPosition" );
+    m_program.setAttributeBuffer( "inNormal", GL_FLOAT, vcount, 3 );
+    m_program.enableAttributeArray( "inNormal" );
+
+    m_program.release();
+    m_indexBuffer.release();
+    m_vertexBuffer.release();
+
+    m_triangles = indices.count();
 
     updateGL();
 }
@@ -69,13 +87,12 @@ void SceneWidget::initializeGL()
 
     glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
 
-    delete m_program;
-    m_program = new QGLShaderProgram( this );
+    m_program.addShaderFromSourceFile( QGLShader::Vertex, ":/shaders/vertex.glsl" );
+    m_program.addShaderFromSourceFile( QGLShader::Fragment, ":/shaders/fragment.glsl" );
+    m_program.link();
 
-    m_program->addShaderFromSourceFile( QGLShader::Vertex, ":/shaders/vertex.glsl" );
-    m_program->addShaderFromSourceFile( QGLShader::Fragment, ":/shaders/fragment.glsl" );
-
-    m_program->link();
+    m_vertexBuffer.create();
+    m_indexBuffer.create();
 }
 
 void SceneWidget::resizeGL( int width, int height )
@@ -96,16 +113,6 @@ void SceneWidget::paintGL()
 {
     glClear( GL_DEPTH_BUFFER_BIT );
 
-    glMatrixMode( GL_PROJECTION );
-    glLoadIdentity();
-
-    glMatrixMode( GL_MODELVIEW );
-    glLoadIdentity();
-
-    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-
-    glDisable( GL_DEPTH_TEST );
-
     glBegin( GL_QUADS );
 
     glColor3f( 0.0f, 0.1f, 0.7f );
@@ -118,7 +125,7 @@ void SceneWidget::paintGL()
 
     glEnd();
 
-    if ( m_indices.isEmpty() )
+    if ( m_triangles == 0 )
         return;
 
     GLint viewport[ 4 ];
@@ -130,53 +137,67 @@ void SceneWidget::paintGL()
     double fy = tan( 0.5 * CameraZoom * M_PI / 180.0 ) * NearClipping;
     double fx = fy * vw / vh;
 
-    glMatrixMode( GL_PROJECTION );
-    glLoadIdentity();
-    glFrustum( -fx, fx, -fy, fy, NearClipping, FarClipping );
+    QMatrix4x4 projection;
+    projection.frustum( -fx, fx, -fy, fy, NearClipping, FarClipping );
 
-    glMatrixMode( GL_MODELVIEW );
-    glLoadIdentity();
-    glTranslated( 0.0, 0.0, -CameraDistance );
-    glRotated( m_angle, 1.0, 0.0, 0.0 );
-    glRotated( m_rotation, 0.0, 0.0, 1.0 );
+    QMatrix4x4 view;
+    view.translate( 0.0, 0.0, -CameraDistance );
+    view.rotate( m_angle, 1.0, 0.0, 0.0 );
+    view.rotate( m_rotation, 0.0, 0.0, 1.0 );
+
+    QMatrix3x3 normal = view.normalMatrix();
 
     glEnable( GL_DEPTH_TEST );
 
-    m_program->bind();
+    m_vertexBuffer.bind();
+    m_indexBuffer.bind();
 
-    m_program->setUniformValue( "Color", QColor( 255, 128, 200 ) );
+    m_program.bind();
 
-    m_program->setUniformValue( "LightDirection", QVector3D( (float)( sin( LightRotation ) * cos( LightAngle ) ),
+    m_program.setUniformValue( "ProjectionMatrix", projection );
+    m_program.setUniformValue( "ViewMatrix", view );
+    m_program.setUniformValue( "NormalMatrix", normal );
+
+    m_program.setUniformValue( "Color", QColor( 255, 128, 200 ) );
+
+    m_program.setUniformValue( "LightDirection", QVector3D( (float)( sin( LightRotation ) * cos( LightAngle ) ),
 		(float)( sin( LightAngle ) ), (float)( cos( LightRotation ) * cos( LightAngle ) ) ) );
 
-    m_program->setUniformValue( "AmbientIntensity", 0.3f );
-    m_program->setUniformValue( "DiffuseIntensity", 0.65f );
-    m_program->setUniformValue( "SpecularIntensity", 0.4f );
-    m_program->setUniformValue( "Shininess", 40.0f );
+    m_program.setUniformValue( "AmbientIntensity", 0.3f );
+    m_program.setUniformValue( "DiffuseIntensity", 0.65f );
+    m_program.setUniformValue( "SpecularIntensity", 0.4f );
+    m_program.setUniformValue( "Shininess", 40.0f );
 
     if ( m_edges )
         glEnable( GL_POLYGON_OFFSET_FILL );
 
-    glDrawElements( GL_TRIANGLES, 3 * m_indices.count(), GL_UNSIGNED_INT, m_indices.constData() );
+    glDrawElements( GL_TRIANGLES, 3 * m_triangles, GL_UNSIGNED_INT, 0 );
 
     if ( m_edges )
         glDisable( GL_POLYGON_OFFSET_FILL );
 
     if ( m_edges ) {
-	    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-        glColor4f( 0.0f, 0.0f, 0.0f, 1.0f );
+        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
-        m_program->release();
+        m_program.setUniformValue( "Color", QColor( 0, 0, 0 ) );
+        m_program.setUniformValue( "SpecularIntensity", 0.0f );
 
-        glDrawElements( GL_TRIANGLES, 3 * m_indices.count(), GL_UNSIGNED_INT, m_indices.constData() );
+        glDrawElements( GL_TRIANGLES, 3 * m_triangles, GL_UNSIGNED_INT, 0 );
+
+        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
     }
 
-    m_program->release();
+    m_program.release();
+
+    m_vertexBuffer.release();
+    m_indexBuffer.release();
+
+    glDisable( GL_DEPTH_TEST );
 }
 
 void SceneWidget::mousePressEvent( QMouseEvent* e )
 {
-    if ( m_indices.isEmpty() )
+    if ( m_triangles == 0 )
         return;
 
     if ( m_tracking != NoTracking ) {
