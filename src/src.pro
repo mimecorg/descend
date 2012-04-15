@@ -20,7 +20,7 @@ FORMS   += mainwindow.ui
 RESOURCES += \
            shaders/shaders.qrc
 
-include( misc/misc.pro )
+include( misc/misc.pri )
 
 INCLUDEPATH += .
 
