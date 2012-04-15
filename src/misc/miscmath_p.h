@@ -418,9 +418,9 @@ struct mulvv_impl
     }
 };
 
-inline float mulvv( MiscValuePrivate* lhs, MiscValuePrivate* rhs )
+inline void mulvv( MiscValuePrivate* result, MiscValuePrivate* lhs, MiscValuePrivate* rhs )
 {
-    return sum_float<mulvv_impl>::calc( lhs, rhs );
+    calc_vec<mulvv_impl>::calc( result, lhs, rhs );
 }
 
 struct mulfm_impl
@@ -519,6 +519,11 @@ struct distance_impl
 inline float distance( MiscValuePrivate* arg1, MiscValuePrivate* arg2 )
 {
     return sqrtf( sum_float<distance_impl>::calc( arg1, arg2 ) );
+}
+
+inline float dot( MiscValuePrivate* lhs, MiscValuePrivate* rhs )
+{
+    return sum_float<mulvv_impl>::calc( lhs, rhs );
 }
 
 struct cross_impl

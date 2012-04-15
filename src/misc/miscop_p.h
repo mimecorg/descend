@@ -110,6 +110,7 @@ enum Code
     fn_isinf,
     fn_length,
     fn_distance,
+    fn_dot,
     fn_cross,
     fn_normalize,
     fn_lerpv,

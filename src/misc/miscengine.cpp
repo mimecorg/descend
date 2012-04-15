@@ -54,9 +54,9 @@ static const char* const reg_functions[ MiscEnginePrivate::Functions ] =
     "asinh", "acosh", "atanh", "exp", "log",
     "sqrt", "abs", "sign", "floor", "round",
     "ceil", "min", "max", "clamp", "lerp",
-    "isnan", "isinf", "length", "distance", "cross",
-    "normalize", "lerpv", "identity", "translate", "scale",
-    "rotate", "transpose", "determinant", "inverse"
+    "isnan", "isinf", "length", "distance", "dot",
+    "cross", "normalize", "lerpv", "identity", "translate",
+    "scale", "rotate", "transpose", "determinant", "inverse"
 };
 
 static const char* const reg_subscripts[ MiscEnginePrivate::Subscripts ] =
@@ -654,8 +654,9 @@ bool MiscEnginePrivate::execute( char* ops, int sp, int fp )
                 break;
 
             case Misc::OP::op_mulvv:
-                result.m_float = Misc::Math::mulvv( m_stack[ sp - 2 ].m_value, m_stack[ sp - 1 ].m_value );
-                OP_BINARY( Float, Vector, Vector );
+                result.m_value = newValue( Misc::VectorType );
+                Misc::Math::mulvv( result.m_value, m_stack[ sp - 2 ].m_value, m_stack[ sp - 1 ].m_value );
+                OP_BINARY( Vector, Vector, Vector );
                 break;
 
             case Misc::OP::op_mulfm:
@@ -907,6 +908,11 @@ bool MiscEnginePrivate::execute( char* ops, int sp, int fp )
 
             case Misc::OP::fn_distance:
                 result.m_float = Misc::Math::distance( m_stack[ sp - 2 ].m_value, m_stack[ sp - 1 ].m_value );
+                OP_BINARY( Float, Vector, Vector );
+                break;
+
+            case Misc::OP::fn_dot:
+                result.m_float = Misc::Math::dot( m_stack[ sp - 2 ].m_value, m_stack[ sp - 1 ].m_value );
                 OP_BINARY( Float, Vector, Vector );
                 break;
 
