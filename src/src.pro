@@ -21,6 +21,7 @@ RESOURCES += \
            shaders/shaders.qrc
 
 include( misc/misc.pri )
+include( scene/scene.pri )
 
 INCLUDEPATH += .
 
