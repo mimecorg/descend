@@ -1,6 +1,12 @@
 <RCC version="1.0">
 <qresource prefix="/shaders">
-  <file>fragment.glsl</file>
-  <file>vertex.glsl</file>
+  <file>lit.frag</file>
+  <file>lit.vert</file>
+  <file>lit-rgb.frag</file>
+  <file>lit-rgb.vert</file>
+  <file>plain.frag</file>
+  <file>plain.vert</file>
+  <file>plain-rgb.frag</file>
+  <file>plain-rgb.vert</file>
 </qresource>
 </RCC>

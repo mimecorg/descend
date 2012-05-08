@@ -18,6 +18,8 @@
 
 #include "scenewidget.h"
 
+#include "scene/glcore.h"
+
 #include <QGLShaderProgram>
 #include <QMouseEvent>
 
@@ -79,20 +81,16 @@ void SceneWidget::setEdges( bool on )
 
 void SceneWidget::initializeGL()
 {
-    glFrontFace( GL_CCW );
-
-    glShadeModel( GL_SMOOTH );
-
-    glPolygonOffset( 1.5f, 0.0f );
-
-    glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
-
-    m_program.addShaderFromSourceFile( QGLShader::Vertex, ":/shaders/vertex.glsl" );
-    m_program.addShaderFromSourceFile( QGLShader::Fragment, ":/shaders/fragment.glsl" );
+    m_program.addShaderFromSourceFile( QGLShader::Vertex, ":/shaders/lit.vert" );
+    m_program.addShaderFromSourceFile( QGLShader::Fragment, ":/shaders/lit.frag" );
     m_program.link();
 
     m_vertexBuffer.create();
     m_indexBuffer.create();
+
+    glEnable( GL_FRAMEBUFFER_SRGB );
+
+    glPolygonOffset( 1.5f, 0.0f );
 }
 
 void SceneWidget::resizeGL( int width, int height )
@@ -158,13 +156,14 @@ void SceneWidget::paintGL()
     m_program.setUniformValue( "ViewMatrix", view );
     m_program.setUniformValue( "NormalMatrix", normal );
 
-    m_program.setUniformValue( "Color", QColor( 255, 128, 200 ) );
+    m_program.setUniformValue( "FrontColor", QColor( 255, 64, 144 ) );
+    m_program.setUniformValue( "BackColor", QColor( 255, 144, 64 ) );
 
     m_program.setUniformValue( "LightDirection", QVector3D( (float)( sin( LightRotation ) * cos( LightAngle ) ),
 		(float)( sin( LightAngle ) ), (float)( cos( LightRotation ) * cos( LightAngle ) ) ) );
 
-    m_program.setUniformValue( "AmbientIntensity", 0.3f );
-    m_program.setUniformValue( "DiffuseIntensity", 0.65f );
+    m_program.setUniformValue( "AmbientIntensity", 0.1f );
+    m_program.setUniformValue( "DiffuseIntensity", 0.6f );
     m_program.setUniformValue( "SpecularIntensity", 0.4f );
     m_program.setUniformValue( "Shininess", 40.0f );
 
@@ -179,7 +178,8 @@ void SceneWidget::paintGL()
     if ( m_edges ) {
         glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
-        m_program.setUniformValue( "Color", QColor( 0, 0, 0 ) );
+        m_program.setUniformValue( "FrontColor", QColor( 0, 0, 0 ) );
+        m_program.setUniformValue( "BackColor", QColor( 0, 0, 0 ) );
         m_program.setUniformValue( "SpecularIntensity", 0.0f );
 
         glDrawElements( GL_TRIANGLES, 3 * m_triangles, GL_UNSIGNED_INT, 0 );
