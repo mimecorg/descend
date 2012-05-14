@@ -19,11 +19,10 @@
 #ifndef SCENEWIDGET_H
 #define SCENEWIDGET_H
 
-#include "surfacetessellator.h"
-
 #include <QGLWidget>
 
-class QGLShaderProgram;
+class Scene;
+class Renderer;
 
 class SceneWidget : public QGLWidget
 {
@@ -33,7 +32,8 @@ public:
     ~SceneWidget();
 
 public:
-    void setSurface( const QVector<QVector3D>& vertices, const QVector<QVector3D>& normals, const QVector<Triangle>& indices );
+    void setScene( Scene* scene );
+    Scene* scene() const { return m_scene; }
 
     void setEdges( bool on );
     bool hasEdges() const { return m_edges; }
@@ -55,12 +55,9 @@ private:
     };
 
 private:
-    QGLShaderProgram m_program;
+    Renderer* m_renderer;
 
-    QGLBuffer m_vertexBuffer;
-    QGLBuffer m_indexBuffer;
-
-    int m_triangles;
+    Scene* m_scene;
 
     bool m_edges;
 

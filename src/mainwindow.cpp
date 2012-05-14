@@ -19,17 +19,11 @@
 #include "mainwindow.h"
 
 #include "scenewidget.h"
-#include "surfacetessellator.h"
-
 #include "misc/miscengine.h"
-#include "misc/miscunit.h"
-#include "misc/misccode.h"
-#include "misc/miscvalue.h"
-#include "misc/miscidentifier.h"
-#include "misc/miscsymbol.h"
+#include "scene/parametricmeshnode.h"
+#include "scene/scene.h"
+#include "scene/tessellator.h"
 
-#include <QVector2D>
-#include <QVector3D>
 #include <QElapsedTimer>
 
 MainWindow::MainWindow() : QMainWindow()
@@ -38,64 +32,12 @@ MainWindow::MainWindow() : QMainWindow()
 
     m_ui.minLodEdit->setText( "8" );
     m_ui.maxLodEdit->setText( "16" );
-    m_ui.alphaEdit->setText( "5" );
+    m_ui.alphaEdit->setText( "0.05" );
 }
 
 MainWindow::~MainWindow()
 {
 }
-
-class ParametricSurface : public AbstractSurface
-{
-public:
-    ParametricSurface( const QString& text ) :
-        m_unit( &m_engine ),
-        m_p( "p", &m_engine ),
-        m_q( "q", &m_engine ),
-        m_vPos( "v_pos", &m_engine ),
-        m_samples( 0 )
-    {
-        m_unit.addVariable( MiscSymbol( Misc::FloatType, m_p ) );
-        m_unit.addVariable( MiscSymbol( Misc::FloatType, m_q ) );
-        m_unit.addVariable( MiscSymbol( Misc::VectorType, m_vPos ) );
-        m_code = m_unit.compileUnit( text );
-    }
-
-public:
-    int samples() const { return m_samples; }
-
-    bool isValid() const { return m_code.isValid(); }
-
-    QString errorMessage() const { return m_engine.errorMessage(); }
-    int errorLineNumber() const { return m_engine.errorLineNumber(); }
-
-    QVector3D vertexFromParameter( const QVector2D& parameter )
-    {
-        m_samples++;
-
-        m_unit.setVariable( m_p, MiscValue( (float)parameter.x(), &m_engine ) );
-        m_unit.setVariable( m_q, MiscValue( (float)parameter.y(), &m_engine ) );
-        m_unit.setVariable( m_vPos, MiscValue( Misc::VectorType, &m_engine ) );
-
-        m_engine.execute( m_code );
-
-        MiscValue pos = m_unit.variable( m_vPos );
-
-        return pos.toVector().toVector3DAffine();
-    }
-
-private:
-    MiscEngine m_engine;
-
-    MiscUnit m_unit;
-    MiscCode m_code;
-
-    MiscIdentifier m_p;
-    MiscIdentifier m_q;
-    MiscIdentifier m_vPos;
-
-    int m_samples;
-};
 
 void MainWindow::on_executeButton_clicked()
 {
@@ -103,33 +45,43 @@ void MainWindow::on_executeButton_clicked()
 
     m_ui.outputEdit->clear();
 
-    QElapsedTimer timer;
-    timer.start();
+    int minLod = qBound( 0, m_ui.minLodEdit->text().toInt(), 20 );
+    int maxLod = qBound( 0, m_ui.maxLodEdit->text().toInt(), 20 );
+    float threshold = qBound( 0.0f, m_ui.alphaEdit->text().toFloat(), 1.0f );
 
-    ParametricSurface surface( m_ui.scriptEdit->toPlainText() );
+    Renderer::currentRenderer()->tessellator( Renderer::SurfaceMesh )->setLodRange( minLod, maxLod );
+    Renderer::currentRenderer()->tessellator( Renderer::SurfaceMesh )->setGeometryThreshold( threshold );
+    Renderer::currentRenderer()->tessellator( Renderer::SurfaceMesh )->setAttributeThreshold( threshold );
 
-    if ( surface.isValid() ) {
-        SurfaceTessellator tessellator;
+    Scene* scene = new Scene();
 
-        int minLod = qBound( 0, m_ui.minLodEdit->text().toInt(), 20 );
-        int maxLod = qBound( 0, m_ui.maxLodEdit->text().toInt(), 20 );
-        float alpha = qBound( 0.0f, m_ui.alphaEdit->text().toFloat(), 45.0f );
+    ParametricMeshNode* node = new ParametricMeshNode( Renderer::SurfaceMesh, Renderer::NoAttribute, scene );
 
-        tessellator.tessellate( &surface, minLod, maxLod, alpha );
+    node->setColor( QColor( 255, 64, 144 ), QColor( 255, 144, 64 ) );
 
-        m_ui.sceneWidget->setSurface( tessellator.vertices(), tessellator.normals(), tessellator.indices() );
+    bool ok = false;
 
-        quint64 elapsed = timer.elapsed();
+    if ( node->addCalcCode( m_ui.scriptEdit->toPlainText() ) ) {
+        QElapsedTimer timer;
+        timer.start();
 
-        m_ui.outputEdit->setPlainText( QString( "Vertices: %1\nTriangles: %2\nSamples: %3\nElapsed time: %4 ms" )
-            .arg( tessellator.vertices().count() )
-            .arg( tessellator.indices().count() )
-            .arg( surface.samples() )
-            .arg( elapsed ) );
-    } else {
+        if ( scene->calculate() ) {
+            m_ui.outputEdit->setPlainText( QString( "Triangles: %1\nElapsed time: %2 ms" )
+                .arg( node->elementsCount() )
+                .arg( timer.elapsed() ) );
+
+            m_ui.sceneWidget->setScene( scene );
+
+            ok = true;
+        }
+    }
+
+    if ( !ok ) {
         m_ui.outputEdit->setPlainText( QString( "Error: %1 in line %2" )
-            .arg( surface.errorMessage() )
-            .arg( surface.errorLineNumber() ) );
+            .arg( scene->engine()->errorMessage() )
+            .arg( scene->engine()->errorLineNumber() ) );
+
+        delete scene;
     }
 
     QApplication::restoreOverrideCursor();

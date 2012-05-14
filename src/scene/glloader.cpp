@@ -20,7 +20,7 @@
 
 GLLoader* GLLoader::p = NULL;
 
-GLLoader::GLLoader( QGLContext* ctx )
+GLLoader::GLLoader( const QGLContext* ctx )
 {
     m_glBlendColor = (PFNGLBLENDCOLORPROC) ctx->getProcAddress( "glBlendColor" );
     m_glBlendEquation = (PFNGLBLENDEQUATIONPROC) ctx->getProcAddress( "glBlendEquation" );
@@ -303,7 +303,7 @@ GLLoader::~GLLoader()
 {
 }
 
-void GLLoader::initialize( QGLContext* ctx )
+void GLLoader::initialize( const QGLContext* ctx )
 {
     if ( GLLoader::p == NULL )
         GLLoader::p = new GLLoader( ctx );

@@ -7,13 +7,11 @@ CONFIG  += qt
 QT      += opengl
 
 HEADERS += mainwindow.h \
-           scenewidget.h \
-           surfacetessellator.h
+           scenewidget.h
 
 SOURCES += main.cpp \
            mainwindow.cpp \
-           scenewidget.cpp \
-           surfacetessellator.cpp
+           scenewidget.cpp
 
 FORMS   += mainwindow.ui
 

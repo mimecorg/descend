@@ -24,7 +24,7 @@
 class GLLoader
 {
 public:
-    GLLoader( QGLContext* context );
+    explicit GLLoader( const QGLContext* context );
     ~GLLoader();
 
 public:
@@ -305,7 +305,7 @@ public:
     PFNGLGETQUERYOBJECTUI64VPROC m_glGetQueryObjectui64v;
 
 public:
-    static void initialize( QGLContext* context );
+    static void initialize( const QGLContext* context );
 
     static GLLoader* p;
 };

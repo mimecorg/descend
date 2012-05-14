@@ -18,17 +18,17 @@
 
 #include "scenewidget.h"
 
-#include "scene/glcore.h"
+#include "scene/glloader.h"
+#include "scene/scene.h"
+#include "scene/renderer.h"
 
-#include <QGLShaderProgram>
 #include <QMouseEvent>
 
 #include <math.h>
 
 SceneWidget::SceneWidget( QWidget* parent ) : QGLWidget( parent ),
-    m_vertexBuffer( QGLBuffer::VertexBuffer ),
-    m_indexBuffer( QGLBuffer::IndexBuffer ),
-    m_triangles( 0 ),
+    m_renderer( NULL ),
+    m_scene( NULL ),
     m_edges( false ),
     m_rotation( 0.0 ),
     m_angle( -45.0 ),
@@ -38,37 +38,17 @@ SceneWidget::SceneWidget( QWidget* parent ) : QGLWidget( parent ),
 
 SceneWidget::~SceneWidget()
 {
+    delete m_renderer;
+    delete m_scene;
 }
 
-void SceneWidget::setSurface( const QVector<QVector3D>& vertices, const QVector<QVector3D>& normals, const QVector<Triangle>& indices )
+void SceneWidget::setScene( Scene* scene )
 {
-    makeCurrent();
-
-    int vcount = 3 * vertices.count() * sizeof( float );
-
-    m_vertexBuffer.bind();
-    m_vertexBuffer.allocate( 2 * vcount );
-    m_vertexBuffer.write( 0, vertices.constData(), vcount );
-    m_vertexBuffer.write( vcount, normals.constData(), vcount );
-
-    int icount = 3 * indices.count() * sizeof( int );
-
-    m_indexBuffer.bind();
-    m_indexBuffer.allocate( indices.constData(), icount );
-
-    m_program.bind();
-    m_program.setAttributeBuffer( "inPosition", GL_FLOAT, 0, 3 );
-    m_program.enableAttributeArray( "inPosition" );
-    m_program.setAttributeBuffer( "inNormal", GL_FLOAT, vcount, 3 );
-    m_program.enableAttributeArray( "inNormal" );
-
-    m_program.release();
-    m_indexBuffer.release();
-    m_vertexBuffer.release();
-
-    m_triangles = indices.count();
-
-    updateGL();
+    if ( m_scene != scene ) {
+        delete m_scene;
+        m_scene = scene;
+        updateGL();
+    }
 }
 
 void SceneWidget::setEdges( bool on )
@@ -79,18 +59,22 @@ void SceneWidget::setEdges( bool on )
     }
 }
 
+static const double LightRotation = -0.3491;
+static const double LightAngle = 0.4363;
+
 void SceneWidget::initializeGL()
 {
-    m_program.addShaderFromSourceFile( QGLShader::Vertex, ":/shaders/lit.vert" );
-    m_program.addShaderFromSourceFile( QGLShader::Fragment, ":/shaders/lit.frag" );
-    m_program.link();
+    GLLoader::initialize( context() );
 
-    m_vertexBuffer.create();
-    m_indexBuffer.create();
+    m_renderer = new Renderer();
+    m_renderer->makeCurrent();
 
-    glEnable( GL_FRAMEBUFFER_SRGB );
+    m_renderer->setBackgroundColor( QColor::fromRgbF( 0.0f, 0.1f, 0.7f ), QColor::fromRgbF( 0.2f, 0.5f, 1.0f ) );
 
-    glPolygonOffset( 1.5f, 0.0f );
+    m_renderer->setLightDirection( QVector3D( (float)( sin( LightRotation ) * cos( LightAngle ) ),
+		(float)( sin( LightAngle ) ), (float)( cos( LightRotation ) * cos( LightAngle ) ) ) );
+    m_renderer->setLightIntensity( 0.1f, 0.6f, 0.4f );
+    m_renderer->setShininess( 40.0f );
 }
 
 void SceneWidget::resizeGL( int width, int height )
@@ -104,100 +88,43 @@ static const double CameraZoom = 24.0;
 static const double NearClipping = 10.0;
 static const double FarClipping = 70.0;
 
-static const double LightRotation = -0.3491;
-static const double LightAngle = 0.4363;
-
 void SceneWidget::paintGL()
 {
-    glClear( GL_DEPTH_BUFFER_BIT );
+    m_renderer->makeCurrent();
 
-    glBegin( GL_QUADS );
+    m_renderer->clear();
 
-    glColor3f( 0.0f, 0.1f, 0.7f );
-    glVertex2f( 1.0f, 1.0f );
-    glVertex2f( -1.0f, 1.0f );
+    if ( m_scene != NULL ) {
+        GLint viewport[ 4 ];
+        glGetIntegerv( GL_VIEWPORT, viewport );
 
-    glColor3f( 0.2f, 0.5f, 1.0f );
-    glVertex2f( -1.0f, -1.0f );
-    glVertex2f( 1.0f, -1.0f );
+        double vw = viewport[ 2 ];
+        double vh = viewport[ 3 ];
 
-    glEnd();
+        double fy = tan( 0.5 * CameraZoom * M_PI / 180.0 ) * NearClipping;
+        double fx = fy * vw / vh;
 
-    if ( m_triangles == 0 )
-        return;
+        QMatrix4x4 projection;
+        projection.frustum( -fx, fx, -fy, fy, NearClipping, FarClipping );
 
-    GLint viewport[ 4 ];
-    glGetIntegerv( GL_VIEWPORT, viewport );
+        m_renderer->setProjectionMatrix( projection );
 
-    double vw = viewport[ 2 ];
-    double vh = viewport[ 3 ];
+        QMatrix4x4 view;
+        view.translate( 0.0, 0.0, -CameraDistance );
+        view.rotate( m_angle, 1.0, 0.0, 0.0 );
+        view.rotate( m_rotation, 0.0, 0.0, 1.0 );
 
-    double fy = tan( 0.5 * CameraZoom * M_PI / 180.0 ) * NearClipping;
-    double fx = fy * vw / vh;
+        m_renderer->setViewMatrix( view );
 
-    QMatrix4x4 projection;
-    projection.frustum( -fx, fx, -fy, fy, NearClipping, FarClipping );
+        m_renderer->setEdgesVisible( m_edges );
 
-    QMatrix4x4 view;
-    view.translate( 0.0, 0.0, -CameraDistance );
-    view.rotate( m_angle, 1.0, 0.0, 0.0 );
-    view.rotate( m_rotation, 0.0, 0.0, 1.0 );
-
-    QMatrix3x3 normal = view.normalMatrix();
-
-    glEnable( GL_DEPTH_TEST );
-
-    m_vertexBuffer.bind();
-    m_indexBuffer.bind();
-
-    m_program.bind();
-
-    m_program.setUniformValue( "ProjectionMatrix", projection );
-    m_program.setUniformValue( "ViewMatrix", view );
-    m_program.setUniformValue( "NormalMatrix", normal );
-
-    m_program.setUniformValue( "FrontColor", QColor( 255, 64, 144 ) );
-    m_program.setUniformValue( "BackColor", QColor( 255, 144, 64 ) );
-
-    m_program.setUniformValue( "LightDirection", QVector3D( (float)( sin( LightRotation ) * cos( LightAngle ) ),
-		(float)( sin( LightAngle ) ), (float)( cos( LightRotation ) * cos( LightAngle ) ) ) );
-
-    m_program.setUniformValue( "AmbientIntensity", 0.1f );
-    m_program.setUniformValue( "DiffuseIntensity", 0.6f );
-    m_program.setUniformValue( "SpecularIntensity", 0.4f );
-    m_program.setUniformValue( "Shininess", 40.0f );
-
-    if ( m_edges )
-        glEnable( GL_POLYGON_OFFSET_FILL );
-
-    glDrawElements( GL_TRIANGLES, 3 * m_triangles, GL_UNSIGNED_INT, 0 );
-
-    if ( m_edges )
-        glDisable( GL_POLYGON_OFFSET_FILL );
-
-    if ( m_edges ) {
-        glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-
-        m_program.setUniformValue( "FrontColor", QColor( 0, 0, 0 ) );
-        m_program.setUniformValue( "BackColor", QColor( 0, 0, 0 ) );
-        m_program.setUniformValue( "SpecularIntensity", 0.0f );
-
-        glDrawElements( GL_TRIANGLES, 3 * m_triangles, GL_UNSIGNED_INT, 0 );
-
-        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+        m_scene->render();
     }
-
-    m_program.release();
-
-    m_vertexBuffer.release();
-    m_indexBuffer.release();
-
-    glDisable( GL_DEPTH_TEST );
 }
 
 void SceneWidget::mousePressEvent( QMouseEvent* e )
 {
-    if ( m_triangles == 0 )
+    if ( m_scene == NULL )
         return;
 
     if ( m_tracking != NoTracking ) {
