@@ -77,7 +77,7 @@ MiscCode MiscUnit::compileUnit( const QString& text )
     if ( listNode == NULL ) {
         MiscCodePrivate* code = d->m_engine->newCode( 1 );
         code->m_opsTable[ 0 ] = Misc::OP::ret;
-        return MiscCode();
+        return MiscCodePrivate::toPublic( code );
     }
 
     for ( Misc::AST::Node* node = listNode->m_head; node != NULL; node = node->m_next ) {
