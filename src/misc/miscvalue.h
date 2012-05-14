@@ -35,6 +35,7 @@ public:
     MiscValue( Misc::Type type, MiscEngine* engine );
     MiscValue( bool b, MiscEngine* engine );
     MiscValue( float f, MiscEngine* engine );
+    MiscValue( double f, MiscEngine* engine );
     MiscValue( const QVector4D& v, MiscEngine* engine );
     MiscValue( const QMatrix4x4& m, MiscEngine* engine );
     ~MiscValue();

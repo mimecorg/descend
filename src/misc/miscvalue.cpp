@@ -53,6 +53,13 @@ MiscValue::MiscValue( float f, MiscEngine* engine ) :
     d->m_float = f;
 }
 
+MiscValue::MiscValue( double f, MiscEngine* engine ) :
+    d( MiscEnginePrivate::get( engine )->newValue( Misc::FloatType ) )
+{
+    d->m_ref++;
+    d->m_float = f;
+}
+
 MiscValue::MiscValue( const QVector4D& v, MiscEngine* engine ) :
     d( MiscEnginePrivate::get( engine )->newValue( Misc::VectorType ) )
 {
