@@ -16,25 +16,25 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#include "scene/linetessellator.h"
+#include "scene/curvetessellator.h"
 
 #include "scene/parametricmeshnode.h"
 
-LineTessellator::LineTessellator()
+CurveTessellator::CurveTessellator()
 {
 }
 
-LineTessellator::~LineTessellator()
+CurveTessellator::~CurveTessellator()
 {
 }
 
-void LineTessellator::clear()
+void CurveTessellator::clear()
 {
     m_vertices.clear();
     m_edges.clear();
 }
 
-bool LineTessellator::tessellate( ParametricMeshNode* node )
+bool CurveTessellator::tessellate( ParametricMeshNode* node )
 {
     clear();
 
@@ -89,7 +89,7 @@ bool LineTessellator::tessellate( ParametricMeshNode* node )
     return true;
 }
 
-bool LineTessellator::initialize( ParametricMeshNode* node )
+bool CurveTessellator::initialize( ParametricMeshNode* node )
 {
     Vertex v0, v1;
 
@@ -108,7 +108,7 @@ bool LineTessellator::initialize( ParametricMeshNode* node )
     return true;
 }
 
-bool LineTessellator::calculateVertex( ParametricMeshNode* node, Vertex* vertex, float param )
+bool CurveTessellator::calculateVertex( ParametricMeshNode* node, Vertex* vertex, float param )
 {
     vertex->m_param = param;
 
@@ -118,12 +118,12 @@ bool LineTessellator::calculateVertex( ParametricMeshNode* node, Vertex* vertex,
     return true;
 }
 
-int LineTessellator::count() const
+int CurveTessellator::count() const
 {
     return m_edges.count();
 }
 
-QByteArray LineTessellator::vertexArray( Renderer::AttributeType attr )
+QByteArray CurveTessellator::vertexArray( Renderer::AttributeType attr )
 {
     int count = m_vertices.count();
 
@@ -154,7 +154,7 @@ QByteArray LineTessellator::vertexArray( Renderer::AttributeType attr )
     return buffer;
 }
 
-QByteArray LineTessellator::indexArray()
+QByteArray CurveTessellator::indexArray()
 {
     int count = m_edges.count();
 

@@ -38,7 +38,7 @@ ParametricMeshNode::ParametricMeshNode( Renderer::MeshType type, Renderer::Attri
     m_initUnit->addVariable( MiscSymbol( Misc::MatrixType, m_scene->identifier( Scene::M_Matrix ) ) );
 
     if ( attr == Renderer::NoAttribute ) {
-        if ( type == Renderer::LineMesh )
+        if ( type == Renderer::CurveMesh )
             m_initUnit->addVariable( MiscSymbol( Misc::VectorType, m_scene->identifier( Scene::M_Color ) ) );
 
         if ( type == Renderer::SurfaceMesh ) {
@@ -125,7 +125,7 @@ bool ParametricMeshNode::calculate( const QMatrix4x4& matrix /*= QMatrix4x4()*/ 
     m_initUnit->setVariable( m_scene->identifier( Scene::M_Matrix ), MiscValue( Misc::MatrixType, engine ) );
 
     if ( m_attributeType == Renderer::NoAttribute ) {
-        if ( m_meshType == Renderer::LineMesh )
+        if ( m_meshType == Renderer::CurveMesh )
             m_initUnit->setVariable( m_scene->identifier( Scene::M_Color ), MiscValue( colorToVector( m_frontColor ), engine ) );
 
         if ( m_meshType == Renderer::SurfaceMesh ) {
@@ -153,7 +153,7 @@ bool ParametricMeshNode::calculate( const QMatrix4x4& matrix /*= QMatrix4x4()*/ 
     m_matrix.optimize();
 
     if ( m_attributeType == Renderer::NoAttribute ) {
-        if ( m_meshType == Renderer::LineMesh )
+        if ( m_meshType == Renderer::CurveMesh )
             m_realFrontColor = vectorToColor( m_initUnit->variable( m_scene->identifier( Scene::M_Color ) ).toVector() );
 
         if ( m_meshType == Renderer::SurfaceMesh ) {
@@ -200,7 +200,7 @@ bool ParametricMeshNode::calculate( const QMatrix4x4& matrix /*= QMatrix4x4()*/ 
 
 bool ParametricMeshNode::calculateVertex( float param, QVector3D* pos, QVector3D* attr )
 {
-    Q_ASSERT( m_meshType == Renderer::LineMesh );
+    Q_ASSERT( m_meshType == Renderer::CurveMesh );
 
     MiscEngine* engine = m_scene->engine();
 

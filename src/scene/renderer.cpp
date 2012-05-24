@@ -18,8 +18,8 @@
 
 #include "scene/renderer.h"
 
+#include "scene/curvetessellator.h"
 #include "scene/glloader.h"
-#include "scene/linetessellator.h"
 #include "scene/surfacetessellator.h"
 
 Renderer* Renderer::m_current = NULL;
@@ -41,7 +41,7 @@ Renderer::Renderer() :
         m_programs.insert( shaders[ i ], program );
     }
 
-    m_lineTessellator = new LineTessellator();
+    m_curveTessellator = new CurveTessellator();
     m_surfaceTessellator = new SurfaceTessellator();
 
     glEnable( GL_DEPTH_TEST );
@@ -54,7 +54,7 @@ Renderer::~Renderer()
 {
     doneCurrent();
 
-    delete m_lineTessellator;
+    delete m_curveTessellator;
     delete m_surfaceTessellator;
 }
 
@@ -72,8 +72,8 @@ void Renderer::doneCurrent()
 Tessellator* Renderer::tessellator( MeshType type ) const
 {
     switch ( type ) {
-        case LineMesh:
-            return m_lineTessellator;
+        case CurveMesh:
+            return m_curveTessellator;
         case SurfaceMesh:
             return m_surfaceTessellator;
         default:
@@ -175,7 +175,7 @@ static QString programName( Renderer::MeshType type, Renderer::AttributeType att
     QString name;
 
     switch ( type ) {
-        case Renderer::LineMesh:
+        case Renderer::CurveMesh:
             name = "plain";
             break;
         case Renderer::SurfaceMesh:
@@ -256,7 +256,7 @@ void Renderer::renderMesh( MeshType type, AttributeType attr, QGLBuffer& vertexB
         glEnable( GL_POLYGON_OFFSET_FILL );
 
     switch ( type ) {
-        case LineMesh:
+        case CurveMesh:
             glDrawElements( GL_LINES, 2 * count, GL_UNSIGNED_INT, 0 );
             break;
         case SurfaceMesh:

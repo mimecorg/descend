@@ -16,16 +16,16 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#ifndef LINETESSELLATOR_H
-#define LINETESSELLATOR_H
+#ifndef CURVETESSELLATOR_H
+#define CURVETESSELLATOR_H
 
 #include "scene/tessellator.h"
 
-class LineTessellator : public Tessellator
+class CurveTessellator : public Tessellator
 {
 public:
-    LineTessellator();
-    ~LineTessellator();
+    CurveTessellator();
+    ~CurveTessellator();
 
 public:
     void clear();

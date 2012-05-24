@@ -27,7 +27,7 @@ class Renderer : public QObject
 public:
     enum MeshType
     {
-        LineMesh,
+        CurveMesh,
         SurfaceMesh
     };
 
@@ -69,7 +69,7 @@ public:
 private:
     QMap<QString, QGLShaderProgram*> m_programs;
 
-    Tessellator* m_lineTessellator;
+    Tessellator* m_curveTessellator;
     Tessellator* m_surfaceTessellator;
 
     QColor m_topColor;
