@@ -30,6 +30,8 @@ Application* application = NULL;
 
 Application::Application( int& argc, char** argv ) : QApplication( argc, argv )
 {
+    Q_INIT_RESOURCE( icons );
+    Q_INIT_RESOURCE( resources );
     Q_INIT_RESOURCE( shaders );
 
     initializeDefaultPaths();
@@ -43,6 +45,8 @@ Application::Application( int& argc, char** argv ) : QApplication( argc, argv )
 #elif defined( Q_WS_MAC )
     setStyle( "XmlUi::MacStyle" );
 #endif
+
+    setWindowIcon( IconLoader::icon( "descend" ) );
 
     m_mainWindow = new MainWindow();
     m_mainWindow->showMaximized();

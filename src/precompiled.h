@@ -22,5 +22,6 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtOpenGL>
+#include <QtXml>
 
 #endif

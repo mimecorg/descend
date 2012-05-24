@@ -1,0 +1,59 @@
+<xmlui>
+  <strip id="stripMain">
+    <section id="sectionFile">
+      <action id="newFile"/>
+      <action id="openFile"/>
+      <action id="popupSaveFile"/>
+    </section>
+    <section id="sectionEdit">
+      <action id="insertNode"/>
+      <grid>
+        <action id="cloneNode"/>
+        <action id="deleteNode"/>
+        <action id="moveNodeUp"/>
+        <action id="moveNodeDown"/>
+        <action id="renameNode"/>
+        <action id="editProperties"/>
+      </grid>
+    </section>
+    <section id="sectionScene">
+      <action id="drawScene"/>
+      <action id="closeScene"/>
+    </section>
+    <section id="sectionView">
+      <action id="cameraSettings"/>
+      <grid>
+        <row>
+          <action id="popupDefaultView"/>
+        </row>
+        <row>
+          <action id="previousView"/>
+          <action id="nextView"/>
+        </row>
+      </grid>
+    </section>
+    <section id="sectionSettings">
+      <action id="colorSettings"/>
+      <action id="lightingSettings"/>
+      <action id="tessellationSettings"/>
+    </section>
+  </strip>
+  <menu id="menuSaveFile">
+    <action id="saveFile"/>
+    <action id="saveFileAs"/>
+  </menu>
+  <menu id="menuInsert">
+    <action id="insertDefinition"/>
+    <action id="insertScene"/>
+    <action id="insertCurve"/>
+    <action id="insertSurface"/>
+    <action id="insertGroup"/>
+  </menu>
+  <menu id="menuDefaultView">
+    <action id="defaultView"/>
+    <action id="frontView"/>
+    <action id="topView"/>
+    <action id="topLeftView"/>
+    <action id="topRightView"/>
+  </menu>
+</xmlui>

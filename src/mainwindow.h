@@ -22,8 +22,9 @@
 #include <QMainWindow>
 
 #include "ui_mainwindow.h"
+#include "xmlui/client.h"
 
-class MainWindow : public QMainWindow
+class MainWindow : public QMainWindow, public XmlUi::Client
 {
     Q_OBJECT
 public:
@@ -33,6 +34,8 @@ public:
 private slots:
     void on_executeButton_clicked();
     void on_edgesCheckBox_toggled( bool on );
+
+    void insertNode();
 
 private:
     Ui::MainWindow m_ui;

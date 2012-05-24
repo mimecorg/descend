@@ -18,6 +18,8 @@ SOURCES += application.cpp \
 FORMS   += mainwindow.ui
 
 RESOURCES += \
+           icons/icons.qrc \
+           resources/resources.qrc \
            shaders/shaders.qrc
 
 include( misc/misc.pri )
