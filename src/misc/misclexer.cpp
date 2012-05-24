@@ -108,6 +108,8 @@ int MiscLexer::lex()
             do {
                 skip();
             } while ( m_ch != 0 && ( m_ch != '*' || m_next != '/' ) );
+            skip();
+            skip();
 
             continue;
         }
