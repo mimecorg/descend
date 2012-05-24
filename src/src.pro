@@ -4,7 +4,7 @@ TEMPLATE = app
 TARGET   = descend
 
 CONFIG  += qt
-QT      += opengl
+QT      += opengl xml
 
 HEADERS += mainwindow.h \
            scenewidget.h
@@ -20,6 +20,7 @@ RESOURCES += \
 
 include( misc/misc.pri )
 include( scene/scene.pri )
+include( xmlui/xmlui.pri )
 
 INCLUDEPATH += .
 
