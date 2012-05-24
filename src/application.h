@@ -16,11 +16,39 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#include "application.h"
+#ifndef APPLICATION_H
+#define APPLICATION_H
 
-int main( int argc, char** argv )
+#include <QApplication>
+
+class MainWindow;
+class LocalSettings;
+
+class Application : public QApplication
 {
-    Application application( argc, argv );
+    Q_OBJECT
+public:
+    Application( int& argc, char** argv );
+    ~Application();
 
-    return application.exec();
-}
+public:
+    QString locateDataFile( const QString& name );
+
+    LocalSettings* applicationSettings() const { return m_settings; }
+
+private:
+    void initializeDefaultPaths();
+
+    bool checkAccess( const QString& path );
+
+private:
+    QString m_dataPath;
+
+    LocalSettings* m_settings;
+
+    MainWindow* m_mainWindow;
+};
+
+extern Application* application;
+
+#endif

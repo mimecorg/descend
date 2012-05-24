@@ -6,10 +6,12 @@ TARGET   = descend
 CONFIG  += qt
 QT      += opengl xml
 
-HEADERS += mainwindow.h \
+HEADERS += application.h \
+           mainwindow.h \
            scenewidget.h
 
-SOURCES += main.cpp \
+SOURCES += application.cpp \
+           main.cpp \
            mainwindow.cpp \
            scenewidget.cpp
 
