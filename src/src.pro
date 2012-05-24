@@ -20,6 +20,7 @@ RESOURCES += \
 
 include( misc/misc.pri )
 include( scene/scene.pri )
+include( utils/utils.pri )
 include( xmlui/xmlui.pri )
 
 INCLUDEPATH += .
