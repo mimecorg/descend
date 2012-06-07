@@ -1,6 +1,6 @@
 /****************************************************************************
 * Simple XML-based UI builder for Qt4
-* Copyright (C) 2007-2011 Michał Męciński
+* Copyright (C) 2007-2012 Michał Męciński
 *
 * Redistribution and use in source and binary forms, with or without
 * modification, are permitted provided that the following conditions are met:
@@ -37,9 +37,7 @@
 
 #if !defined( XMLUI_NO_STYLE_MAC )
 
-// TODO: QMacStyle
 #include <QMacStyle>
-typedef QMacStyle MacBaseStyle;
 
 namespace XmlUi
 {
@@ -49,7 +47,7 @@ namespace XmlUi
 *
 * The style override default QToolButton rendering which are ugly on mac os x.
 */
-class MacStyle : public MacBaseStyle
+class MacStyle : public QMacStyle
 {
     Q_OBJECT
 public:
@@ -64,50 +62,8 @@ public:
     ~MacStyle();
 
 public: // overrides
-    void polish( QPalette& palette );
-
-    void polish( QWidget* widget );
-    void unpolish( QWidget* widget );
-
-    /*int pixelMetric( PixelMetric metric, const QStyleOption* option, const QWidget* widget ) const;
-
-    int styleHint( StyleHint hint, const QStyleOption* option, const QWidget* widget,
-        QStyleHintReturn* returnData = NULL ) const;
-
-    QSize sizeFromContents( ContentsType type, const QStyleOption* option,
-        const QSize& contentsSize, const QWidget* widget ) const;
-
-    QRect subElementRect( SubElement element, const QStyleOption* option, const QWidget* widget ) const;
-    QRect subControlRect( ComplexControl control, const QStyleOptionComplex* option,
-        SubControl subControl, const QWidget* widget ) const;
-
-    void drawPrimitive( PrimitiveElement element, const QStyleOption* option,
-        QPainter* painter, const QWidget* widget ) const;
-    void drawControl( ControlElement element, const QStyleOption* option,
-        QPainter* painter, const QWidget* widget ) const;
-    */
     void drawComplexControl( ComplexControl control, const QStyleOptionComplex* option,
         QPainter* painter, const QWidget* widget ) const;
-
-private:
-    QColor m_colorBackgroundBegin;
-    QColor m_colorBackgroundEnd;
-    QColor m_colorMenuBorder;
-    QColor m_colorMenuBackground;
-    QColor m_colorBarBegin;
-    QColor m_colorBarEnd;
-    QColor m_colorSeparator;
-    QColor m_colorItemBorder;
-    QColor m_colorItemBackgroundBegin;
-    QColor m_colorItemBackgroundMiddle;
-    QColor m_colorItemBackgroundEnd;
-    QColor m_colorItemCheckedBegin;
-    QColor m_colorItemCheckedMiddle;
-    QColor m_colorItemCheckedEnd;
-    QColor m_colorItemSunkenBegin;
-    QColor m_colorItemSunkenMiddle;
-    QColor m_colorItemSunkenEnd;
-    QColor m_colorToolStripLabel;
 };
 
 }
