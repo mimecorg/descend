@@ -23,6 +23,7 @@ RESOURCES += \
            shaders/shaders.qrc
 
 include( misc/misc.pri )
+include( project/project.pri )
 include( scene/scene.pri )
 include( utils/utils.pri )
 include( xmlui/xmlui.pri )

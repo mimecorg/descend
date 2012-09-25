@@ -26,6 +26,9 @@
       <widget class="QWidget" name="paneWidget" native="true">
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
+         <widget class="QTreeView" name="treeView"/>
+        </item>
+        <item>
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
            <widget class="QGroupBox" name="scriptGroupBox">

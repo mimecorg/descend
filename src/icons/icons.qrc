@@ -29,13 +29,11 @@
   <file>file-save-as-22.png</file>
   <file>lighting-16.png</file>
   <file>lighting-22.png</file>
-  <file>node-curve-16.png</file>
-  <file>node-definition-16.png</file>
-  <file>node-group-16.png</file>
-  <file>node-scene-16.png</file>
-  <file>node-surface-16.png</file>
-  <file>section-definitions-16.png</file>
-  <file>section-scenes-16.png</file>
+  <file>item-curve-16.png</file>
+  <file>item-folder-16.png</file>
+  <file>item-group-16.png</file>
+  <file>item-project-16.png</file>
+  <file>item-surface-16.png</file>
   <file>tessellation-16.png</file>
   <file>tessellation-22.png</file>
   <file>view-default-16.png</file>

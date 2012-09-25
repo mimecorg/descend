@@ -23,6 +23,10 @@
 
 #include "ui_mainwindow.h"
 #include "xmlui/client.h"
+#include "project/projectitem.h"
+
+class Project;
+class ProjectItemModel;
 
 class MainWindow : public QMainWindow, public XmlUi::Client
 {
@@ -35,10 +39,27 @@ private slots:
     void on_executeButton_clicked();
     void on_edgesCheckBox_toggled( bool on );
 
-    void insertNode();
+    void updateActions();
+
+    void insertItem();
+    void insertFolder();
+    void insertGroup();
+    void insertCurve();
+    void insertSurface();
+
+    void renameItem();
+    void deleteItem();
+
+private:
+    void insertItem( ProjectItem::Type type, const QString& name );
 
 private:
     Ui::MainWindow m_ui;
+
+    Project* m_project;
+
+    ProjectItemModel* m_model;
+    QSortFilterProxyModel* m_proxyModel;
 };
 
 #endif

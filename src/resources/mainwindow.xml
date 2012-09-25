@@ -6,13 +6,11 @@
       <action id="popupSaveFile"/>
     </section>
     <section id="sectionEdit">
-      <action id="insertNode"/>
+      <action id="insertItem"/>
       <grid>
-        <action id="cloneNode"/>
-        <action id="deleteNode"/>
-        <action id="moveNodeUp"/>
-        <action id="moveNodeDown"/>
-        <action id="renameNode"/>
+        <action id="cloneItem"/>
+        <action id="deleteItem"/>
+        <action id="renameItem"/>
         <action id="editProperties"/>
       </grid>
     </section>
@@ -43,11 +41,10 @@
     <action id="saveFileAs"/>
   </menu>
   <menu id="menuInsert">
-    <action id="insertDefinition"/>
-    <action id="insertScene"/>
+    <action id="insertFolder"/>
+    <action id="insertGroup"/>
     <action id="insertCurve"/>
     <action id="insertSurface"/>
-    <action id="insertGroup"/>
   </menu>
   <menu id="menuDefaultView">
     <action id="defaultView"/>

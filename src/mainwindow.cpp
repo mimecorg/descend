@@ -20,6 +20,10 @@
 
 #include "scenewidget.h"
 #include "misc/miscengine.h"
+#include "project/project.h"
+#include "project/groupitem.h"
+#include "project/curveitem.h"
+#include "project/projectitemmodel.h"
 #include "scene/parametricmeshnode.h"
 #include "scene/scene.h"
 #include "scene/tessellator.h"
@@ -58,58 +62,42 @@ MainWindow::MainWindow() : QMainWindow()
     connect( action, SIGNAL( triggered() ), this, SLOT( saveFileAs() ) );
     setAction( "saveFileAs", action );
 
-    insertAction = new XmlUi::ToolStripAction( IconLoader::icon( "edit-insert" ), tr( "Insert Node" ), this );
+    insertAction = new XmlUi::ToolStripAction( IconLoader::icon( "edit-insert" ), tr( "Insert Item" ), this );
     insertAction->setShortcut( QKeySequence( Qt::Key_Insert ) );
     insertAction->setPopupMode( QToolButton::InstantPopup );
-    connect( insertAction, SIGNAL( triggered() ), this, SLOT( insertNode() ) );
-    setAction( "insertNode", insertAction );
+    connect( insertAction, SIGNAL( triggered() ), this, SLOT( insertItem() ) );
+    setAction( "insertItem", insertAction );
 
-    action = new QAction( IconLoader::icon( "node-definition" ), tr( "Insert &Definition..." ), this );
-    connect( action, SIGNAL( triggered() ), this, SLOT( insertDefinition() ) );
-    setAction( "insertDefinition", action );
+    action = new QAction( IconLoader::icon( "item-folder" ), tr( "Insert &Folder..." ), this );
+    connect( action, SIGNAL( triggered() ), this, SLOT( insertFolder() ) );
+    setAction( "insertFolder", action );
 
-    action = new QAction( IconLoader::icon( "node-scene" ), tr( "Insert &Scene..." ), this );
-    connect( action, SIGNAL( triggered() ), this, SLOT( insertScene() ) );
-    setAction( "insertScene", action );
-
-    action = new QAction( IconLoader::icon( "node-curve" ), tr( "Insert &Curve..." ), this );
-    connect( action, SIGNAL( triggered() ), this, SLOT( insertCurve() ) );
-    setAction( "insertCurve", action );
-
-    action = new QAction( IconLoader::icon( "node-surface" ), tr( "Insert &Surface..." ), this );
-    connect( action, SIGNAL( triggered() ), this, SLOT( insertSurface() ) );
-    setAction( "insertSurface", action );
-
-    action = new QAction( IconLoader::icon( "node-group" ), tr( "Insert &Group..." ), this );
+    action = new QAction( IconLoader::icon( "item-group" ), tr( "Insert &Group..." ), this );
     connect( action, SIGNAL( triggered() ), this, SLOT( insertGroup() ) );
     setAction( "insertGroup", action );
 
+    action = new QAction( IconLoader::icon( "item-curve" ), tr( "Insert &Curve..." ), this );
+    connect( action, SIGNAL( triggered() ), this, SLOT( insertCurve() ) );
+    setAction( "insertCurve", action );
+
+    action = new QAction( IconLoader::icon( "item-surface" ), tr( "Insert &Surface..." ), this );
+    connect( action, SIGNAL( triggered() ), this, SLOT( insertSurface() ) );
+    setAction( "insertSurface", action );
+
     action = new QAction( IconLoader::icon( "edit-clone" ), tr( "Duplicate" ), this );
     action->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_D ) );
-    connect( action, SIGNAL( triggered() ), this, SLOT( cloneNode() ) );
-    setAction( "cloneNode", action );
+    connect( action, SIGNAL( triggered() ), this, SLOT( cloneItem() ) );
+    setAction( "cloneItem", action );
 
     action = new QAction( IconLoader::icon( "edit-rename" ), tr( "Rename" ), this );
     action->setShortcut( QKeySequence( Qt::Key_F2 ) );
-    connect( action, SIGNAL( triggered() ), this, SLOT( renameNode() ) );
-    setAction( "renameNode", action );
+    connect( action, SIGNAL( triggered() ), this, SLOT( renameItem() ) );
+    setAction( "renameItem", action );
 
     action = new QAction( IconLoader::icon( "edit-delete" ), tr( "Delete" ), this );
     action->setShortcut( QKeySequence( Qt::Key_Delete ) );
-    connect( action, SIGNAL( triggered() ), this, SLOT( deleteNode() ) );
-    setAction( "deleteNode", action );
-
-    action = new QAction( IconLoader::icon( "edit-up" ), tr( "Up" ), this );
-    action->setToolTip( tr( "Move Up" ) );
-    action->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_Up ) );
-    connect( action, SIGNAL( triggered() ), this, SLOT( moveNodeUp() ) );
-    setAction( "moveNodeUp", action );
-
-    action = new QAction( IconLoader::icon( "edit-down" ), tr( "Down" ), this );
-    action->setToolTip( tr( "Move Down" ) );
-    action->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_Down ) );
-    connect( action, SIGNAL( triggered() ), this, SLOT( moveNodeDown() ) );
-    setAction( "moveNodeDown", action );
+    connect( action, SIGNAL( triggered() ), this, SLOT( deleteItem() ) );
+    setAction( "deleteItem", action );
 
     action = new QAction( IconLoader::icon( "edit-properties" ), tr( "Properties" ), this );
     action->setShortcut( QKeySequence( Qt::Key_F4 ) );
@@ -201,10 +189,35 @@ MainWindow::MainWindow() : QMainWindow()
     m_ui.minLodEdit->setText( "8" );
     m_ui.maxLodEdit->setText( "16" );
     m_ui.alphaEdit->setText( "0.05" );
+
+    m_project = new Project();
+    m_project->setName( "Project" );
+
+    m_model = new ProjectItemModel( m_project, this );
+
+    m_proxyModel = new QSortFilterProxyModel( this );
+    m_proxyModel->setSourceModel( m_model );
+    m_proxyModel->setSortLocaleAware( true );
+    m_proxyModel->sort( 0, Qt::AscendingOrder );
+    m_proxyModel->setDynamicSortFilter( true );
+
+    m_ui.treeView->setModel( m_proxyModel );
+    m_ui.treeView->setEditTriggers( QAbstractItemView::SelectedClicked | QAbstractItemView::EditKeyPressed );
+    m_ui.treeView->setRootIsDecorated( false );
+    m_ui.treeView->setHeaderHidden( true );
+
+    m_ui.treeView->expandAll();
+
+    m_ui.treeView->setCurrentIndex( m_proxyModel->index( 0, 0 ) );
+
+    connect( m_ui.treeView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateActions() ) );
+
+    updateActions();
 }
 
 MainWindow::~MainWindow()
 {
+    delete m_project;
 }
 
 void MainWindow::on_executeButton_clicked()
@@ -260,7 +273,88 @@ void MainWindow::on_edgesCheckBox_toggled( bool on )
     m_ui.sceneWidget->setEdges( on );
 }
 
-void MainWindow::insertNode()
+void MainWindow::updateActions()
 {
-    builder()->toolStrip( "stripMain" )->execMenu( action( "insertNode" ) );
+    QModelIndex index = m_proxyModel->mapToSource( m_ui.treeView->currentIndex() );
+
+    ProjectItem* item = m_model->itemFromIndex( index );
+
+    bool isEditable = item != NULL && item->type() != ProjectItem::Project;
+    bool canInsertFolder = item != NULL && ( item->type() == ProjectItem::Project || item->type() == ProjectItem::Folder );
+    bool canInsertGeometry = item != NULL && ( item->type() == ProjectItem::Project || item->type() == ProjectItem::Folder || item->type() == ProjectItem::Group );
+
+    action( "newFile" )->setEnabled( false );
+    action( "openFile" )->setEnabled( false );
+    action( "popupSaveFile" )->setEnabled( false );
+
+    action( "insertItem" )->setEnabled( canInsertFolder | canInsertGeometry );
+    action( "insertFolder" )->setEnabled( canInsertFolder );
+    action( "insertGroup" )->setEnabled( canInsertGeometry );
+    action( "insertCurve" )->setEnabled( canInsertGeometry );
+    action( "insertSurface" )->setEnabled( canInsertGeometry );
+
+    action( "cloneItem" )->setEnabled( false );
+    action( "renameItem" )->setEnabled( isEditable );
+    action( "deleteItem" )->setEnabled( isEditable );
+    action( "editProperties" )->setEnabled( false );
+    action( "drawScene" )->setEnabled( false );
+    action( "closeScene" )->setEnabled( false );
+    action( "cameraSettings" )->setEnabled( false );
+    action( "popupDefaultView" )->setEnabled( false );
+    action( "previousView" )->setEnabled( false );
+    action( "nextView" )->setEnabled( false );
+    action( "colorSettings" )->setEnabled( false );
+    action( "lightingSettings" )->setEnabled( false );
+    action( "tessellationSettings" )->setEnabled( false );
+}
+
+void MainWindow::insertItem()
+{
+    builder()->toolStrip( "stripMain" )->execMenu( action( "insertItem" ) );
+}
+
+void MainWindow::insertFolder()
+{
+    insertItem( ProjectItem::Folder, tr( "Folder" ) );
+}
+
+void MainWindow::insertGroup()
+{
+    insertItem( ProjectItem::Group, tr( "Group" ) );
+}
+
+void MainWindow::insertCurve()
+{
+    insertItem( ProjectItem::Curve, tr( "Curve" ) );
+}
+
+void MainWindow::insertSurface()
+{
+    insertItem( ProjectItem::Surface, tr( "Surface" ) );
+}
+
+void MainWindow::insertItem( ProjectItem::Type type, const QString& name )
+{
+    QModelIndex parent = m_proxyModel->mapToSource( m_ui.treeView->currentIndex() );
+
+    if ( parent.isValid() ) {
+        QModelIndex index = m_model->insertItem( type, name, parent );
+
+        QModelIndex current = m_proxyModel->mapFromSource( index );
+
+        m_ui.treeView->setCurrentIndex( current );
+        m_ui.treeView->edit( current );
+    }
+}
+
+void MainWindow::renameItem()
+{
+    m_ui.treeView->edit( m_ui.treeView->currentIndex() );
+}
+
+void MainWindow::deleteItem()
+{
+    QModelIndex index = m_proxyModel->mapToSource( m_ui.treeView->currentIndex() );
+
+    m_model->deleteItem( index );
 }
