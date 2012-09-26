@@ -26,6 +26,13 @@ class CurveItem : public ParametricMeshItem
 public:
     CurveItem( ProjectItem* parent );
     ~CurveItem();
+
+public:
+    void setColor( const QColor& color );
+    const QColor& color() const { return m_color; }
+
+private:
+    QColor m_color;
 };
 
 #endif

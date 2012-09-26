@@ -26,6 +26,13 @@ class FolderItem : public ProjectItem
 public:
     FolderItem( ProjectItem* parent );
     ~FolderItem();
+
+public:
+    void setCode( const QString& text );
+    const QString& code() const { return m_code; }
+
+private:
+    QString m_code;
 };
 
 #endif

@@ -28,7 +28,13 @@ public:
     ~Project();
 
 public:
+    void setCode( const QString& text );
+    const QString& code() const { return m_code; }
+
     ProjectItem* createItem( ProjectItem::Type type, ProjectItem* parent );
+
+private:
+    QString m_code;
 };
 
 #endif

@@ -30,6 +30,11 @@ Project::~Project()
 {
 }
 
+void Project::setCode( const QString& text )
+{
+    m_code = text;
+}
+
 ProjectItem* Project::createItem( ProjectItem::Type type, ProjectItem* parent )
 {
     switch ( type ) {

@@ -25,3 +25,8 @@ CurveItem::CurveItem( ProjectItem* parent ) : ParametricMeshItem( ProjectItem::C
 CurveItem::~CurveItem()
 {
 }
+
+void CurveItem::setColor( const QColor& color )
+{
+    m_color = color;
+}

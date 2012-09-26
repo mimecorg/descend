@@ -25,3 +25,8 @@ FolderItem::FolderItem( ProjectItem* parent ) : ProjectItem( ProjectItem::Folder
 FolderItem::~FolderItem()
 {
 }
+
+void FolderItem::setCode( const QString& text )
+{
+    m_code = text;
+}

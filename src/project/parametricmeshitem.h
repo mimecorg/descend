@@ -20,12 +20,29 @@
 #define PARAMETRICMESHITEM_H
 
 #include "project/projectitem.h"
+#include "scene/renderer.h"
 
 class ParametricMeshItem : public ProjectItem
 {
 public:
     ParametricMeshItem( ProjectItem::Type type, ProjectItem* parent );
     ~ParametricMeshItem();
+
+public:
+    void setInitCode( const QString& text );
+    const QString& initCode() const { return m_initCode; }
+
+    void setCalcCode( const QString& text );
+    const QString& calcCode() const { return m_calcCode; }
+
+    void setAttributeType( Renderer::AttributeType type );
+    Renderer::AttributeType attributeType() const { return m_attributeType; }
+
+private:
+    QString m_initCode;
+    QString m_calcCode;
+
+    Renderer::AttributeType m_attributeType;
 };
 
 #endif

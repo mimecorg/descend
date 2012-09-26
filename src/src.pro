@@ -22,6 +22,7 @@ RESOURCES += \
            resources/resources.qrc \
            shaders/shaders.qrc
 
+include( adapters/adapters.pri )
 include( misc/misc.pri )
 include( project/project.pri )
 include( scene/scene.pri )

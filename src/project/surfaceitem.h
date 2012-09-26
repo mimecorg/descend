@@ -26,6 +26,22 @@ class SurfaceItem : public ParametricMeshItem
 public:
     SurfaceItem( ProjectItem* parent );
     ~SurfaceItem();
+
+public:
+    void setReverseWinding( bool on );
+    bool isReverseWinding() const { return m_reverseWinding; }
+
+    void setFrontColor( const QColor& color );
+    const QColor& frontColor() const { return m_frontColor; }
+
+    void setBackColor( const QColor& color );
+    const QColor& backColor() const { return m_backColor; }
+
+private:
+    bool m_reverseWinding;
+
+    QColor m_frontColor;
+    QColor m_backColor;
 };
 
 #endif

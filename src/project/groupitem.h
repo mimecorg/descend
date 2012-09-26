@@ -26,6 +26,22 @@ class GroupItem : public ProjectItem
 public:
     GroupItem( ProjectItem* parent );
     ~GroupItem();
+
+public:
+    void setCode( const QString& text );
+    const QString& code() const { return m_code; }
+
+    void setFrontColor( const QColor& color );
+    const QColor& frontColor() const { return m_frontColor; }
+
+    void setBackColor( const QColor& color );
+    const QColor& backColor() const { return m_backColor; }
+
+private:
+    QString m_code;
+
+    QColor m_frontColor;
+    QColor m_backColor;
 };
 
 #endif

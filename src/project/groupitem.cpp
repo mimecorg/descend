@@ -25,3 +25,18 @@ GroupItem::GroupItem( ProjectItem* parent ) : ProjectItem( ProjectItem::Group, p
 GroupItem::~GroupItem()
 {
 }
+
+void GroupItem::setCode( const QString& text )
+{
+    m_code = text;
+}
+
+void GroupItem::setFrontColor( const QColor& color )
+{
+    m_frontColor = color;
+}
+
+void GroupItem::setBackColor( const QColor& color )
+{
+    m_backColor = color;
+}

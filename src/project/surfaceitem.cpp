@@ -18,10 +18,26 @@
 
 #include "project/surfaceitem.h"
 
-SurfaceItem::SurfaceItem( ProjectItem* parent ) : ParametricMeshItem( ProjectItem::Surface, parent )
+SurfaceItem::SurfaceItem( ProjectItem* parent ) : ParametricMeshItem( ProjectItem::Surface, parent ),
+    m_reverseWinding( false )
 {
 }
 
 SurfaceItem::~SurfaceItem()
 {
+}
+
+void SurfaceItem::setReverseWinding( bool on )
+{
+    m_reverseWinding = on;
+}
+
+void SurfaceItem::setFrontColor( const QColor& color )
+{
+    m_frontColor = color;
+}
+
+void SurfaceItem::setBackColor( const QColor& color )
+{
+    m_backColor = color;
 }

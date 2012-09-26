@@ -18,10 +18,26 @@
 
 #include "project/parametricmeshitem.h"
 
-ParametricMeshItem::ParametricMeshItem( ProjectItem::Type type, ProjectItem* parent ) : ProjectItem( type, parent )
+ParametricMeshItem::ParametricMeshItem( ProjectItem::Type type, ProjectItem* parent ) : ProjectItem( type, parent ),
+    m_attributeType( Renderer::NoAttribute )
 {
 }
 
 ParametricMeshItem::~ParametricMeshItem()
 {
+}
+
+void ParametricMeshItem::setInitCode( const QString& text )
+{
+    m_initCode = text;
+}
+
+void ParametricMeshItem::setCalcCode( const QString& text )
+{
+    m_calcCode = text;
+}
+
+void ParametricMeshItem::setAttributeType( Renderer::AttributeType type )
+{
+    m_attributeType = type;
 }
