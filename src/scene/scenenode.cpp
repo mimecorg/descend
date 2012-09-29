@@ -33,10 +33,10 @@ SceneNode::~SceneNode()
     qDeleteAll( m_nodes );
 }
 
-bool SceneNode::calculateNodes( const QMatrix4x4& matrix )
+bool SceneNode::calculateNodes( const SceneNodeContext& context )
 {
-    foreach( SceneNode* node, m_nodes ) {
-        if ( !node->calculate( matrix ) )
+    foreach ( SceneNode* node, m_nodes ) {
+        if ( !node->calculate( context ) )
             return false;
     }
 
@@ -45,6 +45,6 @@ bool SceneNode::calculateNodes( const QMatrix4x4& matrix )
 
 void SceneNode::renderNodes()
 {
-    foreach( SceneNode* node, m_nodes )
+    foreach ( SceneNode* node, m_nodes )
         node->render();
 }

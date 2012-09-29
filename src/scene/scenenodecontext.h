@@ -16,23 +16,38 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#ifndef CURVEITEM_H
-#define CURVEITEM_H
+#ifndef SCENENODECONTEXT_H
+#define SCENENODECONTEXT_H
 
-#include "project/parametricmeshitem.h"
+class SceneNodeColor;
+class MiscUnit;
+class Scene;
 
-class CurveItem : public ParametricMeshItem
+class SceneNodeContext
 {
 public:
-    CurveItem( ProjectItem* parent );
-    ~CurveItem();
+    SceneNodeContext();
+    SceneNodeContext( const SceneNodeContext& other );
+    ~SceneNodeContext();
 
 public:
-    void setColor( const QColor& color );
-    const QColor& color() const { return m_color; }
+    SceneNodeContext& operator =( const SceneNodeContext& other );
+
+public:
+    void setMatrix( const QMatrix4x4& matrix );
+    const QMatrix4x4& matrix() const { return m_matrix; }
+
+    void transform( const QMatrix4x4& matrix );
+
+    void setColor( int index, const QColor& color );
+    QColor color( int index ) const;
+
+    void initializeColor( const SceneNodeContext& parentContext, const SceneNodeColor& color, MiscUnit* unit, Scene* scene );
 
 private:
-    QColor m_color;
+    QMatrix4x4 m_matrix;
+
+    QColor m_color[ 2 ];
 };
 
 #endif

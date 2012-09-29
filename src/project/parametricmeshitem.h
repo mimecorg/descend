@@ -21,6 +21,7 @@
 
 #include "project/projectitem.h"
 #include "scene/renderer.h"
+#include "scene/scenenodecolor.h"
 
 class ParametricMeshItem : public ProjectItem
 {
@@ -38,11 +39,16 @@ public:
     void setAttributeType( Renderer::AttributeType type );
     Renderer::AttributeType attributeType() const { return m_attributeType; }
 
+    void setColor( const SceneNodeColor& color );
+    const SceneNodeColor& color() const { return m_color; }
+
 private:
     QString m_initCode;
     QString m_calcCode;
 
     Renderer::AttributeType m_attributeType;
+
+    SceneNodeColor m_color;
 };
 
 #endif

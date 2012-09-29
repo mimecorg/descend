@@ -16,43 +16,32 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#include "adapters/curvegeneraladapter.h"
-#include "project/curveitem.h"
+#ifndef PARAMETRICMESHGENERALADAPTER_H
+#define PARAMETRICMESHGENERALADAPTER_H
 
-CurveGeneralAdapter::CurveGeneralAdapter( CurveItem* curve ) : m_curve( curve )
-{
-}
+#include "adapters/generaladapter.h"
 
-CurveGeneralAdapter::~CurveGeneralAdapter()
-{
-}
+class ParametricMeshItem;
 
-bool CurveGeneralAdapter::hasRendering() const
+class ParametricMeshGeneralAdapter : public GeneralAdapter
 {
-    return true;
-}
+public:
+    ParametricMeshGeneralAdapter( ParametricMeshItem* mesh );
+    ~ParametricMeshGeneralAdapter();
 
-void CurveGeneralAdapter::setAttributeType( Renderer::AttributeType type )
-{
-    m_curve->setAttributeType( type );
-}
+public:
+    bool hasAttributeType() const;
 
-Renderer::AttributeType CurveGeneralAdapter::attributeType() const
-{
-    return m_curve->attributeType();
-}
+    void setAttributeType( Renderer::AttributeType type );
+    Renderer::AttributeType attributeType() const;
 
-bool CurveGeneralAdapter::hasColor() const
-{
-    return true;
-}
+    SceneNodeColor::ColorFlags hasColorFlags();
 
-void CurveGeneralAdapter::setFrontColor( const QColor& color )
-{
-    m_curve->setColor( color );
-}
+    void setColor( const SceneNodeColor& color );
+    SceneNodeColor color() const;
 
-QColor CurveGeneralAdapter::frontColor() const
-{
-    return m_curve->color();
-}
+private:
+    ParametricMeshItem* m_mesh;
+};
+
+#endif

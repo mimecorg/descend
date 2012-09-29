@@ -21,6 +21,8 @@
 
 class Scene;
 class MiscUnit;
+class SceneNodeColor;
+class SceneNodeContext;
 
 class SceneNode
 {
@@ -31,7 +33,7 @@ public:
 public:
     virtual MiscUnit* unit() const = 0;
 
-    virtual bool calculate( const QMatrix4x4& matrix = QMatrix4x4() ) = 0;
+    virtual bool calculate( const SceneNodeContext& parentContext ) = 0;
 
     virtual void render() = 0;
 
@@ -39,7 +41,7 @@ public:
     Scene* scene() const { return m_scene; }
 
 protected:
-    bool calculateNodes( const QMatrix4x4& matrix );
+    bool calculateNodes( const SceneNodeContext& context );
 
     void renderNodes();
 

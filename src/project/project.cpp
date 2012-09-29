@@ -19,8 +19,7 @@
 #include "project/project.h"
 #include "project/folderitem.h"
 #include "project/groupitem.h"
-#include "project/curveitem.h"
-#include "project/surfaceitem.h"
+#include "project/parametricmeshitem.h"
 
 Project::Project() : ProjectItem( ProjectItem::Project, NULL )
 {
@@ -45,10 +44,8 @@ ProjectItem* Project::createItem( ProjectItem::Type type, ProjectItem* parent )
             return new GroupItem( parent );
 
         case ProjectItem::Curve:
-            return new CurveItem( parent );
-
         case ProjectItem::Surface:
-            return new SurfaceItem( parent );
+            return new ParametricMeshItem( type, parent );
 
         default:
             return NULL;

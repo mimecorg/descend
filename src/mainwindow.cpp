@@ -21,8 +21,6 @@
 #include "scenewidget.h"
 #include "misc/miscengine.h"
 #include "project/project.h"
-#include "project/groupitem.h"
-#include "project/curveitem.h"
 #include "project/projectitemmodel.h"
 #include "scene/parametricmeshnode.h"
 #include "scene/scene.h"
@@ -236,9 +234,7 @@ void MainWindow::on_executeButton_clicked()
 
     Scene* scene = new Scene();
 
-    ParametricMeshNode* node = new ParametricMeshNode( Renderer::SurfaceMesh, Renderer::NoAttribute, scene );
-
-    node->setColor( QColor( 255, 64, 144 ), QColor( 255, 144, 64 ) );
+    ParametricMeshNode* node = new ParametricMeshNode( Renderer::SurfaceMesh, Renderer::NoAttribute, SceneNodeColor(), scene );
 
     bool ok = false;
 
@@ -246,7 +242,11 @@ void MainWindow::on_executeButton_clicked()
         QElapsedTimer timer;
         timer.start();
 
-        if ( scene->calculate() ) {
+        SceneNodeContext context;
+        context.setColor( 0, QColor( 255, 64, 144 ) );
+        context.setColor( 1, QColor( 255, 144, 64 ) );
+
+        if ( scene->calculate( context ) ) {
             m_ui.outputEdit->setPlainText( QString( "Triangles: %1\nElapsed time: %2 ms" )
                 .arg( node->elementsCount() )
                 .arg( timer.elapsed() ) );

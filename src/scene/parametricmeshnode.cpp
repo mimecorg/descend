@@ -25,10 +25,10 @@
 #include "scene/scene.h"
 #include "scene/tessellator.h"
 
-ParametricMeshNode::ParametricMeshNode( Renderer::MeshType type, Renderer::AttributeType attr, SceneNode* parent ) : SceneNode( parent ),
+ParametricMeshNode::ParametricMeshNode( Renderer::MeshType type, Renderer::AttributeType attr, const SceneNodeColor& color, SceneNode* parent ) : SceneNode( parent ),
     m_meshType( type ),
     m_attributeType( attr ),
-    m_reverseWinding( false ),
+    m_color( color ),
     m_vertexBuffer( QGLBuffer::VertexBuffer ),
     m_indexBuffer( QGLBuffer::IndexBuffer ),
     m_count( 0 )
@@ -37,14 +37,11 @@ ParametricMeshNode::ParametricMeshNode( Renderer::MeshType type, Renderer::Attri
 
     m_initUnit->addVariable( MiscSymbol( Misc::MatrixType, m_scene->identifier( Scene::M_Matrix ) ) );
 
-    if ( attr == Renderer::NoAttribute ) {
-        if ( type == Renderer::CurveMesh )
-            m_initUnit->addVariable( MiscSymbol( Misc::VectorType, m_scene->identifier( Scene::M_Color ) ) );
+    if ( attr == Renderer::NoAttribute && color.type( 0 ) == SceneNodeColor::Calculated ) {
+        m_initUnit->addVariable( MiscSymbol( Misc::VectorType, m_scene->identifier( Scene::M_Color ) ) );
 
-        if ( type == Renderer::SurfaceMesh ) {
-            m_initUnit->addVariable( MiscSymbol( Misc::VectorType, m_scene->identifier( Scene::M_FrontColor ) ) );
-            m_initUnit->addVariable( MiscSymbol( Misc::VectorType, m_scene->identifier( Scene::M_BackColor ) ) );
-        }
+        if ( color.flags() & SceneNodeColor::DualColors )
+            m_initUnit->addVariable( MiscSymbol( Misc::VectorType, m_scene->identifier( Scene::M_Color2 ) ) );
     }
 
     m_initUnit->addVariable( MiscSymbol( Misc::FloatType, m_scene->identifier( Scene::P_Min ) ) );
@@ -94,28 +91,7 @@ bool ParametricMeshNode::addCalcCode( const QString& text )
     return true;
 }
 
-void ParametricMeshNode::setColor( const QColor& front, const QColor back )
-{
-    m_frontColor = front;
-    m_backColor = back;
-}
-
-void ParametricMeshNode::setReverseWinding( bool on )
-{
-    m_reverseWinding = on;
-}
-
-static QVector4D colorToVector( const QColor& color )
-{
-    return QVector4D( color.redF(), color.greenF(), color.blueF(), 1.0 );
-}
-
-static QColor vectorToColor( const QVector4D& vector )
-{
-    return QColor::fromRgbF( qBound( 0.0, vector.x(), 1.0 ), qBound( 0.0, vector.y(), 1.0 ), qBound( 0.0, vector.z(), 1.0 ) );
-}
-
-bool ParametricMeshNode::calculate( const QMatrix4x4& matrix /*= QMatrix4x4()*/ )
+bool ParametricMeshNode::calculate( const SceneNodeContext& parentContext )
 {
     m_vertexBuffer.destroy();
     m_indexBuffer.destroy();
@@ -124,14 +100,11 @@ bool ParametricMeshNode::calculate( const QMatrix4x4& matrix /*= QMatrix4x4()*/ 
 
     m_initUnit->setVariable( m_scene->identifier( Scene::M_Matrix ), MiscValue( Misc::MatrixType, engine ) );
 
-    if ( m_attributeType == Renderer::NoAttribute ) {
-        if ( m_meshType == Renderer::CurveMesh )
-            m_initUnit->setVariable( m_scene->identifier( Scene::M_Color ), MiscValue( colorToVector( m_frontColor ), engine ) );
+    if ( m_attributeType == Renderer::NoAttribute && m_color.type( 0 ) == SceneNodeColor::Calculated ) {
+        m_initUnit->setVariable( m_scene->identifier( Scene::M_Color ), MiscValue( Misc::VectorType, engine ) );
 
-        if ( m_meshType == Renderer::SurfaceMesh ) {
-            m_initUnit->setVariable( m_scene->identifier( Scene::M_FrontColor ), MiscValue( colorToVector( m_frontColor ), engine ) );
-            m_initUnit->setVariable( m_scene->identifier( Scene::M_BackColor ), MiscValue( colorToVector( m_backColor ), engine ) );
-        }
+        if ( m_color.flags() & SceneNodeColor::DualColors )
+            m_initUnit->setVariable( m_scene->identifier( Scene::M_Color2 ), MiscValue( Misc::VectorType, engine ) );
     }
 
     m_initUnit->setVariable( m_scene->identifier( Scene::P_Min ), MiscValue( 0.0f, engine ) );
@@ -147,23 +120,12 @@ bool ParametricMeshNode::calculate( const QMatrix4x4& matrix /*= QMatrix4x4()*/ 
             return false;
     }
 
-    QMatrix4x4 meshMatrix = m_initUnit->variable( m_scene->identifier( Scene::M_Matrix ) ).toMatrix();
+    m_context = parentContext;
 
-    m_matrix = meshMatrix * matrix;
-    m_matrix.optimize();
+    m_context.transform( m_initUnit->variable( m_scene->identifier( Scene::M_Matrix ) ).toMatrix() );
 
-    if ( m_attributeType == Renderer::NoAttribute ) {
-        if ( m_meshType == Renderer::CurveMesh )
-            m_realFrontColor = vectorToColor( m_initUnit->variable( m_scene->identifier( Scene::M_Color ) ).toVector() );
-
-        if ( m_meshType == Renderer::SurfaceMesh ) {
-            m_realFrontColor = vectorToColor( m_initUnit->variable( m_scene->identifier( Scene::M_FrontColor ) ).toVector() );
-            m_realBackColor = vectorToColor( m_initUnit->variable( m_scene->identifier( Scene::M_BackColor ) ).toVector() );
-
-            if ( m_reverseWinding )
-                qSwap( m_realFrontColor, m_realBackColor );
-        }
-    }
+    if ( m_attributeType == Renderer::NoAttribute )
+        m_context.initializeColor( parentContext, m_color, m_initUnit, m_scene );
 
     Tessellator* tessellator = Renderer::currentRenderer()->tessellator( m_meshType );
 
@@ -236,7 +198,7 @@ bool ParametricMeshNode::calculateCommon( QVector3D* pos, QVector3D* attr )
 
     QVector3D position = m_calcUnit->variable( m_scene->identifier( Scene::V_Pos ) ).toVector().toVector3D();
 
-    *pos = m_matrix.map( position );
+    *pos = m_context.matrix().map( position );
 
     if ( m_attributeType == Renderer::RgbAttribute )
         *attr = m_calcUnit->variable( m_scene->identifier( Scene::V_Color ) ).toVector().toVector3D();
@@ -247,7 +209,7 @@ bool ParametricMeshNode::calculateCommon( QVector3D* pos, QVector3D* attr )
 void ParametricMeshNode::render()
 {
     if ( m_attributeType == Renderer::NoAttribute )
-        Renderer::currentRenderer()->setColor( m_realFrontColor, m_realBackColor );
+        Renderer::currentRenderer()->setColor( m_context.color( 0 ), m_context.color( 1 ) );
 
     Renderer::currentRenderer()->renderMesh( m_meshType, m_attributeType, m_vertexBuffer, m_indexBuffer, m_count );
 }

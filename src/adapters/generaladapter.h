@@ -20,6 +20,7 @@
 #define GENERALADAPTER_H
 
 #include "scene/renderer.h"
+#include "scene/scenenodecolor.h"
 
 class GeneralAdapter
 {
@@ -28,23 +29,15 @@ public:
     virtual ~GeneralAdapter() { }
 
 public:
-    virtual bool hasRendering() const { return false; }
-    virtual bool hasReverseWinding() const { return false; }
+    virtual bool hasAttributeType() const { return false; }
 
     virtual void setAttributeType( Renderer::AttributeType /*type*/ ) { }
     virtual Renderer::AttributeType attributeType() const { return Renderer::NoAttribute; }
 
-    virtual void setReverseWinding( bool /*on*/ ) { }
-    virtual bool isReverseWinding() const { return false; }
+    virtual SceneNodeColor::ColorFlags hasColorFlags() const { return 0; }
 
-    virtual bool hasColor() const { return false; }
-    virtual bool hasBackColor() const { return false; }
-
-    virtual void setFrontColor( const QColor& /*color*/ ) { }
-    virtual QColor frontColor() const { return QColor(); }
-
-    virtual void setBackColor( const QColor& /*color*/ ) { }
-    virtual QColor backColor() const { return QColor(); }
+    virtual void setColor( const SceneNodeColor& /*color*/ ) { }
+    virtual SceneNodeColor color() const { return SceneNodeColor(); }
 };
 
 #endif

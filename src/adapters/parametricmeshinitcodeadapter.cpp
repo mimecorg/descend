@@ -51,11 +51,10 @@ QStringList ParametricMeshInitCodeAdapter::outputs() const
 {
     QStringList list;
     list << "m_matrix";
-    if ( m_mesh->attributeType() == Renderer::NoAttribute ) {
-        if ( m_mesh->type() == ProjectItem::Curve )
-            list << "m_color";
-        else if ( m_mesh->type() == ProjectItem::Surface )
-            list << "m_frontColor" << "m_backColor";
+    if ( m_mesh->attributeType() == Renderer::NoAttribute && m_mesh->color().type( 0 ) == SceneNodeColor::Calculated ) {
+        list << "m_color";
+        if ( m_mesh->color().flags() & SceneNodeColor::DualColors )
+            list << "m_color2";
     }
     list << "p_min" << "p_max";
     if ( m_mesh->type() == ProjectItem::Surface )

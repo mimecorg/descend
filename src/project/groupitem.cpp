@@ -31,12 +31,7 @@ void GroupItem::setCode( const QString& text )
     m_code = text;
 }
 
-void GroupItem::setFrontColor( const QColor& color )
+void GroupItem::setColor( const SceneNodeColor& color )
 {
-    m_frontColor = color;
-}
-
-void GroupItem::setBackColor( const QColor& color )
-{
-    m_backColor = color;
+    m_color = color;
 }

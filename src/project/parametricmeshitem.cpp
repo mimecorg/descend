@@ -41,3 +41,8 @@ void ParametricMeshItem::setAttributeType( Renderer::AttributeType type )
 {
     m_attributeType = type;
 }
+
+void ParametricMeshItem::setColor( const SceneNodeColor& color )
+{
+    m_color = color;
+}

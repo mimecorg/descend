@@ -30,8 +30,7 @@ public:
     {
         M_Matrix,
         M_Color,
-        M_FrontColor,
-        M_BackColor,
+        M_Color2,
         P_Min,
         P_Max,
         Q_Min,
@@ -57,7 +56,7 @@ public:
 public:
     MiscUnit* unit() const { return m_unit; }
 
-    bool calculate( const QMatrix4x4& matrix = QMatrix4x4() );
+    bool calculate( const SceneNodeContext& parentContext );
 
     void render();
 

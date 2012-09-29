@@ -27,32 +27,17 @@ GroupGeneralAdapter::~GroupGeneralAdapter()
 {
 }
 
-bool GroupGeneralAdapter::hasColor() const
+SceneNodeColor::ColorFlags GroupGeneralAdapter::hasColorFlags()
 {
-    return true;
+    return SceneNodeColor::DualColors;
 }
 
-bool GroupGeneralAdapter::hasBackColor() const
+void GroupGeneralAdapter::setColor( const SceneNodeColor& color )
 {
-    return true;
+    m_group->setColor( color );
 }
 
-void GroupGeneralAdapter::setFrontColor( const QColor& color )
+SceneNodeColor GroupGeneralAdapter::color() const
 {
-    m_group->setFrontColor( color );
-}
-
-QColor GroupGeneralAdapter::frontColor() const
-{
-    return m_group->frontColor();
-}
-
-void GroupGeneralAdapter::setBackColor( const QColor& color )
-{
-    m_group->setBackColor( color );
-}
-
-QColor GroupGeneralAdapter::backColor() const
-{
-    return m_group->backColor();
+    return m_group->color();
 }

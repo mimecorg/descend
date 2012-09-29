@@ -16,32 +16,52 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#ifndef SURFACEITEM_H
-#define SURFACEITEM_H
+#ifndef SCENENODECOLOR_H
+#define SCENENODECOLOR_H
 
-#include "project/parametricmeshitem.h"
-
-class SurfaceItem : public ParametricMeshItem
+class SceneNodeColor
 {
 public:
-    SurfaceItem( ProjectItem* parent );
-    ~SurfaceItem();
+    enum ColorFlag
+    {
+        DualColors = 1,
+        SwapColors = 2
+    };
+
+    Q_DECLARE_FLAGS( ColorFlags, ColorFlag )
+
+    enum ColorType
+    {
+        InheritPrimary,
+        InheritSecondary,
+        Custom,
+        Calculated
+    };
 
 public:
-    void setReverseWinding( bool on );
-    bool isReverseWinding() const { return m_reverseWinding; }
+    SceneNodeColor();
+    SceneNodeColor( const SceneNodeColor& other );
+    ~SceneNodeColor();
 
-    void setFrontColor( const QColor& color );
-    const QColor& frontColor() const { return m_frontColor; }
+public:
+    SceneNodeColor& operator =( const SceneNodeColor& other );
 
-    void setBackColor( const QColor& color );
-    const QColor& backColor() const { return m_backColor; }
+public:
+    void setFlags( ColorFlags flags );
+    ColorFlags flags() const { return m_flags; }
+
+    void setType( int index, ColorType type );
+    ColorType type( int index ) const;
+
+    void setColor( int index, const QColor& color );
+    QColor color( int index ) const;
 
 private:
-    bool m_reverseWinding;
-
-    QColor m_frontColor;
-    QColor m_backColor;
+    ColorFlags m_flags;
+    ColorType m_type[ 2 ];
+    QColor m_color[ 2 ];
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( SceneNodeColor::ColorFlags )
 
 #endif

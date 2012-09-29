@@ -30,14 +30,10 @@ public:
     ~GroupGeneralAdapter();
 
 public:
-    bool hasColor() const;
-    bool hasBackColor() const;
+    SceneNodeColor::ColorFlags hasColorFlags();
 
-    void setFrontColor( const QColor& color );
-    QColor frontColor() const;
-
-    void setBackColor( const QColor& color );
-    QColor backColor() const;
+    void setColor( const SceneNodeColor& color );
+    SceneNodeColor color() const;
 
 private:
     GroupItem* m_group;

@@ -21,23 +21,24 @@
 
 #include "misc/misccode.h"
 #include "scene/scenenode.h"
+#include "scene/scenenodecolor.h"
+#include "scene/scenenodecontext.h"
 #include "scene/renderer.h"
 
 class ParametricMeshNode : public SceneNode
 {
 public:
-    ParametricMeshNode( Renderer::MeshType type, Renderer::AttributeType attr, SceneNode* parent );
+    ParametricMeshNode( Renderer::MeshType type, Renderer::AttributeType attr, const SceneNodeColor& color, SceneNode* parent );
     ~ParametricMeshNode();
 
 public:
     Renderer::MeshType meshType() const { return m_meshType; }
     Renderer::AttributeType attributeType() const { return m_attributeType; }
 
+    const SceneNodeColor& color() const { return m_color; }
+
     bool addInitCode( const QString& text );
     bool addCalcCode( const QString& text );
-
-    void setColor( const QColor& front, const QColor back );
-    void setReverseWinding( bool on );
 
     bool calculateVertex( float param, QVector3D* pos, QVector3D* attr );
     bool calculateVertex( const QVector2D& param, QVector3D* pos, QVector3D* attr );
@@ -47,7 +48,7 @@ public:
 public:
     MiscUnit* unit() const { return NULL; }
 
-    bool calculate( const QMatrix4x4& matrix = QMatrix4x4() );
+    bool calculate( const SceneNodeContext& parentContext );
 
     void render();
 
@@ -58,9 +59,7 @@ protected:
     Renderer::MeshType m_meshType;
     Renderer::AttributeType m_attributeType;
 
-    QColor m_frontColor;
-    QColor m_backColor;
-    bool m_reverseWinding;
+    SceneNodeColor m_color;
 
     MiscUnit* m_initUnit;
     MiscUnit* m_calcUnit;
@@ -68,10 +67,7 @@ protected:
     QList<MiscCode> m_initCodes;
     QList<MiscCode> m_calcCodes;
 
-    QColor m_realFrontColor;
-    QColor m_realBackColor;
-
-    QMatrix4x4 m_matrix;
+    SceneNodeContext m_context;
 
     QGLBuffer m_vertexBuffer;
     QGLBuffer m_indexBuffer;

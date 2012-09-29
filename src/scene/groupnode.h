@@ -21,24 +21,29 @@
 
 #include "misc/misccode.h"
 #include "scene/scenenode.h"
+#include "scene/scenenodecolor.h"
 
 class GroupNode : public SceneNode
 {
 public:
-    explicit GroupNode( SceneNode* parent );
+    GroupNode( const SceneNodeColor& color, SceneNode* parent );
     ~GroupNode();
 
 public:
+    const SceneNodeColor& color() const { return m_color; }
+
     bool addCode( const QString& text );
 
 public:
     MiscUnit* unit() const { return m_unit; }
 
-    bool calculate( const QMatrix4x4& matrix = QMatrix4x4() );
+    bool calculate( const SceneNodeContext& parentContext );
 
     void render();
 
 protected:
+    SceneNodeColor m_color;
+
     MiscUnit* m_unit;
 
     QList<MiscCode> m_codes;

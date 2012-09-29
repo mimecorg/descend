@@ -23,7 +23,7 @@
 
 static const char* const identifiers[ Scene::IdCount ] =
 {
-    "m_matrix", "m_color", "m_frontColor", "m_backColor",
+    "m_matrix", "m_color", "m_color2",
     "p_min", "p_max", "q_min", "q_max",
     "p", "q",
     "v_pos", "v_color"
@@ -58,14 +58,14 @@ bool Scene::addCode( const QString& text )
     return true;
 }
 
-bool Scene::calculate( const QMatrix4x4& matrix /*= QMatrix4x4()*/ )
+bool Scene::calculate( const SceneNodeContext& parentContext )
 {
     foreach ( const MiscCode& code, m_codes ) {
         if ( !m_engine->execute( code ) )
             return false;
     }
 
-    return calculateNodes( matrix );
+    return calculateNodes( parentContext );
 }
 
 void Scene::render()

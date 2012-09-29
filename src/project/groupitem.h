@@ -20,6 +20,7 @@
 #define GROUPITEM_H
 
 #include "project/projectitem.h"
+#include "scene/scenenodecolor.h"
 
 class GroupItem : public ProjectItem
 {
@@ -31,17 +32,13 @@ public:
     void setCode( const QString& text );
     const QString& code() const { return m_code; }
 
-    void setFrontColor( const QColor& color );
-    const QColor& frontColor() const { return m_frontColor; }
-
-    void setBackColor( const QColor& color );
-    const QColor& backColor() const { return m_backColor; }
+    void setColor( const SceneNodeColor& color );
+    const SceneNodeColor& color() const { return m_color; }
 
 private:
     QString m_code;
 
-    QColor m_frontColor;
-    QColor m_backColor;
+    SceneNodeColor m_color;
 };
 
 #endif
