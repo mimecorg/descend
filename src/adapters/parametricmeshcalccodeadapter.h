@@ -35,8 +35,8 @@ public:
 
     bool hasInputsOutputs() const;
 
-    QStringList inputs() const;
-    QStringList outputs() const;
+    QStringList inputs( Renderer::AttributeType attr, const SceneNodeColor& color ) const;
+    QStringList outputs( Renderer::AttributeType attr, const SceneNodeColor& color ) const;
 
 private:
     ParametricMeshItem* m_mesh;

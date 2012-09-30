@@ -16,32 +16,35 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#ifndef PARAMETRICMESHGENERALADAPTER_H
-#define PARAMETRICMESHGENERALADAPTER_H
+#ifndef PROPERTIESDIALOG_H
+#define PROPERTIESDIALOG_H
 
-#include "adapters/generaladapter.h"
+#include "ui_propertiesdialog.h"
 
-class ParametricMeshItem;
+class ProjectItem;
+class GeneralPage;
+class CodePage;
 
-class ParametricMeshGeneralAdapter : public GeneralAdapter
+class PropertiesDialog : public QDialog
 {
+    Q_OBJECT
 public:
-    ParametricMeshGeneralAdapter( ParametricMeshItem* mesh );
-    ~ParametricMeshGeneralAdapter();
+    PropertiesDialog( ProjectItem* item, QWidget* parent );
+    ~PropertiesDialog();
 
-public:
-    bool hasAttributeType() const;
+public: // overrides
+    void accept();
 
-    void setAttributeType( Renderer::AttributeType type );
-    Renderer::AttributeType attributeType() const;
-
-    SceneNodeColor::ColorFlags hasColorFlags() const;
-
-    void setColor( const SceneNodeColor& color );
-    SceneNodeColor color() const;
+private slots:
+    void updateInputsOutputs();
 
 private:
-    ParametricMeshItem* m_mesh;
+    Ui::PropertiesDialog m_ui;
+
+    ProjectItem* m_item;
+
+    GeneralPage* m_generalPage;
+    QList<CodePage*> m_codePages;
 };
 
 #endif

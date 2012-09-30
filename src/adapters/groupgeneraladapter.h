@@ -30,7 +30,7 @@ public:
     ~GroupGeneralAdapter();
 
 public:
-    SceneNodeColor::ColorFlags hasColorFlags();
+    SceneNodeColor::ColorFlags hasColorFlags() const;
 
     void setColor( const SceneNodeColor& color );
     SceneNodeColor color() const;

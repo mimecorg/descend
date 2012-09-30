@@ -16,32 +16,51 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#ifndef PARAMETRICMESHGENERALADAPTER_H
-#define PARAMETRICMESHGENERALADAPTER_H
+#ifndef GENERALPAGE_H
+#define GENERALPAGE_H
 
-#include "adapters/generaladapter.h"
+#include "ui_generalpage.h"
+#include "scene/renderer.h"
 
-class ParametricMeshItem;
+class GeneralAdapter;
+class SceneNodeColor;
 
-class ParametricMeshGeneralAdapter : public GeneralAdapter
+class GeneralPage : public QWidget
 {
+    Q_OBJECT
 public:
-    ParametricMeshGeneralAdapter( ParametricMeshItem* mesh );
-    ~ParametricMeshGeneralAdapter();
+    GeneralPage( GeneralAdapter* adapter, QWidget* parent );
+    ~GeneralPage();
 
 public:
-    bool hasAttributeType() const;
+    void apply();
 
-    void setAttributeType( Renderer::AttributeType type );
     Renderer::AttributeType attributeType() const;
-
-    SceneNodeColor::ColorFlags hasColorFlags() const;
-
-    void setColor( const SceneNodeColor& color );
     SceneNodeColor color() const;
 
+signals:
+    void colorChanged();
+
+private slots:
+    void updateWidgets();
+
 private:
-    ParametricMeshItem* m_mesh;
+    void populateSecondaryComboBox( int type, int& type2 );
+
+private:
+    enum ColorMode
+    {
+        SingleColor,
+        DualColors,
+        VertexColor
+    };
+
+private:
+    Ui::GeneralPage m_ui;
+
+    GeneralAdapter* m_adapter;
+
+    bool m_updating;
 };
 
 #endif

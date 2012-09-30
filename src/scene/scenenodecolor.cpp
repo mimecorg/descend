@@ -19,7 +19,7 @@
 #include "scene/scenenodecolor.h"
 
 SceneNodeColor::SceneNodeColor() :
-    m_flags( DualColors )
+    m_flags( 0 )
 {
     m_type[ 0 ] = InheritPrimary;
     m_type[ 1 ] = InheritSecondary;

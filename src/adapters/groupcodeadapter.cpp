@@ -42,12 +42,19 @@ bool GroupCodeAdapter::hasInputsOutputs() const
     return true;
 }
 
-QStringList GroupCodeAdapter::inputs() const
+QStringList GroupCodeAdapter::inputs( Renderer::AttributeType /*attr*/, const SceneNodeColor& /*color*/ ) const
 {
     return QStringList();
 }
 
-QStringList GroupCodeAdapter::outputs() const
+QStringList GroupCodeAdapter::outputs( Renderer::AttributeType attr, const SceneNodeColor& color ) const
 {
-    return QStringList() << "m_matrix";
+    QStringList list;
+    list << "m_matrix";
+    if ( attr == Renderer::NoAttribute && color.type( 0 ) == SceneNodeColor::Calculated ) {
+        list << "m_color";
+        if ( color.flags() & SceneNodeColor::DualColors )
+            list << "m_color2";
+    }
+    return list;
 }

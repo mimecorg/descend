@@ -23,10 +23,12 @@ RESOURCES += \
            shaders/shaders.qrc
 
 include( adapters/adapters.pri )
+include( dialogs/dialogs.pri )
 include( misc/misc.pri )
 include( project/project.pri )
 include( scene/scene.pri )
 include( utils/utils.pri )
+include( widgets/widgets.pri )
 include( xmlui/xmlui.pri )
 
 INCLUDEPATH += .

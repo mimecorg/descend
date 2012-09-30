@@ -16,32 +16,36 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#ifndef PARAMETRICMESHGENERALADAPTER_H
-#define PARAMETRICMESHGENERALADAPTER_H
+#include "elidedlabel.h"
 
-#include "adapters/generaladapter.h"
-
-class ParametricMeshItem;
-
-class ParametricMeshGeneralAdapter : public GeneralAdapter
+ElidedLabel::ElidedLabel( QWidget* parent ) : QLabel( parent ),
+    m_lastWidth( 0 )
 {
-public:
-    ParametricMeshGeneralAdapter( ParametricMeshItem* mesh );
-    ~ParametricMeshGeneralAdapter();
+    setMinimumWidth( fontMetrics().width( "..." ) );
+}
 
-public:
-    bool hasAttributeType() const;
+ElidedLabel::~ElidedLabel()
+{
+}
 
-    void setAttributeType( Renderer::AttributeType type );
-    Renderer::AttributeType attributeType() const;
+void ElidedLabel::paintEvent( QPaintEvent* /*e*/ )
+{
+    QPainter painter( this );
+    drawFrame( &painter );
 
-    SceneNodeColor::ColorFlags hasColorFlags() const;
+    QRect cr = contentsRect();
+    cr.adjust( margin(), margin(), -margin(), -margin() );
 
-    void setColor( const SceneNodeColor& color );
-    SceneNodeColor color() const;
+    QString fullText = text();
 
-private:
-    ParametricMeshItem* m_mesh;
-};
+    if ( fullText != m_lastText || cr.width() != m_lastWidth ) {
+        m_elidedText = fontMetrics().elidedText( fullText, Qt::ElideRight, cr.width() );
+        m_lastText = fullText;
+        m_lastWidth = cr.width();
+    }
 
-#endif
+    QStyleOption opt;
+    opt.initFrom( this );
+
+    style()->drawItemText( &painter, cr, alignment(), opt.palette, isEnabled(), m_elidedText, foregroundRole() );
+}

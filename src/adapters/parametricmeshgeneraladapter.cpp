@@ -42,7 +42,7 @@ Renderer::AttributeType ParametricMeshGeneralAdapter::attributeType() const
     return m_mesh->attributeType();
 }
 
-SceneNodeColor::ColorFlags ParametricMeshGeneralAdapter::hasColorFlags()
+SceneNodeColor::ColorFlags ParametricMeshGeneralAdapter::hasColorFlags() const
 {
     if ( m_mesh->type() == ProjectItem::Surface ) 
         return SceneNodeColor::DualColors | SceneNodeColor::SwapColors;

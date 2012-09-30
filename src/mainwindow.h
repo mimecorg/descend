@@ -49,6 +49,7 @@ private slots:
 
     void renameItem();
     void deleteItem();
+    void editProperties();
 
 private:
     void insertItem( ProjectItem::Type type, const QString& name );

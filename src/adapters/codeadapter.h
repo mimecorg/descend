@@ -19,6 +19,10 @@
 #ifndef CODEADAPTER_H
 #define CODEADAPTER_H
 
+#include "scene/renderer.h"
+
+class SceneNodeColor;
+
 class CodeAdapter
 {
 public:
@@ -31,8 +35,8 @@ public:
 
     virtual bool hasInputsOutputs() const { return false; }
 
-    virtual QStringList inputs() const { return QStringList(); }
-    virtual QStringList outputs() const { return QStringList(); }
+    virtual QStringList inputs( Renderer::AttributeType /*attr*/, const SceneNodeColor& /*color*/ ) const { return QStringList(); }
+    virtual QStringList outputs( Renderer::AttributeType /*attr*/, const SceneNodeColor& /*color*/ ) const { return QStringList(); }
 };
 
 #endif

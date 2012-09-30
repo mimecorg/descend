@@ -16,32 +16,36 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#ifndef PARAMETRICMESHGENERALADAPTER_H
-#define PARAMETRICMESHGENERALADAPTER_H
+#ifndef CODEPAGE_H
+#define CODEPAGE_H
 
-#include "adapters/generaladapter.h"
+#include "scene/renderer.h"
 
-class ParametricMeshItem;
+class CodeAdapter;
+class SceneNodeColor;
+class ElidedLabel;
 
-class ParametricMeshGeneralAdapter : public GeneralAdapter
+class CodePage : public QWidget
 {
+    Q_OBJECT
 public:
-    ParametricMeshGeneralAdapter( ParametricMeshItem* mesh );
-    ~ParametricMeshGeneralAdapter();
+    CodePage( CodeAdapter* adapter, const QString& label, QWidget* parent );
+    ~CodePage();
 
 public:
-    bool hasAttributeType() const;
+    void apply();
 
-    void setAttributeType( Renderer::AttributeType type );
-    Renderer::AttributeType attributeType() const;
+    const QString& label() const { return m_label; }
 
-    SceneNodeColor::ColorFlags hasColorFlags() const;
-
-    void setColor( const SceneNodeColor& color );
-    SceneNodeColor color() const;
+    void updateInputsOutputs( Renderer::AttributeType attr, const SceneNodeColor& color );
 
 private:
-    ParametricMeshItem* m_mesh;
+    QPlainTextEdit* m_edit;
+    ElidedLabel* m_inOutLabel;
+
+    CodeAdapter* m_adapter;
+
+    QString m_label;
 };
 
 #endif

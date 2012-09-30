@@ -21,6 +21,8 @@
 ParametricMeshItem::ParametricMeshItem( ProjectItem::Type type, ProjectItem* parent ) : ProjectItem( type, parent ),
     m_attributeType( Renderer::NoAttribute )
 {
+    if ( type == Surface )
+        m_color.setFlags( SceneNodeColor::DualColors );
 }
 
 ParametricMeshItem::~ParametricMeshItem()

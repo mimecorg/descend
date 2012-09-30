@@ -16,32 +16,41 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#ifndef PARAMETRICMESHGENERALADAPTER_H
-#define PARAMETRICMESHGENERALADAPTER_H
+#include "widgets/colorbutton.h"
 
-#include "adapters/generaladapter.h"
-
-class ParametricMeshItem;
-
-class ParametricMeshGeneralAdapter : public GeneralAdapter
+ColorButton::ColorButton( QWidget* parent ) : QToolButton( parent )
 {
-public:
-    ParametricMeshGeneralAdapter( ParametricMeshItem* mesh );
-    ~ParametricMeshGeneralAdapter();
+    connect( this, SIGNAL( clicked( bool ) ), this, SLOT( selectColor() ) );
+}
 
-public:
-    bool hasAttributeType() const;
+ColorButton::~ColorButton()
+{
+}
 
-    void setAttributeType( Renderer::AttributeType type );
-    Renderer::AttributeType attributeType() const;
+void ColorButton::setColor( const QColor& color )
+{
+    if ( m_color != color ) {
+        m_color = color;
 
-    SceneNodeColor::ColorFlags hasColorFlags() const;
+        if ( color.isValid() ) {
+            QPixmap pixmap( iconSize() );
+            pixmap.fill( Qt::transparent );
 
-    void setColor( const SceneNodeColor& color );
-    SceneNodeColor color() const;
+            QPainter painter( &pixmap );
+            painter.fillRect( pixmap.rect().adjusted( 2, 2, -1, -2 ), m_color );
 
-private:
-    ParametricMeshItem* m_mesh;
-};
+            setIcon( QIcon( pixmap ) );
+        } else {
+            setIcon( QIcon() );
+        }
 
-#endif
+        emit colorChanged( color );
+    }
+}
+
+void ColorButton::selectColor()
+{
+    QColor color = QColorDialog::getColor( m_color, this, tr( "Select Color" ) );
+    if ( color.isValid() )
+        setColor( color );
+}

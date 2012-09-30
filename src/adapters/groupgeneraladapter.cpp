@@ -27,7 +27,7 @@ GroupGeneralAdapter::~GroupGeneralAdapter()
 {
 }
 
-SceneNodeColor::ColorFlags GroupGeneralAdapter::hasColorFlags()
+SceneNodeColor::ColorFlags GroupGeneralAdapter::hasColorFlags() const
 {
     return SceneNodeColor::DualColors;
 }

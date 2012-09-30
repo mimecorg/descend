@@ -42,7 +42,7 @@ bool ParametricMeshCalcCodeAdapter::hasInputsOutputs() const
     return true;
 }
 
-QStringList ParametricMeshCalcCodeAdapter::inputs() const
+QStringList ParametricMeshCalcCodeAdapter::inputs( Renderer::AttributeType /*attr*/, const SceneNodeColor& /*color*/ ) const
 {
     QStringList list;
     list << "p";
@@ -51,11 +51,11 @@ QStringList ParametricMeshCalcCodeAdapter::inputs() const
     return list;
 }
 
-QStringList ParametricMeshCalcCodeAdapter::outputs() const
+QStringList ParametricMeshCalcCodeAdapter::outputs( Renderer::AttributeType attr, const SceneNodeColor& /*color*/ ) const
 {
     QStringList list;
     list << "v_pos";
-    if ( m_mesh->attributeType() == Renderer::RgbAttribute )
+    if ( attr == Renderer::RgbAttribute )
         list << "v_color";
     return list;
 }

@@ -19,6 +19,7 @@
 #include "mainwindow.h"
 
 #include "scenewidget.h"
+#include "dialogs/propertiesdialog.h"
 #include "misc/miscengine.h"
 #include "project/project.h"
 #include "project/projectitemmodel.h"
@@ -276,7 +277,6 @@ void MainWindow::on_edgesCheckBox_toggled( bool on )
 void MainWindow::updateActions()
 {
     QModelIndex index = m_proxyModel->mapToSource( m_ui.treeView->currentIndex() );
-
     ProjectItem* item = m_model->itemFromIndex( index );
 
     bool isEditable = item != NULL && item->type() != ProjectItem::Project;
@@ -296,7 +296,7 @@ void MainWindow::updateActions()
     action( "cloneItem" )->setEnabled( false );
     action( "renameItem" )->setEnabled( isEditable );
     action( "deleteItem" )->setEnabled( isEditable );
-    action( "editProperties" )->setEnabled( false );
+    action( "editProperties" )->setEnabled( item != NULL );
     action( "drawScene" )->setEnabled( false );
     action( "closeScene" )->setEnabled( false );
     action( "cameraSettings" )->setEnabled( false );
@@ -357,4 +357,15 @@ void MainWindow::deleteItem()
     QModelIndex index = m_proxyModel->mapToSource( m_ui.treeView->currentIndex() );
 
     m_model->deleteItem( index );
+}
+
+void MainWindow::editProperties()
+{
+    QModelIndex index = m_proxyModel->mapToSource( m_ui.treeView->currentIndex() );
+    ProjectItem* item = m_model->itemFromIndex( index );
+
+    if ( item ) {
+        PropertiesDialog dialog( item, this );
+        dialog.exec();
+    }
 }

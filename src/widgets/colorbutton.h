@@ -16,32 +16,28 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#ifndef PARAMETRICMESHGENERALADAPTER_H
-#define PARAMETRICMESHGENERALADAPTER_H
+#ifndef COLORBUTTON_H
+#define COLORBUTTON_H
 
-#include "adapters/generaladapter.h"
-
-class ParametricMeshItem;
-
-class ParametricMeshGeneralAdapter : public GeneralAdapter
+class ColorButton : public QToolButton
 {
+    Q_OBJECT
 public:
-    ParametricMeshGeneralAdapter( ParametricMeshItem* mesh );
-    ~ParametricMeshGeneralAdapter();
+    ColorButton( QWidget* parent );
+    ~ColorButton();
 
 public:
-    bool hasAttributeType() const;
+    void setColor( const QColor& color );
+    const QColor& color() const { return m_color; }
 
-    void setAttributeType( Renderer::AttributeType type );
-    Renderer::AttributeType attributeType() const;
+signals:
+    void colorChanged( const QColor& color );
 
-    SceneNodeColor::ColorFlags hasColorFlags() const;
-
-    void setColor( const SceneNodeColor& color );
-    SceneNodeColor color() const;
+private slots:
+    void selectColor();
 
 private:
-    ParametricMeshItem* m_mesh;
+    QColor m_color;
 };
 
 #endif

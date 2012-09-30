@@ -16,32 +16,25 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#ifndef PARAMETRICMESHGENERALADAPTER_H
-#define PARAMETRICMESHGENERALADAPTER_H
+#ifndef ELIDEDLABEL_H
+#define ELIDEDLABEL_H
 
-#include "adapters/generaladapter.h"
+#include <QLabel>
 
-class ParametricMeshItem;
-
-class ParametricMeshGeneralAdapter : public GeneralAdapter
+class ElidedLabel : public QLabel
 {
+    Q_OBJECT
 public:
-    ParametricMeshGeneralAdapter( ParametricMeshItem* mesh );
-    ~ParametricMeshGeneralAdapter();
+    ElidedLabel( QWidget* parent );
+    ~ElidedLabel();
 
-public:
-    bool hasAttributeType() const;
-
-    void setAttributeType( Renderer::AttributeType type );
-    Renderer::AttributeType attributeType() const;
-
-    SceneNodeColor::ColorFlags hasColorFlags() const;
-
-    void setColor( const SceneNodeColor& color );
-    SceneNodeColor color() const;
+protected: // overrides
+    void paintEvent( QPaintEvent* e );
 
 private:
-    ParametricMeshItem* m_mesh;
+    QString m_elidedText;
+    QString m_lastText;
+    int m_lastWidth;
 };
 
 #endif

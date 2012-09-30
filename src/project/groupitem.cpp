@@ -20,6 +20,7 @@
 
 GroupItem::GroupItem( ProjectItem* parent ) : ProjectItem( ProjectItem::Group, parent )
 {
+    m_color.setFlags( SceneNodeColor::DualColors );
 }
 
 GroupItem::~GroupItem()

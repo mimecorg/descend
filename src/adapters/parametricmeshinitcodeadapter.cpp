@@ -42,18 +42,18 @@ bool ParametricMeshInitCodeAdapter::hasInputsOutputs() const
     return true;
 }
 
-QStringList ParametricMeshInitCodeAdapter::inputs() const
+QStringList ParametricMeshInitCodeAdapter::inputs( Renderer::AttributeType /*attr*/, const SceneNodeColor& /*color*/ ) const
 {
     return QStringList();
 }
 
-QStringList ParametricMeshInitCodeAdapter::outputs() const
+QStringList ParametricMeshInitCodeAdapter::outputs( Renderer::AttributeType attr, const SceneNodeColor& color ) const
 {
     QStringList list;
     list << "m_matrix";
-    if ( m_mesh->attributeType() == Renderer::NoAttribute && m_mesh->color().type( 0 ) == SceneNodeColor::Calculated ) {
+    if ( attr == Renderer::NoAttribute && color.type( 0 ) == SceneNodeColor::Calculated ) {
         list << "m_color";
-        if ( m_mesh->color().flags() & SceneNodeColor::DualColors )
+        if ( color.flags() & SceneNodeColor::DualColors )
             list << "m_color2";
     }
     list << "p_min" << "p_max";
