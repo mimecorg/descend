@@ -31,6 +31,9 @@ public:
     void setCode( const QString& text );
     const QString& code() const { return m_code; }
 
+public: // overrides
+    SceneNode* createNode( SceneNode* parent );
+
 private:
     QString m_code;
 };

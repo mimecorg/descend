@@ -36,7 +36,6 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_executeButton_clicked();
     void on_edgesCheckBox_toggled( bool on );
 
     void updateActions();
@@ -50,6 +49,9 @@ private slots:
     void renameItem();
     void deleteItem();
     void editProperties();
+
+    void drawScene();
+    void closeScene();
 
 private:
     void insertItem( ProjectItem::Type type, const QString& name );

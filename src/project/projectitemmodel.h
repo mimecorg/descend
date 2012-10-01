@@ -44,6 +44,7 @@ public:
     Qt::ItemFlags flags( const QModelIndex& index ) const;
 
     ProjectItem* itemFromIndex( const QModelIndex& index ) const;
+    QModelIndex indexFromItem( ProjectItem* item ) const;
 
     bool setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole );
 
@@ -51,8 +52,13 @@ public:
 
     bool deleteItem( const QModelIndex& index );
 
+    void setBoldItem( ProjectItem* item );
+    ProjectItem* boldItem() const { return m_boldItem; }
+
 private:
     Project* m_project;
+
+    ProjectItem* m_boldItem;
 };
 
 #endif

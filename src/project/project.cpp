@@ -20,6 +20,9 @@
 #include "project/folderitem.h"
 #include "project/groupitem.h"
 #include "project/parametricmeshitem.h"
+#include "scene/scene.h"
+#include "scene/groupnode.h"
+#include "scene/parametricmeshnode.h"
 
 Project::Project() : ProjectItem( ProjectItem::Project, NULL )
 {
@@ -50,4 +53,38 @@ ProjectItem* Project::createItem( ProjectItem::Type type, ProjectItem* parent )
         default:
             return NULL;
     }
+}
+
+bool Project::initializeScene( Scene* scene, ProjectItem* root )
+{
+    if ( !scene->addCode( m_code ) )
+        return false;
+
+    QList<ProjectItem*> items;
+
+    for ( ProjectItem* item = root; item != this; item = item->parent() )
+        items.prepend( item );
+
+    SceneNode* parent = scene;
+
+    foreach ( ProjectItem* item, items ) {
+        SceneNode* node = item->createNode( parent );
+        if ( !node )
+            return false;
+        parent = node;
+    }
+
+    return createChildNodes( root, parent );
+}
+
+bool Project::createChildNodes( ProjectItem* item, SceneNode* parent )
+{
+    foreach ( ProjectItem* child, item->items() ) {
+        SceneNode* node = child->createNode( parent );
+        if ( !node )
+            return false;
+        if ( !createChildNodes( child, node ) )
+            return false;
+    }
+    return true;
 }

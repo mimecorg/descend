@@ -18,6 +18,8 @@
 
 #include "project/folderitem.h"
 
+#include "scene/groupnode.h"
+
 FolderItem::FolderItem( ProjectItem* parent ) : ProjectItem( ProjectItem::Folder, parent )
 {
 }
@@ -29,4 +31,14 @@ FolderItem::~FolderItem()
 void FolderItem::setCode( const QString& text )
 {
     m_code = text;
+}
+
+SceneNode* FolderItem::createNode( SceneNode* parent )
+{
+    GroupNode* node = new GroupNode( SceneNodeColor( SceneNodeColor::DualColors ), parent );
+
+    if ( !node->addCode( m_code ) )
+        return NULL;
+
+    return node;
 }

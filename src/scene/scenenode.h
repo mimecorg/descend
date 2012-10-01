@@ -37,6 +37,8 @@ public:
 
     virtual void render() = 0;
 
+    virtual int elementsCount() const;
+
 public:
     Scene* scene() const { return m_scene; }
 

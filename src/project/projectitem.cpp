@@ -41,3 +41,18 @@ void ProjectItem::setName( const QString& name )
 {
     m_name = name;
 }
+
+bool ProjectItem::contains( ProjectItem* item ) const
+{
+    while ( item != NULL ) {
+        if ( item == this )
+            return true;
+        item = item->parent();
+    }
+    return false;
+}
+
+SceneNode* ProjectItem::createNode( SceneNode* /*parent*/ )
+{
+    return NULL;
+}

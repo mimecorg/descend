@@ -18,6 +18,8 @@
 
 #include "project/parametricmeshitem.h"
 
+#include "scene/parametricmeshnode.h"
+
 ParametricMeshItem::ParametricMeshItem( ProjectItem::Type type, ProjectItem* parent ) : ProjectItem( type, parent ),
     m_attributeType( Renderer::NoAttribute )
 {
@@ -47,4 +49,30 @@ void ParametricMeshItem::setAttributeType( Renderer::AttributeType type )
 void ParametricMeshItem::setColor( const SceneNodeColor& color )
 {
     m_color = color;
+}
+
+SceneNode* ParametricMeshItem::createNode( SceneNode* parent )
+{
+    Renderer::MeshType meshType;
+
+    switch ( type() ) {
+        case Curve:
+            meshType = Renderer::CurveMesh;
+            break;
+        case Surface:
+            meshType = Renderer::SurfaceMesh;
+            break;
+        default:
+            return NULL;
+    }
+
+    ParametricMeshNode* node = new ParametricMeshNode( meshType, m_attributeType, m_color, parent );
+
+    if ( !node->addInitCode( m_initCode ) )
+        return NULL;
+
+    if ( !node->addCalcCode( m_calcCode ) )
+        return NULL;
+
+    return node;
 }

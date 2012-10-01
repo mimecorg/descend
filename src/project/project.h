@@ -21,6 +21,8 @@
 
 #include "project/projectitem.h"
 
+class Scene;
+
 class Project : public ProjectItem
 {
 public:
@@ -32,6 +34,11 @@ public:
     const QString& code() const { return m_code; }
 
     ProjectItem* createItem( ProjectItem::Type type, ProjectItem* parent );
+
+    bool initializeScene( Scene* scene, ProjectItem* root );
+
+private:
+    bool createChildNodes( ProjectItem* item, SceneNode* parent );
 
 private:
     QString m_code;

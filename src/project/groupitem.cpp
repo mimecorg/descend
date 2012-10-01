@@ -18,6 +18,8 @@
 
 #include "project/groupitem.h"
 
+#include "scene/groupnode.h"
+
 GroupItem::GroupItem( ProjectItem* parent ) : ProjectItem( ProjectItem::Group, parent )
 {
     m_color.setFlags( SceneNodeColor::DualColors );
@@ -35,4 +37,14 @@ void GroupItem::setCode( const QString& text )
 void GroupItem::setColor( const SceneNodeColor& color )
 {
     m_color = color;
+}
+
+SceneNode* GroupItem::createNode( SceneNode* parent )
+{
+    GroupNode* node = new GroupNode( m_color, parent );
+
+    if ( !node->addCode( m_code ) )
+        return NULL;
+
+    return node;
 }

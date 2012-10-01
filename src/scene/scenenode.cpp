@@ -33,6 +33,16 @@ SceneNode::~SceneNode()
     qDeleteAll( m_nodes );
 }
 
+int SceneNode::elementsCount() const
+{
+    int count = 0;
+
+    foreach ( SceneNode* node, m_nodes )
+        count += node->elementsCount();
+
+    return count;
+}
+
 bool SceneNode::calculateNodes( const SceneNodeContext& context )
 {
     foreach ( SceneNode* node, m_nodes ) {

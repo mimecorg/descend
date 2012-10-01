@@ -24,67 +24,12 @@
        <enum>Qt::Horizontal</enum>
       </property>
       <widget class="QWidget" name="paneWidget" native="true">
-       <layout class="QVBoxLayout" name="verticalLayout_5">
+       <layout class="QVBoxLayout" name="verticalLayout_5" stretch="1,0">
         <item>
          <widget class="QTreeView" name="treeView"/>
         </item>
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_4">
-          <item>
-           <widget class="QGroupBox" name="scriptGroupBox">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>1</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="title">
-             <string>Scipt</string>
-            </property>
-            <layout class="QVBoxLayout" name="verticalLayout">
-             <item>
-              <widget class="QPlainTextEdit" name="scriptEdit">
-               <property name="font">
-                <font>
-                 <family>Courier New</family>
-                 <pointsize>10</pointsize>
-                </font>
-               </property>
-               <property name="lineWrapMode">
-                <enum>QPlainTextEdit::NoWrap</enum>
-               </property>
-               <property name="tabStopWidth">
-                <number>32</number>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout">
-               <item>
-                <spacer name="horizontalSpacer">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>148</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item>
-                <widget class="QPushButton" name="executeButton">
-                 <property name="text">
-                  <string>&amp;Execute</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-            </layout>
-           </widget>
-          </item>
           <item>
            <widget class="QGroupBox" name="tessellationGroupBox">
             <property name="title">
@@ -206,8 +151,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>scriptEdit</tabstop>
-  <tabstop>executeButton</tabstop>
   <tabstop>minLodEdit</tabstop>
   <tabstop>alphaEdit</tabstop>
   <tabstop>edgesCheckBox</tabstop>

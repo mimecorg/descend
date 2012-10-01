@@ -17,11 +17,13 @@
 **************************************************************************/
 
 #include "project/projectitemmodel.h"
+
 #include "project/project.h"
 #include "utils/iconloader.h"
 
 ProjectItemModel::ProjectItemModel( Project* project, QObject* parent ) : QAbstractItemModel( parent ),
-    m_project( project )
+    m_project( project ),
+    m_boldItem( NULL )
 {
 }
 
@@ -111,6 +113,13 @@ QVariant ProjectItemModel::data( const QModelIndex& index, int role ) const
                     return IconLoader::pixmap( "item-surface" );
             }
             break;
+
+        case Qt::FontRole:
+            if ( item == m_boldItem ) {
+                QFont font;
+                font.setBold( true );
+                return font;
+            }
     }
 
     return QVariant();
@@ -143,6 +152,19 @@ ProjectItem* ProjectItemModel::itemFromIndex( const QModelIndex& index ) const
         return NULL;
 
     return static_cast<ProjectItem*>( index.internalPointer() );
+}
+
+QModelIndex ProjectItemModel::indexFromItem( ProjectItem* item ) const
+{
+    if ( !item )
+        return QModelIndex();
+
+    if ( item == m_project )
+        return createIndex( 0, 0, m_project );
+
+    ProjectItem* parent = item->parent();
+
+    return createIndex( parent->items().indexOf( item ), 0, item );
 }
 
 bool ProjectItemModel::setData( const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole*/ )
@@ -193,6 +215,9 @@ bool ProjectItemModel::deleteItem( const QModelIndex& index )
     if ( item == m_project )
         return false;
 
+    if ( item->contains( m_boldItem ) )
+        m_boldItem = NULL;
+
     ProjectItem* parentItem = item->parent();
 
     int row = parentItem->items().indexOf( item );
@@ -204,4 +229,20 @@ bool ProjectItemModel::deleteItem( const QModelIndex& index )
     emit endRemoveRows();
 
     return true;
+}
+
+void ProjectItemModel::setBoldItem( ProjectItem* item )
+{
+    if ( m_boldItem != item ) {
+        QModelIndex oldIndex = indexFromItem( m_boldItem );
+        QModelIndex newIndex = indexFromItem( item );
+
+        m_boldItem = item;
+
+        if ( oldIndex.isValid() )
+            emit dataChanged( oldIndex, oldIndex );
+
+        if ( newIndex.isValid() )
+            emit dataChanged( newIndex, newIndex );
+    }
 }

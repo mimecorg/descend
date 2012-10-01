@@ -43,14 +43,14 @@ public:
     bool calculateVertex( float param, QVector3D* pos, QVector3D* attr );
     bool calculateVertex( const QVector2D& param, QVector3D* pos, QVector3D* attr );
 
-    int elementsCount() const { return m_count; }
-
 public:
     MiscUnit* unit() const { return NULL; }
 
     bool calculate( const SceneNodeContext& parentContext );
 
     void render();
+
+    int elementsCount() const { return m_count; }
 
 protected:
     bool calculateCommon( QVector3D* pos, QVector3D* attr );

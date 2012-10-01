@@ -219,56 +219,6 @@ MainWindow::~MainWindow()
     delete m_project;
 }
 
-void MainWindow::on_executeButton_clicked()
-{
-    QApplication::setOverrideCursor( Qt::WaitCursor );
-
-    m_ui.outputEdit->clear();
-
-    int minLod = qBound( 0, m_ui.minLodEdit->text().toInt(), 20 );
-    int maxLod = qBound( 0, m_ui.maxLodEdit->text().toInt(), 20 );
-    float threshold = qBound( 0.0f, m_ui.alphaEdit->text().toFloat(), 1.0f );
-
-    Renderer::currentRenderer()->tessellator( Renderer::SurfaceMesh )->setLodRange( minLod, maxLod );
-    Renderer::currentRenderer()->tessellator( Renderer::SurfaceMesh )->setGeometryThreshold( threshold );
-    Renderer::currentRenderer()->tessellator( Renderer::SurfaceMesh )->setAttributeThreshold( threshold );
-
-    Scene* scene = new Scene();
-
-    ParametricMeshNode* node = new ParametricMeshNode( Renderer::SurfaceMesh, Renderer::NoAttribute, SceneNodeColor(), scene );
-
-    bool ok = false;
-
-    if ( node->addCalcCode( m_ui.scriptEdit->toPlainText() ) ) {
-        QElapsedTimer timer;
-        timer.start();
-
-        SceneNodeContext context;
-        context.setColor( 0, QColor( 255, 64, 144 ) );
-        context.setColor( 1, QColor( 255, 144, 64 ) );
-
-        if ( scene->calculate( context ) ) {
-            m_ui.outputEdit->setPlainText( QString( "Triangles: %1\nElapsed time: %2 ms" )
-                .arg( node->elementsCount() )
-                .arg( timer.elapsed() ) );
-
-            m_ui.sceneWidget->setScene( scene );
-
-            ok = true;
-        }
-    }
-
-    if ( !ok ) {
-        m_ui.outputEdit->setPlainText( QString( "Error: %1 in line %2" )
-            .arg( scene->engine()->errorMessage() )
-            .arg( scene->engine()->errorLineNumber() ) );
-
-        delete scene;
-    }
-
-    QApplication::restoreOverrideCursor();
-}
-
 void MainWindow::on_edgesCheckBox_toggled( bool on )
 {
     m_ui.sceneWidget->setEdges( on );
@@ -282,6 +232,7 @@ void MainWindow::updateActions()
     bool isEditable = item != NULL && item->type() != ProjectItem::Project;
     bool canInsertFolder = item != NULL && ( item->type() == ProjectItem::Project || item->type() == ProjectItem::Folder );
     bool canInsertGeometry = item != NULL && ( item->type() == ProjectItem::Project || item->type() == ProjectItem::Folder || item->type() == ProjectItem::Group );
+    bool canDrawScene = item != NULL && ( item->type() == ProjectItem::Group || item->type() == ProjectItem::Curve || item->type() == ProjectItem::Surface );
 
     action( "newFile" )->setEnabled( false );
     action( "openFile" )->setEnabled( false );
@@ -297,8 +248,8 @@ void MainWindow::updateActions()
     action( "renameItem" )->setEnabled( isEditable );
     action( "deleteItem" )->setEnabled( isEditable );
     action( "editProperties" )->setEnabled( item != NULL );
-    action( "drawScene" )->setEnabled( false );
-    action( "closeScene" )->setEnabled( false );
+    action( "drawScene" )->setEnabled( canDrawScene );
+    action( "closeScene" )->setEnabled( m_ui.sceneWidget->scene() != NULL );
     action( "cameraSettings" )->setEnabled( false );
     action( "popupDefaultView" )->setEnabled( false );
     action( "previousView" )->setEnabled( false );
@@ -368,4 +319,79 @@ void MainWindow::editProperties()
         PropertiesDialog dialog( item, this );
         dialog.exec();
     }
+}
+
+void MainWindow::drawScene()
+{
+    QModelIndex index = m_proxyModel->mapToSource( m_ui.treeView->currentIndex() );
+    ProjectItem* item = m_model->itemFromIndex( index );
+
+    if ( !item )
+        return;
+
+    m_ui.sceneWidget->setScene( NULL );
+
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+
+    m_ui.outputEdit->clear();
+
+    int minLod = qBound( 0, m_ui.minLodEdit->text().toInt(), 20 );
+    int maxLod = qBound( 0, m_ui.maxLodEdit->text().toInt(), 20 );
+    float threshold = qBound( 0.0f, m_ui.alphaEdit->text().toFloat(), 1.0f );
+
+    Renderer::currentRenderer()->tessellator( Renderer::SurfaceMesh )->setLodRange( minLod, maxLod );
+    Renderer::currentRenderer()->tessellator( Renderer::SurfaceMesh )->setGeometryThreshold( threshold );
+    Renderer::currentRenderer()->tessellator( Renderer::SurfaceMesh )->setAttributeThreshold( threshold );
+
+    Renderer::currentRenderer()->tessellator( Renderer::CurveMesh )->setLodRange( minLod, maxLod );
+    Renderer::currentRenderer()->tessellator( Renderer::CurveMesh )->setGeometryThreshold( threshold );
+    Renderer::currentRenderer()->tessellator( Renderer::CurveMesh )->setAttributeThreshold( threshold );
+
+    bool ok = false;
+
+    Scene* scene = new Scene();
+
+    if ( m_project->initializeScene( scene, item ) ) {
+        QElapsedTimer timer;
+        timer.start();
+
+        SceneNodeContext context;
+        context.setColor( 0, QColor( 255, 64, 144 ) );
+        context.setColor( 1, QColor( 255, 144, 64 ) );
+
+        if ( scene->calculate( context ) ) {
+            m_ui.outputEdit->setPlainText( QString( "Elements: %1\nElapsed time: %2 ms" )
+                .arg( scene->elementsCount() )
+                .arg( timer.elapsed() ) );
+
+            m_ui.sceneWidget->setScene( scene );
+
+            ok = true;
+        }
+    }
+
+    if ( !ok ) {
+        m_ui.outputEdit->setPlainText( QString( "Error: %1 in line %2" )
+            .arg( scene->engine()->errorMessage() )
+            .arg( scene->engine()->errorLineNumber() ) );
+
+        delete scene;
+    }
+
+    QApplication::restoreOverrideCursor();
+
+    m_model->setBoldItem( item );
+
+    updateActions();
+}
+
+void MainWindow::closeScene()
+{
+    m_ui.sceneWidget->setScene( NULL );
+
+    m_ui.outputEdit->clear();
+
+    m_model->setBoldItem( NULL );
+
+    updateActions();
 }

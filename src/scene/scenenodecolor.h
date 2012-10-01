@@ -39,7 +39,7 @@ public:
     };
 
 public:
-    SceneNodeColor();
+    explicit SceneNodeColor( ColorFlags flags = 0 );
     SceneNodeColor( const SceneNodeColor& other );
     ~SceneNodeColor();
 

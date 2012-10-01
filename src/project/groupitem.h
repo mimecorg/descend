@@ -35,6 +35,9 @@ public:
     void setColor( const SceneNodeColor& color );
     const SceneNodeColor& color() const { return m_color; }
 
+public: // overrides
+    SceneNode* createNode( SceneNode* parent );
+
 private:
     QString m_code;
 

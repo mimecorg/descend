@@ -19,6 +19,8 @@
 #ifndef PROJECTITEM_H
 #define PROJECTITEM_H
 
+class SceneNode;
+
 class ProjectItem
 {
 public:
@@ -43,6 +45,11 @@ public:
 
     void setName( const QString& name );
     const QString& name() const { return m_name; }
+
+    bool contains( ProjectItem* item ) const;
+
+public:
+    virtual SceneNode* createNode( SceneNode* parent );
 
 protected:
     Type m_type;
