@@ -16,38 +16,42 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#include "project/groupitem.h"
+#ifndef STATUSLABEL_H
+#define STATUSLABEL_H
 
-#include "project/project.h"
-#include "scene/groupnode.h"
+#include <QWidget>
 
-GroupItem::GroupItem( ProjectItem* parent ) : ProjectItem( ProjectItem::Group, parent )
+class QLabel;
+class ElidedLabel;
+
+/**
+* A label with an optional icon.
+*/
+class StatusLabel : public QWidget
 {
-    m_color.setFlags( SceneNodeColor::DualColors );
-}
+    Q_OBJECT
+public:
+    /**
+    * Constructor.
+    * @param parent The parent widget.
+    */
+    StatusLabel( QWidget* parent );
 
-GroupItem::~GroupItem()
-{
-}
+    /**
+    * Destructor.
+    */
+    ~StatusLabel();
 
-void GroupItem::setCode( const QString& text )
-{
-    m_code = text;
-}
+public:
+    void setText( const QString& text );
+    QString text() const;
 
-void GroupItem::setColor( const SceneNodeColor& color )
-{
-    m_color = color;
-}
+    void setPixmap( const QPixmap& pixmap );
+    const QPixmap* pixmap() const;
 
-SceneNode* GroupItem::createNode( SceneNode* parent )
-{
-    GroupNode* node = new GroupNode( m_color, parent );
+private:
+    QLabel* m_pixmapLabel;
+    ElidedLabel* m_label;
+};
 
-    if ( !node->addCode( m_code ) ) {
-        m_project->setErrorInfo( this );
-        return NULL;
-    }
-
-    return node;
-}
+#endif

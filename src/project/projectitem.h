@@ -19,6 +19,7 @@
 #ifndef PROJECTITEM_H
 #define PROJECTITEM_H
 
+class Project;
 class SceneNode;
 
 class ProjectItem
@@ -41,6 +42,8 @@ public:
     Type type() const { return m_type; }
 
     ProjectItem* parent() const { return m_parent; }
+    ::Project* project() const { return m_project; }
+
     const QList<ProjectItem*>& items() const { return m_items; }
 
     void setName( const QString& name );
@@ -55,6 +58,8 @@ protected:
     Type m_type;
 
     ProjectItem* m_parent;
+
+    ::Project* m_project;
 
     QList<ProjectItem*> m_items;
 

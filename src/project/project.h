@@ -26,6 +26,14 @@ class Scene;
 class Project : public ProjectItem
 {
 public:
+    enum Context
+    {
+        NoContext,
+        InitContext,
+        CalcContext
+    };
+
+public:
     Project();
     ~Project();
 
@@ -37,11 +45,18 @@ public:
 
     bool initializeScene( Scene* scene, ProjectItem* root );
 
+    void setErrorInfo( ProjectItem* item, Context context = NoContext );
+    ProjectItem* errorItem() const { return m_errorItem; }
+    Context errorContext() const { return m_errorContext; }
+
 private:
     bool createChildNodes( ProjectItem* item, SceneNode* parent );
 
 private:
     QString m_code;
+
+    ProjectItem* m_errorItem;
+    Context m_errorContext;
 };
 
 #endif

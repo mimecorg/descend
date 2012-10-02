@@ -18,6 +18,7 @@
 
 #include "project/folderitem.h"
 
+#include "project/project.h"
 #include "scene/groupnode.h"
 
 FolderItem::FolderItem( ProjectItem* parent ) : ProjectItem( ProjectItem::Folder, parent )
@@ -37,8 +38,10 @@ SceneNode* FolderItem::createNode( SceneNode* parent )
 {
     GroupNode* node = new GroupNode( SceneNodeColor( SceneNodeColor::DualColors ), parent );
 
-    if ( !node->addCode( m_code ) )
+    if ( !node->addCode( m_code ) ) {
+        m_project->setErrorInfo( this );
         return NULL;
+    }
 
     return node;
 }

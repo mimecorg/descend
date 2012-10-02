@@ -17,6 +17,7 @@
 **************************************************************************/
 
 #include "project/project.h"
+
 #include "project/folderitem.h"
 #include "project/groupitem.h"
 #include "project/parametricmeshitem.h"
@@ -24,8 +25,11 @@
 #include "scene/groupnode.h"
 #include "scene/parametricmeshnode.h"
 
-Project::Project() : ProjectItem( ProjectItem::Project, NULL )
+Project::Project() : ProjectItem( ProjectItem::Project, NULL ),
+    m_errorItem( NULL ),
+    m_errorContext( NoContext )
 {
+    m_project = this;
 }
 
 Project::~Project()
@@ -35,6 +39,12 @@ Project::~Project()
 void Project::setCode( const QString& text )
 {
     m_code = text;
+}
+
+void Project::setErrorInfo( ProjectItem* item, Context context /*= NoContext*/ )
+{
+    m_errorItem = item;
+    m_errorContext = context;
 }
 
 ProjectItem* Project::createItem( ProjectItem::Type type, ProjectItem* parent )
@@ -57,8 +67,12 @@ ProjectItem* Project::createItem( ProjectItem::Type type, ProjectItem* parent )
 
 bool Project::initializeScene( Scene* scene, ProjectItem* root )
 {
-    if ( !scene->addCode( m_code ) )
+    setErrorInfo( NULL );
+
+    if ( !scene->addCode( m_code ) ) {
+        setErrorInfo( this );
         return false;
+    }
 
     QList<ProjectItem*> items;
 

@@ -16,38 +16,48 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#include "project/groupitem.h"
+#include "widgets/statuslabel.h"
 
-#include "project/project.h"
-#include "scene/groupnode.h"
+#include "widgets/elidedlabel.h"
 
-GroupItem::GroupItem( ProjectItem* parent ) : ProjectItem( ProjectItem::Group, parent )
+#include <QLayout>
+
+StatusLabel::StatusLabel( QWidget* parent ) : QWidget( parent )
 {
-    m_color.setFlags( SceneNodeColor::DualColors );
+    QHBoxLayout* layout = new QHBoxLayout( this );
+    layout->setMargin( 0 );
+    layout->setSpacing( 6 );
+
+    m_pixmapLabel = new QLabel( this );
+    m_pixmapLabel->setFixedSize( 16, 16 );
+    layout->addWidget( m_pixmapLabel );
+
+    m_label = new ElidedLabel( this );
+    layout->addWidget( m_label, 1 );
+
+    layout->addSpacing( 6 );
 }
 
-GroupItem::~GroupItem()
+StatusLabel::~StatusLabel()
 {
 }
 
-void GroupItem::setCode( const QString& text )
+void StatusLabel::setText( const QString& text )
 {
-    m_code = text;
+    m_label->setText( text );
 }
 
-void GroupItem::setColor( const SceneNodeColor& color )
+QString StatusLabel::text() const
 {
-    m_color = color;
+    return m_label->text();
 }
 
-SceneNode* GroupItem::createNode( SceneNode* parent )
+void StatusLabel::setPixmap( const QPixmap& pixmap )
 {
-    GroupNode* node = new GroupNode( m_color, parent );
+    m_pixmapLabel->setPixmap( pixmap );
+}
 
-    if ( !node->addCode( m_code ) ) {
-        m_project->setErrorInfo( this );
-        return NULL;
-    }
-
-    return node;
+const QPixmap* StatusLabel::pixmap() const
+{
+    return m_pixmapLabel->pixmap();
 }

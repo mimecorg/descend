@@ -18,6 +18,7 @@
 
 #include "project/parametricmeshitem.h"
 
+#include "project/project.h"
 #include "scene/parametricmeshnode.h"
 
 ParametricMeshItem::ParametricMeshItem( ProjectItem::Type type, ProjectItem* parent ) : ProjectItem( type, parent ),
@@ -68,11 +69,15 @@ SceneNode* ParametricMeshItem::createNode( SceneNode* parent )
 
     ParametricMeshNode* node = new ParametricMeshNode( meshType, m_attributeType, m_color, parent );
 
-    if ( !node->addInitCode( m_initCode ) )
+    if ( !node->addInitCode( m_initCode ) ) {
+        m_project->setErrorInfo( this, Project::InitContext );
         return NULL;
+    }
 
-    if ( !node->addCalcCode( m_calcCode ) )
+    if ( !node->addCalcCode( m_calcCode ) ) {
+        m_project->setErrorInfo( this, Project::CalcContext );
         return NULL;
+    }
 
     return node;
 }

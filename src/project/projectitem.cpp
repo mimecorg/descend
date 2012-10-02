@@ -18,18 +18,27 @@
 
 #include "project/projectitem.h"
 
+#include "project/project.h"
+
 ProjectItem::ProjectItem( Type type, ProjectItem* parent ) :
     m_type( type ),
-    m_parent( parent )
+    m_parent( parent ),
+    m_project( NULL )
 {
-    if ( parent != NULL )
+    if ( parent != NULL ) {
+        m_project = parent->m_project;
+
         parent->m_items.append( this );
+    }
 }
 
 ProjectItem::~ProjectItem()
 {
     if ( m_parent != NULL )
         m_parent->m_items.removeOne( this );
+
+    if ( m_project != NULL && m_project->errorItem() == this )
+        m_project->setErrorInfo( NULL );
 
     foreach ( ProjectItem* item, m_items ) {
         item->m_parent = NULL;

@@ -25,6 +25,7 @@
 #include "xmlui/client.h"
 #include "project/projectitem.h"
 
+class StatusLabel;
 class Project;
 class ProjectItemModel;
 
@@ -56,8 +57,12 @@ private slots:
 private:
     void insertItem( ProjectItem::Type type, const QString& name );
 
+    void showStatus( const QPixmap& pixmap, const QString& text, int icon = 0 );
+
 private:
     Ui::MainWindow m_ui;
+
+    StatusLabel* m_statusLabel;
 
     Project* m_project;
 

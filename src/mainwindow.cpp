@@ -27,6 +27,7 @@
 #include "scene/scene.h"
 #include "scene/tessellator.h"
 #include "utils/iconloader.h"
+#include "widgets/statuslabel.h"
 #include "xmlui/builder.h"
 #include "xmlui/toolstrip.h"
 
@@ -185,6 +186,11 @@ MainWindow::MainWindow() : QMainWindow()
 
     m_ui.setupUi( this );
 
+    QStatusBar* bar = statusBar();
+
+    m_statusLabel = new StatusLabel( bar );
+    bar->addWidget( m_statusLabel, 1 );
+
     m_ui.minLodEdit->setText( "8" );
     m_ui.maxLodEdit->setText( "16" );
     m_ui.alphaEdit->setText( "0.05" );
@@ -329,11 +335,11 @@ void MainWindow::drawScene()
     if ( !item )
         return;
 
+    m_model->setBoldItem( NULL );
+
     m_ui.sceneWidget->setScene( NULL );
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
-
-    m_ui.outputEdit->clear();
 
     int minLod = qBound( 0, m_ui.minLodEdit->text().toInt(), 20 );
     int maxLod = qBound( 0, m_ui.maxLodEdit->text().toInt(), 20 );
@@ -348,39 +354,82 @@ void MainWindow::drawScene()
     Renderer::currentRenderer()->tessellator( Renderer::CurveMesh )->setAttributeThreshold( threshold );
 
     bool ok = false;
+    qint64 elapsed = 0;
 
     Scene* scene = new Scene();
 
     if ( m_project->initializeScene( scene, item ) ) {
-        QElapsedTimer timer;
-        timer.start();
-
         SceneNodeContext context;
         context.setColor( 0, QColor( 255, 64, 144 ) );
         context.setColor( 1, QColor( 255, 144, 64 ) );
 
-        if ( scene->calculate( context ) ) {
-            m_ui.outputEdit->setPlainText( QString( "Elements: %1\nElapsed time: %2 ms" )
-                .arg( scene->elementsCount() )
-                .arg( timer.elapsed() ) );
+        QElapsedTimer timer;
+        timer.start();
 
-            m_ui.sceneWidget->setScene( scene );
+        ok = scene->calculate( context );
 
-            ok = true;
-        }
+        elapsed = timer.elapsed();
     }
 
-    if ( !ok ) {
-        m_ui.outputEdit->setPlainText( QString( "Error: %1 in line %2" )
-            .arg( scene->engine()->errorMessage() )
-            .arg( scene->engine()->errorLineNumber() ) );
+    if ( ok ) {
+        QString info = tr( "Elements: %1" ).arg( scene->elementsCount() );
+        info += QLatin1String( "        " );
+        info += tr( "Elapsed time: %1 ms" ).arg( elapsed );
+
+        showStatus( IconLoader::pixmap( "status-info" ), info );
+
+        m_model->setBoldItem( item );
+
+        m_ui.sceneWidget->setScene( scene );
+    } else {
+        QString error;
+
+        switch ( scene->engine()->errorCode() ) {
+            case Misc::SyntaxError:
+                error = tr( "Syntax error" );
+                break;
+            case Misc::TypeError:
+                error = tr( "Type mismatch error" );
+                break;
+            case Misc::RuntimeError:
+                error = tr( "Runtime error" );
+                break;
+            default:
+                error = tr( "Error" );
+                break;
+        }
+
+        error += QLatin1String( ": " );
+        error += scene->engine()->errorMessage();
+
+        if ( m_project->errorItem() != NULL ) {
+            error += QLatin1Char( ' ' );
+
+            switch ( m_project->errorContext() ) {
+                case Project::InitContext:
+                    error += tr( "in initialization of" );
+                    break;
+                case Project::CalcContext:
+                    error += tr( "in calculation of" );
+                    break;
+                default:
+                    error += tr( "in" );
+                    break;
+            }
+
+            error += QLatin1Char( ' ' );
+            error += m_project->errorItem()->name();
+
+            error += QLatin1String( ", " );
+            error += tr( "line %1" ).arg( scene->engine()->errorLineNumber() );
+        }
+
+        showStatus( IconLoader::pixmap( "status-error" ), error, QMessageBox::Warning );
 
         delete scene;
     }
 
     QApplication::restoreOverrideCursor();
-
-    m_model->setBoldItem( item );
 
     updateActions();
 }
@@ -389,9 +438,21 @@ void MainWindow::closeScene()
 {
     m_ui.sceneWidget->setScene( NULL );
 
-    m_ui.outputEdit->clear();
+    showStatus( QPixmap(), QString() );
 
     m_model->setBoldItem( NULL );
 
     updateActions();
+}
+
+void MainWindow::showStatus( const QPixmap& pixmap, const QString& text, int icon /*= 0*/ )
+{
+    m_statusLabel->setPixmap( pixmap );
+    m_statusLabel->setText( text );
+
+    if ( icon != 0 && topLevelWidget()->isActiveWindow() ) {
+        QMessageBox box;
+        box.setIcon( (QMessageBox::Icon)icon );
+        QAccessible::updateAccessibility( &box, 0, QAccessible::Alert );
+    }
 }
