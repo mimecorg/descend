@@ -18,9 +18,11 @@
 
 #include "scenewidget.h"
 
+#include "project/project.h"
 #include "scene/glloader.h"
 #include "scene/scene.h"
 #include "scene/renderer.h"
+#include "scene/tessellator.h"
 
 #include <QMouseEvent>
 
@@ -28,8 +30,8 @@
 
 SceneWidget::SceneWidget( QWidget* parent ) : QGLWidget( parent ),
     m_renderer( NULL ),
+    m_project( NULL ),
     m_scene( NULL ),
-    m_edges( false ),
     m_rotation( 0.0 ),
     m_angle( -45.0 ),
     m_tracking( NoTracking )
@@ -42,20 +44,18 @@ SceneWidget::~SceneWidget()
     delete m_scene;
 }
 
+void SceneWidget::setProject( Project* project )
+{
+    m_project = project;
+    updateSettings();
+}
+
 void SceneWidget::setScene( Scene* scene )
 {
     if ( m_scene != scene ) {
         delete m_scene;
         m_scene = scene;
-        updateGL();
-    }
-}
-
-void SceneWidget::setEdges( bool on )
-{
-    if ( m_edges != on ) {
-        m_edges = on;
-        updateGL();
+        update();
     }
 }
 
@@ -69,12 +69,41 @@ void SceneWidget::initializeGL()
     m_renderer = new Renderer();
     m_renderer->makeCurrent();
 
-    m_renderer->setBackgroundColor( QColor::fromRgbF( 0.0f, 0.1f, 0.7f ), QColor::fromRgbF( 0.2f, 0.5f, 1.0f ) );
-
     m_renderer->setLightDirection( QVector3D( (float)( sin( LightRotation ) * cos( LightAngle ) ),
 		(float)( sin( LightAngle ) ), (float)( cos( LightRotation ) * cos( LightAngle ) ) ) );
     m_renderer->setLightIntensity( 0.1f, 0.6f, 0.4f );
     m_renderer->setShininess( 40.0f );
+
+    updateSettings();
+}
+
+void SceneWidget::updateSettings()
+{
+    if ( m_renderer != NULL && m_project != NULL ) {
+        QColor color = m_project->setting( "BgColor" ).value<QColor>();
+        QColor color2 = m_project->setting( "BgColor2" ).value<QColor>();
+
+        m_renderer->setBackgroundColor( color, color2.isValid() ? color2 : color );
+
+        int minLod = m_project->setting( "MinLod" ).toInt();
+        int maxLod = m_project->setting( "MaxLod" ).toInt();
+        float geometryThreshold = m_project->setting( "GeometryThreshold" ).toFloat();
+        float attributeThreshold = m_project->setting( "AttributeThreshold" ).toFloat();
+
+        Tessellator* tessellator = m_renderer->tessellator( Renderer::SurfaceMesh );
+        tessellator->setLodRange( minLod, maxLod );
+        tessellator->setGeometryThreshold( geometryThreshold );
+        tessellator->setAttributeThreshold( attributeThreshold );
+
+        Tessellator* tessellator2 = m_renderer->tessellator( Renderer::CurveMesh );
+        tessellator2->setLodRange( minLod, maxLod );
+        tessellator2->setGeometryThreshold( geometryThreshold );
+        tessellator2->setAttributeThreshold( attributeThreshold );
+
+        m_renderer->setEdgesVisible( m_project->setting( "DrawEdges" ).toBool() );
+
+        update();
+    }
 }
 
 void SceneWidget::resizeGL( int width, int height )
@@ -115,8 +144,6 @@ void SceneWidget::paintGL()
         view.rotate( m_rotation, 0.0, 0.0, 1.0 );
 
         m_renderer->setViewMatrix( view );
-
-        m_renderer->setEdgesVisible( m_edges );
 
         m_scene->render();
     }

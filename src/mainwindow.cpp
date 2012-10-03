@@ -20,6 +20,7 @@
 
 #include "scenewidget.h"
 #include "dialogs/propertiesdialog.h"
+#include "dialogs/colorsettingsdialog.h"
 #include "dialogs/tessellationdialog.h"
 #include "misc/miscengine.h"
 #include "project/project.h"
@@ -212,6 +213,8 @@ MainWindow::MainWindow() : QMainWindow()
     connect( m_ui.treeView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateActions() ) );
 
     updateActions();
+
+    m_ui.sceneWidget->setProject( m_project );
 }
 
 MainWindow::~MainWindow()
@@ -249,7 +252,7 @@ void MainWindow::updateActions()
     action( "popupDefaultView" )->setEnabled( false );
     action( "previousView" )->setEnabled( false );
     action( "nextView" )->setEnabled( false );
-    action( "colorSettings" )->setEnabled( false );
+    action( "colorSettings" )->setEnabled( true );
     action( "lightingSettings" )->setEnabled( false );
     action( "tessellationSettings" )->setEnabled( true );
 }
@@ -328,22 +331,9 @@ void MainWindow::drawScene()
 
     m_ui.sceneWidget->setScene( NULL );
 
+    m_ui.sceneWidget->updateSettings();
+
     QApplication::setOverrideCursor( Qt::WaitCursor );
-
-    int minLod = m_project->setting( "MinLod" ).toInt();
-    int maxLod = m_project->setting( "MaxLod" ).toInt();
-    float geometryThreshold = m_project->setting( "GeometryThreshold" ).toFloat();
-    float attributeThreshold = m_project->setting( "AttributeThreshold" ).toFloat();
-
-    Renderer::currentRenderer()->tessellator( Renderer::SurfaceMesh )->setLodRange( minLod, maxLod );
-    Renderer::currentRenderer()->tessellator( Renderer::SurfaceMesh )->setGeometryThreshold( geometryThreshold );
-    Renderer::currentRenderer()->tessellator( Renderer::SurfaceMesh )->setAttributeThreshold( attributeThreshold );
-
-    Renderer::currentRenderer()->tessellator( Renderer::CurveMesh )->setLodRange( minLod, maxLod );
-    Renderer::currentRenderer()->tessellator( Renderer::CurveMesh )->setGeometryThreshold( geometryThreshold );
-    Renderer::currentRenderer()->tessellator( Renderer::CurveMesh )->setAttributeThreshold( attributeThreshold );
-
-    m_ui.sceneWidget->setEdges( m_project->setting( "DrawEdges" ).toBool() );
 
     bool ok = false;
     qint64 elapsed = 0;
@@ -351,9 +341,12 @@ void MainWindow::drawScene()
     Scene* scene = new Scene();
 
     if ( m_project->initializeScene( scene, item ) ) {
+        QColor color = m_project->setting( "Color" ).value<QColor>();
+        QColor color2 = m_project->setting( "Color2" ).value<QColor>();
+
         SceneNodeContext context;
-        context.setColor( 0, QColor( 255, 64, 144 ) );
-        context.setColor( 1, QColor( 255, 144, 64 ) );
+        context.setColor( 0, color );
+        context.setColor( 1, color2.isValid() ? color2 : color );
 
         QElapsedTimer timer;
         timer.start();
@@ -435,6 +428,12 @@ void MainWindow::closeScene()
     m_model->setBoldItem( NULL );
 
     updateActions();
+}
+
+void MainWindow::colorSettings()
+{
+    ColorSettingsDialog dialog( m_project, this );
+    dialog.exec();
 }
 
 void MainWindow::tessellationSettings()

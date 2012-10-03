@@ -52,6 +52,7 @@ private slots:
     void drawScene();
     void closeScene();
 
+    void colorSettings();
     void tessellationSettings();
 
 private:

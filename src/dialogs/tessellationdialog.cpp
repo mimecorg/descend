@@ -32,6 +32,9 @@ TessellationDialog::TessellationDialog( Project* project, QWidget* parent ) : QD
     m_ui.promptLabel->setMinimumWidth( 350 );
     m_ui.promptLabel->setFixedHeight( m_ui.promptLabel->heightForWidth( 350 ) );
 
+    m_ui.buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "&OK" ) );
+    m_ui.buttonBox->button( QDialogButtonBox::Cancel )->setText( tr( "&Cancel" ) );
+
     setFixedHeight( sizeHint().height() );
 
     m_ui.minimumSlider->setValue( project->setting( "MinLod" ).toInt() );

@@ -16,59 +16,30 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#ifndef SCENEWIDGET_H
-#define SCENEWIDGET_H
+#ifndef COLORSETTINGSDIALOG_H
+#define COLORSETTINGSDIALOG_H
 
-#include <QGLWidget>
+#include "ui_colorsettingsdialog.h"
 
 class Project;
-class Scene;
-class Renderer;
 
-class SceneWidget : public QGLWidget
+class ColorSettingsDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit SceneWidget( QWidget* parent );
-    ~SceneWidget();
+    ColorSettingsDialog( Project* project, QWidget* parent );
+    ~ColorSettingsDialog();
 
-public:
-    void setProject( Project* project );
-    Project* project() const { return m_project; }
+public: // overrides
+    void accept();
 
-    void setScene( Scene* scene );
-    Scene* scene() const { return m_scene; }
-
-    void updateSettings();
-
-protected: // overrides
-    void initializeGL();
-    void resizeGL( int width, int height );
-    void paintGL();
-
-    void mousePressEvent( QMouseEvent* e );
-    void mouseMoveEvent( QMouseEvent* e );
-    void mouseReleaseEvent( QMouseEvent* e );
+private slots:
+    void updateWidgets();
 
 private:
-    enum Tracking
-    {
-        NoTracking,
-        RotateXY
-    };
-
-private:
-    Renderer* m_renderer;
+    Ui::ColorSettingsDialog m_ui;
 
     Project* m_project;
-
-    Scene* m_scene;
-
-    float m_rotation;
-    float m_angle;
-
-    Tracking m_tracking;
-    QPoint m_lastPos;
 };
 
 #endif

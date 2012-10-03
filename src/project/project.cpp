@@ -32,6 +32,12 @@ Project::Project() : ProjectItem( ProjectItem::Project, NULL ),
 {
     m_project = this;
 
+    m_settings.insert( "Color", QColor( 255, 64, 144 ) );
+    m_settings.insert( "Color2", QColor( 255, 164, 64 ) );
+
+    m_settings.insert( "BgColor", QColor( 0, 25, 178 ) );
+    m_settings.insert( "BgColor2", QColor( 50, 128, 255 ) );
+
     m_settings.insert( "MinLod", 8 );
     m_settings.insert( "MaxLod", 16 );
     m_settings.insert( "GeometryThreshold", 0.05f );

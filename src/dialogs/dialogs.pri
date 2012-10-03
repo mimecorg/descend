@@ -1,9 +1,11 @@
-HEADERS += dialogs/propertiesdialog.h \
+HEADERS += dialogs/colorsettingsdialog.h \
+           dialogs/propertiesdialog.h \
            dialogs/tessellationdialog.h
 
-SOURCES += dialogs/propertiesdialog.cpp \
+SOURCES += dialogs/colorsettingsdialog.cpp \
+           dialogs/propertiesdialog.cpp \
            dialogs/tessellationdialog.cpp
 
-FORMS   += dialogs/propertiesdialog.ui \
+FORMS   += dialogs/colorsettingsdialog.ui \
+           dialogs/propertiesdialog.ui \
            dialogs/tessellationdialog.ui
-
