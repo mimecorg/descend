@@ -20,6 +20,7 @@
 
 #include "scenewidget.h"
 #include "dialogs/propertiesdialog.h"
+#include "dialogs/tessellationdialog.h"
 #include "misc/miscengine.h"
 #include "project/project.h"
 #include "project/projectitemmodel.h"
@@ -191,10 +192,6 @@ MainWindow::MainWindow() : QMainWindow()
     m_statusLabel = new StatusLabel( bar );
     bar->addWidget( m_statusLabel, 1 );
 
-    m_ui.minLodEdit->setText( "8" );
-    m_ui.maxLodEdit->setText( "16" );
-    m_ui.alphaEdit->setText( "0.05" );
-
     m_project = new Project();
     m_project->setName( "Project" );
 
@@ -207,9 +204,6 @@ MainWindow::MainWindow() : QMainWindow()
     m_proxyModel->setDynamicSortFilter( true );
 
     m_ui.treeView->setModel( m_proxyModel );
-    m_ui.treeView->setEditTriggers( QAbstractItemView::SelectedClicked | QAbstractItemView::EditKeyPressed );
-    m_ui.treeView->setRootIsDecorated( false );
-    m_ui.treeView->setHeaderHidden( true );
 
     m_ui.treeView->expandAll();
 
@@ -223,11 +217,6 @@ MainWindow::MainWindow() : QMainWindow()
 MainWindow::~MainWindow()
 {
     delete m_project;
-}
-
-void MainWindow::on_edgesCheckBox_toggled( bool on )
-{
-    m_ui.sceneWidget->setEdges( on );
 }
 
 void MainWindow::updateActions()
@@ -262,7 +251,7 @@ void MainWindow::updateActions()
     action( "nextView" )->setEnabled( false );
     action( "colorSettings" )->setEnabled( false );
     action( "lightingSettings" )->setEnabled( false );
-    action( "tessellationSettings" )->setEnabled( false );
+    action( "tessellationSettings" )->setEnabled( true );
 }
 
 void MainWindow::insertItem()
@@ -321,7 +310,7 @@ void MainWindow::editProperties()
     QModelIndex index = m_proxyModel->mapToSource( m_ui.treeView->currentIndex() );
     ProjectItem* item = m_model->itemFromIndex( index );
 
-    if ( item ) {
+    if ( item != NULL ) {
         PropertiesDialog dialog( item, this );
         dialog.exec();
     }
@@ -332,7 +321,7 @@ void MainWindow::drawScene()
     QModelIndex index = m_proxyModel->mapToSource( m_ui.treeView->currentIndex() );
     ProjectItem* item = m_model->itemFromIndex( index );
 
-    if ( !item )
+    if ( item == NULL )
         return;
 
     m_model->setBoldItem( NULL );
@@ -341,17 +330,20 @@ void MainWindow::drawScene()
 
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
-    int minLod = qBound( 0, m_ui.minLodEdit->text().toInt(), 20 );
-    int maxLod = qBound( 0, m_ui.maxLodEdit->text().toInt(), 20 );
-    float threshold = qBound( 0.0f, m_ui.alphaEdit->text().toFloat(), 1.0f );
+    int minLod = m_project->setting( "MinLod" ).toInt();
+    int maxLod = m_project->setting( "MaxLod" ).toInt();
+    float geometryThreshold = m_project->setting( "GeometryThreshold" ).toFloat();
+    float attributeThreshold = m_project->setting( "AttributeThreshold" ).toFloat();
 
     Renderer::currentRenderer()->tessellator( Renderer::SurfaceMesh )->setLodRange( minLod, maxLod );
-    Renderer::currentRenderer()->tessellator( Renderer::SurfaceMesh )->setGeometryThreshold( threshold );
-    Renderer::currentRenderer()->tessellator( Renderer::SurfaceMesh )->setAttributeThreshold( threshold );
+    Renderer::currentRenderer()->tessellator( Renderer::SurfaceMesh )->setGeometryThreshold( geometryThreshold );
+    Renderer::currentRenderer()->tessellator( Renderer::SurfaceMesh )->setAttributeThreshold( attributeThreshold );
 
     Renderer::currentRenderer()->tessellator( Renderer::CurveMesh )->setLodRange( minLod, maxLod );
-    Renderer::currentRenderer()->tessellator( Renderer::CurveMesh )->setGeometryThreshold( threshold );
-    Renderer::currentRenderer()->tessellator( Renderer::CurveMesh )->setAttributeThreshold( threshold );
+    Renderer::currentRenderer()->tessellator( Renderer::CurveMesh )->setGeometryThreshold( geometryThreshold );
+    Renderer::currentRenderer()->tessellator( Renderer::CurveMesh )->setAttributeThreshold( attributeThreshold );
+
+    m_ui.sceneWidget->setEdges( m_project->setting( "DrawEdges" ).toBool() );
 
     bool ok = false;
     qint64 elapsed = 0;
@@ -443,6 +435,12 @@ void MainWindow::closeScene()
     m_model->setBoldItem( NULL );
 
     updateActions();
+}
+
+void MainWindow::tessellationSettings()
+{
+    TessellationDialog dialog( m_project, this );
+    dialog.exec();
 }
 
 void MainWindow::showStatus( const QPixmap& pixmap, const QString& text, int icon /*= 0*/ )

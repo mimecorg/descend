@@ -22,6 +22,7 @@
 #include "project/projectitem.h"
 
 class Scene;
+class LocalSettings;
 
 class Project : public ProjectItem
 {
@@ -41,6 +42,9 @@ public:
     void setCode( const QString& text );
     const QString& code() const { return m_code; }
 
+    void setSetting( const QString& key, const QVariant& value );
+    QVariant setting( const QString& key, const QVariant& defaultValue = QVariant() ) const;
+
     ProjectItem* createItem( ProjectItem::Type type, ProjectItem* parent );
 
     bool initializeScene( Scene* scene, ProjectItem* root );
@@ -54,6 +58,8 @@ private:
 
 private:
     QString m_code;
+
+    QVariantMap m_settings;
 
     ProjectItem* m_errorItem;
     Context m_errorContext;

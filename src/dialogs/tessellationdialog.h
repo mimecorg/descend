@@ -16,58 +16,31 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef TESSELLATIONDIALOG_H
+#define TESSELLATIONDIALOG_H
 
-#include <QMainWindow>
+#include "ui_tessellationdialog.h"
 
-#include "ui_mainwindow.h"
-#include "xmlui/client.h"
-#include "project/projectitem.h"
-
-class StatusLabel;
 class Project;
-class ProjectItemModel;
 
-class MainWindow : public QMainWindow, public XmlUi::Client
+class TessellationDialog : public QDialog
 {
     Q_OBJECT
 public:
-    MainWindow();
-    ~MainWindow();
+    TessellationDialog( Project* project, QWidget* parent );
+    ~TessellationDialog();
+
+public: // overrides
+    void accept();
 
 private slots:
-    void updateActions();
-
-    void insertItem();
-    void insertFolder();
-    void insertGroup();
-    void insertCurve();
-    void insertSurface();
-
-    void renameItem();
-    void deleteItem();
-    void editProperties();
-
-    void drawScene();
-    void closeScene();
-
-    void tessellationSettings();
+    void on_minimumSlider_valueChanged( int value );
+    void on_maximumSlider_valueChanged( int value );
 
 private:
-    void insertItem( ProjectItem::Type type, const QString& name );
-
-    void showStatus( const QPixmap& pixmap, const QString& text, int icon = 0 );
-
-private:
-    Ui::MainWindow m_ui;
-
-    StatusLabel* m_statusLabel;
+    Ui::TessellationDialog m_ui;
 
     Project* m_project;
-
-    ProjectItemModel* m_model;
-    QSortFilterProxyModel* m_proxyModel;
 };
 
 #endif

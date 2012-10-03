@@ -24,12 +24,19 @@
 #include "scene/scene.h"
 #include "scene/groupnode.h"
 #include "scene/parametricmeshnode.h"
+#include "utils/localsettings.h"
 
 Project::Project() : ProjectItem( ProjectItem::Project, NULL ),
     m_errorItem( NULL ),
     m_errorContext( NoContext )
 {
     m_project = this;
+
+    m_settings.insert( "MinLod", 8 );
+    m_settings.insert( "MaxLod", 16 );
+    m_settings.insert( "GeometryThreshold", 0.05f );
+    m_settings.insert( "AttributeThreshold", 0.05f );
+    m_settings.insert( "DrawEdges", false );
 }
 
 Project::~Project()
@@ -39,6 +46,16 @@ Project::~Project()
 void Project::setCode( const QString& text )
 {
     m_code = text;
+}
+
+void Project::setSetting( const QString& key, const QVariant& value )
+{
+    m_settings.insert( key, value );
+}
+
+QVariant Project::setting( const QString& key, const QVariant& defaultValue /*= QVariant()*/ ) const
+{
+    return m_settings.value( key, defaultValue );
 }
 
 void Project::setErrorInfo( ProjectItem* item, Context context /*= NoContext*/ )
