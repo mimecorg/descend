@@ -27,22 +27,29 @@ ColorButton::~ColorButton()
 {
 }
 
+static QColor colorToSrgb( const QColor& color )
+{
+    double r = pow( color.redF(), 1.0 / 2.2 );
+    double g = pow( color.greenF(), 1.0 / 2.2 );
+    double b = pow( color.blueF(), 1.0 / 2.2 );
+    return QColor::fromRgbF( r, g, b );
+}
+
+static QColor colorFromSrgb( const QColor& color )
+{
+    double r = pow( color.redF(), 2.2 );
+    double g = pow( color.greenF(), 2.2 );
+    double b = pow( color.blueF(), 2.2 );
+    return QColor::fromRgbF( r, g, b );
+}
+
 void ColorButton::setColor( const QColor& color )
 {
     if ( m_color != color ) {
         m_color = color;
+        m_colorSrgb = color.isValid() ? colorToSrgb( color ) : QColor();
 
-        if ( color.isValid() ) {
-            QPixmap pixmap( iconSize() );
-            pixmap.fill( Qt::transparent );
-
-            QPainter painter( &pixmap );
-            painter.fillRect( pixmap.rect().adjusted( 2, 2, -1, -2 ), m_color );
-
-            setIcon( QIcon( pixmap ) );
-        } else {
-            setIcon( QIcon() );
-        }
+        updateIcon();
 
         emit colorChanged( color );
     }
@@ -50,7 +57,29 @@ void ColorButton::setColor( const QColor& color )
 
 void ColorButton::selectColor()
 {
-    QColor color = QColorDialog::getColor( m_color, this, tr( "Select Color" ) );
-    if ( color.isValid() )
-        setColor( color );
+    QColor color = QColorDialog::getColor( m_colorSrgb, this, tr( "Select Color" ) );
+
+    if ( color.isValid() && color != m_colorSrgb ) {
+        m_color = colorFromSrgb( color );
+        m_colorSrgb = color;
+
+        updateIcon();
+
+        emit colorChanged( color );
+    }
+}
+
+void ColorButton::updateIcon()
+{
+    if ( m_colorSrgb.isValid() ) {
+        QPixmap pixmap( iconSize() );
+        pixmap.fill( Qt::transparent );
+
+        QPainter painter( &pixmap );
+        painter.fillRect( pixmap.rect().adjusted( 2, 2, -1, -2 ), m_colorSrgb );
+
+        setIcon( QIcon( pixmap ) );
+    } else {
+        setIcon( QIcon() );
+    }
 }

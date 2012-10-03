@@ -37,7 +37,11 @@ private slots:
     void selectColor();
 
 private:
+    void updateIcon();
+
+private:
     QColor m_color;
+    QColor m_colorSrgb;
 };
 
 #endif
