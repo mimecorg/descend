@@ -271,7 +271,7 @@ void MainWindow::saveFile()
 
 void MainWindow::saveFileAs()
 {
-    QString path = QFileDialog::getSaveFileName( this, tr( "Save File" ), m_path, tr( "Descend Projects (*.dscn)" ) );
+    QString path = QFileDialog::getSaveFileName( this, tr( "Save File As" ), m_path, tr( "Descend Projects (*.dscn)" ) );
 
     if ( !path.isEmpty() ) {
         QFileInfo fileInfo( path );
@@ -322,10 +322,13 @@ void MainWindow::openFile( QString& path )
 
 void MainWindow::saveFile( QString& path )
 {
-    if ( m_project->save( path ) )
+    if ( m_project->save( path ) ) {
         m_path = path;
-    else
+
+        setWindowTitle( tr( "%1 - Descend" ).arg( QDir::toNativeSeparators( m_path ) ) );
+    } else {
         QMessageBox::warning( this, tr( "Warning" ), tr( "The selected file could not be saved." ) );
+    }
 }
 
 void MainWindow::insertItem()
