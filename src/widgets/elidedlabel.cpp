@@ -16,7 +16,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#include "elidedlabel.h"
+#include "widgets/elidedlabel.h"
 
 ElidedLabel::ElidedLabel( QWidget* parent ) : QLabel( parent ),
     m_lastWidth( 0 )
