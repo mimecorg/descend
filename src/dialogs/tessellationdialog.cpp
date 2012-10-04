@@ -32,6 +32,15 @@ TessellationDialog::TessellationDialog( Project* project, QWidget* parent ) : QD
     m_ui.promptLabel->setMinimumWidth( 350 );
     m_ui.promptLabel->setFixedHeight( m_ui.promptLabel->heightForWidth( 350 ) );
 
+    QLabel* labels[ 4 ] = { m_ui.minimumLabel, m_ui.maximumLabel, m_ui.geometryLabel, m_ui.attributesLabel };
+
+    int maxWidth = 0;
+    for ( int i = 0; i < 4; i++ )
+        maxWidth = qMax( maxWidth, labels[ i ]->sizeHint().width() );
+
+    for ( int i = 0; i < 4; i++ )
+        labels[ i ]->setFixedWidth( maxWidth );
+
     m_ui.buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "&OK" ) );
     m_ui.buttonBox->button( QDialogButtonBox::Cancel )->setText( tr( "&Cancel" ) );
 

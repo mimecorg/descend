@@ -20,6 +20,7 @@
 
 #include "project/project.h"
 #include "scene/groupnode.h"
+#include "utils/variantex.h"
 
 FolderItem::FolderItem( ProjectItem* parent ) : ProjectItem( ProjectItem::Folder, parent )
 {
@@ -32,6 +33,18 @@ FolderItem::~FolderItem()
 void FolderItem::setCode( const QString& text )
 {
     m_code = text;
+}
+
+void FolderItem::serialize( QVariantMap& data, SerializationContext* context ) const
+{
+    ProjectItem::serialize( data, context );
+    data[ "Code" ] << m_code;
+}
+
+void FolderItem::deserialize( const QVariantMap& data, SerializationContext* context )
+{
+    ProjectItem::deserialize( data, context );
+    data[ "Code" ] >> m_code;
 }
 
 SceneNode* FolderItem::createNode( SceneNode* parent )

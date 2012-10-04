@@ -39,6 +39,11 @@ public:
 private slots:
     void updateActions();
 
+    void newFile();
+    void openFile();
+    void saveFile();
+    void saveFileAs();
+
     void insertItem();
     void insertFolder();
     void insertGroup();
@@ -56,6 +61,11 @@ private slots:
     void tessellationSettings();
 
 private:
+    void initializeProject();
+
+    void openFile( QString& path );
+    void saveFile( QString& path );
+
     void insertItem( ProjectItem::Type type, const QString& name );
 
     void showStatus( const QPixmap& pixmap, const QString& text, int icon = 0 );
@@ -69,6 +79,8 @@ private:
 
     ProjectItemModel* m_model;
     QSortFilterProxyModel* m_proxyModel;
+
+    QString m_path;
 };
 
 #endif

@@ -21,10 +21,14 @@
 #include "project/folderitem.h"
 #include "project/groupitem.h"
 #include "project/parametricmeshitem.h"
+#include "project/projectserializer.h"
 #include "scene/scene.h"
 #include "scene/groupnode.h"
 #include "scene/parametricmeshnode.h"
+#include "utils/dataserializer.h"
 #include "utils/localsettings.h"
+#include "utils/variantex.h"
+#include "utils/zipfile.h"
 
 Project::Project() : ProjectItem( ProjectItem::Project, NULL ),
     m_errorItem( NULL ),
@@ -86,6 +90,121 @@ ProjectItem* Project::createItem( ProjectItem::Type type, ProjectItem* parent )
         default:
             return NULL;
     }
+}
+
+bool Project::load( const QString& path )
+{
+    ZipFileReader reader( path );
+
+    if ( !reader.open() )
+        return false;
+
+    if ( !loadProject( reader ) )
+        return false;
+
+    if ( !loadSettings( reader ) )
+        return false;
+
+    reader.close();
+
+    return true;
+}
+
+bool Project::save( const QString& path )
+{
+    ZipFileWriter writer( path );
+
+    if ( !writer.open() )
+        return false;
+
+    saveProject( writer );
+    saveSettings( writer );
+
+    writer.close();
+
+    return true;
+}
+
+bool Project::loadProject( const ZipFileReader& reader )
+{
+    QByteArray data = reader.fileData( "project.dat" );
+
+    if ( data.isNull() )
+        return false;
+
+    DataSerializer serializer( &data );
+
+    if ( !serializer.openForReading() )
+        return false;
+
+    ProjectSerializer projectSerializer( this );
+    serializer.stream() >> projectSerializer;
+
+    projectSerializer.deserialize( this );
+
+    return true;
+}
+
+void Project::saveProject( ZipFileWriter& writer )
+{
+    ProjectSerializer projectSerializer( this );
+    projectSerializer.serialize( this );
+
+    QByteArray data;
+    DataSerializer serializer( &data );
+
+    serializer.openForWriting();
+
+    serializer.stream() << projectSerializer;
+    serializer.close();
+
+    writer.addFile( "project.dat", data );
+}
+
+bool Project::loadSettings( const ZipFileReader& reader )
+{
+    QByteArray data = reader.fileData( "settings.dat" );
+
+    if ( data.isNull() )
+        return false;
+
+    DataSerializer serializer( &data );
+
+    if ( !serializer.openForReading() )
+        return false;
+
+    QVariantMap settings;
+    serializer.stream() >> settings;
+
+    for ( QVariantMap::const_iterator it = settings.begin(); it != settings.end(); ++it )
+        m_settings[ it.key() ] = it.value();
+
+    return true;
+}
+
+void Project::saveSettings( ZipFileWriter& writer )
+{
+    QByteArray data;
+    DataSerializer serializer( &data );
+
+    serializer.openForWriting();
+
+    serializer.stream() << m_settings;
+    serializer.close();
+
+    writer.addFile( "settings.dat", data );
+}
+
+void Project::serialize( QVariantMap& data, SerializationContext* context ) const
+{
+    ProjectItem::serialize( data, context );
+    data[ "Code" ] << m_code;
+}
+
+void Project::deserialize( const QVariantMap& data, SerializationContext* context )
+{
+    ProjectItem::deserialize( data, context );
+    data[ "Code" ] >> m_code;
 }
 
 bool Project::initializeScene( Scene* scene, ProjectItem* root )

@@ -35,7 +35,9 @@
 
 #include <QElapsedTimer>
 
-MainWindow::MainWindow() : QMainWindow()
+MainWindow::MainWindow() : QMainWindow(),
+    m_project( NULL ),
+    m_model( NULL )
 {
     setWindowTitle( tr( "Descend" ) );
 
@@ -193,28 +195,16 @@ MainWindow::MainWindow() : QMainWindow()
     m_statusLabel = new StatusLabel( bar );
     bar->addWidget( m_statusLabel, 1 );
 
-    m_project = new Project();
-    m_project->setName( "Project" );
-
-    m_model = new ProjectItemModel( m_project, this );
-
     m_proxyModel = new QSortFilterProxyModel( this );
-    m_proxyModel->setSourceModel( m_model );
     m_proxyModel->setSortLocaleAware( true );
     m_proxyModel->sort( 0, Qt::AscendingOrder );
     m_proxyModel->setDynamicSortFilter( true );
 
     m_ui.treeView->setModel( m_proxyModel );
 
-    m_ui.treeView->expandAll();
-
-    m_ui.treeView->setCurrentIndex( m_proxyModel->index( 0, 0 ) );
-
     connect( m_ui.treeView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateActions() ) );
 
-    updateActions();
-
-    m_ui.sceneWidget->setProject( m_project );
+    newFile();
 }
 
 MainWindow::~MainWindow()
@@ -232,10 +222,6 @@ void MainWindow::updateActions()
     bool canInsertGeometry = item != NULL && ( item->type() == ProjectItem::Project || item->type() == ProjectItem::Folder || item->type() == ProjectItem::Group );
     bool canDrawScene = item != NULL && ( item->type() == ProjectItem::Group || item->type() == ProjectItem::Curve || item->type() == ProjectItem::Surface );
 
-    action( "newFile" )->setEnabled( false );
-    action( "openFile" )->setEnabled( false );
-    action( "popupSaveFile" )->setEnabled( false );
-
     action( "insertItem" )->setEnabled( canInsertFolder | canInsertGeometry );
     action( "insertFolder" )->setEnabled( canInsertFolder );
     action( "insertGroup" )->setEnabled( canInsertGeometry );
@@ -252,9 +238,94 @@ void MainWindow::updateActions()
     action( "popupDefaultView" )->setEnabled( false );
     action( "previousView" )->setEnabled( false );
     action( "nextView" )->setEnabled( false );
-    action( "colorSettings" )->setEnabled( true );
     action( "lightingSettings" )->setEnabled( false );
-    action( "tessellationSettings" )->setEnabled( true );
+}
+
+void MainWindow::newFile()
+{
+    delete m_project;
+    m_project = new Project();
+
+    m_project->setName( "Project" );
+
+    m_path.clear();
+
+    initializeProject();
+}
+
+void MainWindow::openFile()
+{
+    QString path = QFileDialog::getOpenFileName( this, tr( "Open File" ), QString(), tr( "Descend Projects (*.dscn)" ) );
+
+    if ( !path.isEmpty() )
+        openFile( path );
+}
+
+void MainWindow::saveFile()
+{
+    if ( m_path.isEmpty() )
+        saveFileAs();
+    else
+        saveFile( m_path );
+}
+
+void MainWindow::saveFileAs()
+{
+    QString path = QFileDialog::getSaveFileName( this, tr( "Save File" ), m_path, tr( "Descend Projects (*.dscn)" ) );
+
+    if ( !path.isEmpty() ) {
+        QFileInfo fileInfo( path );
+        if ( fileInfo.suffix().isEmpty() )
+            path += ".dscn";
+
+        saveFile( path );
+    }
+}
+
+void MainWindow::initializeProject()
+{
+    delete m_model;
+    m_model = new ProjectItemModel( m_project, this );
+
+    m_proxyModel->setSourceModel( m_model );
+
+    m_ui.treeView->expandAll();
+    m_ui.treeView->setCurrentIndex( m_proxyModel->index( 0, 0 ) );
+
+    m_ui.sceneWidget->setProject( m_project );
+
+    if ( m_path.isEmpty() )
+        setWindowTitle( tr( "Descend" ) );
+    else
+        setWindowTitle( tr( "%1 - Descend" ).arg( QDir::toNativeSeparators( m_path ) ) );
+
+    updateActions();
+}
+
+void MainWindow::openFile( QString& path )
+{
+    Project* project = new Project();
+
+    if ( project->load( path ) ) {
+        delete m_project;
+        m_project = project;
+
+        m_path = path;
+
+        initializeProject();
+    } else {
+        delete project;
+
+        QMessageBox::warning( this, tr( "Warning" ), tr( "The selected file could not be opened." ) );
+    }
+}
+
+void MainWindow::saveFile( QString& path )
+{
+    if ( m_project->save( path ) )
+        m_path = path;
+    else
+        QMessageBox::warning( this, tr( "Warning" ), tr( "The selected file could not be saved." ) );
 }
 
 void MainWindow::insertItem()

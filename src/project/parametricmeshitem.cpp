@@ -20,6 +20,7 @@
 
 #include "project/project.h"
 #include "scene/parametricmeshnode.h"
+#include "utils/variantex.h"
 
 ParametricMeshItem::ParametricMeshItem( ProjectItem::Type type, ProjectItem* parent ) : ProjectItem( type, parent ),
     m_attributeType( Renderer::NoAttribute )
@@ -50,6 +51,24 @@ void ParametricMeshItem::setAttributeType( Renderer::AttributeType type )
 void ParametricMeshItem::setColor( const SceneNodeColor& color )
 {
     m_color = color;
+}
+
+void ParametricMeshItem::serialize( QVariantMap& data, SerializationContext* context ) const
+{
+    ProjectItem::serialize( data, context );
+    data[ "InitCode" ] << m_initCode;
+    data[ "CalcCode" ] << m_calcCode;
+    data[ "AttrType" ] << static_cast<int>( m_attributeType );
+    data[ "Color" ] << m_color;
+}
+
+void ParametricMeshItem::deserialize( const QVariantMap& data, SerializationContext* context )
+{
+    ProjectItem::deserialize( data, context );
+    data[ "InitCode" ] >> m_initCode;
+    data[ "CalcCode" ] >> m_calcCode;
+    data[ "AttrType" ] >> deserialize_cast<int>( m_attributeType );
+    data[ "Color" ] >> m_color;
 }
 
 SceneNode* ParametricMeshItem::createNode( SceneNode* parent )

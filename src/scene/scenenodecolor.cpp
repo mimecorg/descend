@@ -18,6 +18,8 @@
 
 #include "scene/scenenodecolor.h"
 
+#include "utils/variantex.h"
+
 SceneNodeColor::SceneNodeColor( ColorFlags flags /*= 0*/ ) :
     m_flags( flags )
 {
@@ -79,4 +81,28 @@ QColor SceneNodeColor::color( int index ) const
     Q_ASSERT( index >= 0 && index < 2 );
 
     return m_color[ index ];
+}
+
+void operator <<( QVariant& data, const SceneNodeColor& target )
+{
+    QVariantMap map;
+    map[ "Flags" ] << static_cast<int>( target.m_flags );
+    map[ "Type" ] << static_cast<int>( target.m_type[ 0 ] );
+    map[ "Type2" ] << static_cast<int>( target.m_type[ 1 ] );
+    if ( target.m_color[ 0 ].isValid() )
+        map[ "Color" ] << target.m_color[ 0 ];
+    if ( target.m_color[ 1 ].isValid() )
+        map[ "Color2" ] << target.m_color[ 1 ];
+    data << map;
+}
+
+void operator >>( const QVariant& data, SceneNodeColor& target )
+{
+    QVariantMap map;
+    data >> map;
+    map[ "Flags" ] >> deserialize_cast<int>( target.m_flags );
+    map[ "Type" ] >> deserialize_cast<int>( target.m_type[ 0 ] );
+    map[ "Type2" ] >> deserialize_cast<int>( target.m_type[ 1 ] );
+    map[ "Color" ] >> target.m_color[ 0 ];
+    map[ "Color2" ] >> target.m_color[ 1 ];
 }

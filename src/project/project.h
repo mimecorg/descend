@@ -23,6 +23,8 @@
 
 class Scene;
 class LocalSettings;
+class ZipFileReader;
+class ZipFileWriter;
 
 class Project : public ProjectItem
 {
@@ -45,15 +47,28 @@ public:
     void setSetting( const QString& key, const QVariant& value );
     QVariant setting( const QString& key, const QVariant& defaultValue = QVariant() ) const;
 
-    ProjectItem* createItem( ProjectItem::Type type, ProjectItem* parent );
-
-    bool initializeScene( Scene* scene, ProjectItem* root );
-
     void setErrorInfo( ProjectItem* item, Context context = NoContext );
     ProjectItem* errorItem() const { return m_errorItem; }
     Context errorContext() const { return m_errorContext; }
 
+    bool load( const QString& path );
+    bool save( const QString& path );
+
+    ProjectItem* createItem( ProjectItem::Type type, ProjectItem* parent );
+
+    bool initializeScene( Scene* scene, ProjectItem* root );
+
+public: // overrides
+    void serialize( QVariantMap& data, SerializationContext* context ) const;
+    void deserialize( const QVariantMap& data, SerializationContext* context );
+
 private:
+    bool loadProject( const ZipFileReader& reader );
+    void saveProject( ZipFileWriter& writer );
+
+    bool loadSettings( const ZipFileReader& reader );
+    void saveSettings( ZipFileWriter& writer );
+
     bool createChildNodes( ProjectItem* item, SceneNode* parent );
 
 private:

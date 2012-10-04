@@ -3,11 +3,13 @@ HEADERS += project/folderitem.h \
            project/parametricmeshitem.h \
            project/project.h \
            project/projectitem.h \
-           project/projectitemmodel.h
+           project/projectitemmodel.h \
+           project/projectserializer.h
 
 SOURCES += project/folderitem.cpp \
            project/groupitem.cpp \
            project/parametricmeshitem.cpp \
            project/project.cpp \
            project/projectitem.cpp \
-           project/projectitemmodel.cpp
+           project/projectitemmodel.cpp \
+           project/projectserializer.cpp

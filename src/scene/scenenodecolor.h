@@ -46,6 +46,9 @@ public:
 public:
     SceneNodeColor& operator =( const SceneNodeColor& other );
 
+    friend void operator <<( QVariant& data, const SceneNodeColor& target );
+    friend void operator >>( const QVariant& data, SceneNodeColor& target );
+
 public:
     void setFlags( ColorFlags flags );
     ColorFlags flags() const { return m_flags; }

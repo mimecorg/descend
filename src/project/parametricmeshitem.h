@@ -43,6 +43,9 @@ public:
     const SceneNodeColor& color() const { return m_color; }
 
 public: // overrides
+    void serialize( QVariantMap& data, SerializationContext* context ) const;
+    void deserialize( const QVariantMap& data, SerializationContext* context );
+
     SceneNode* createNode( SceneNode* parent );
 
 private:

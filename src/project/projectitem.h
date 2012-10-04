@@ -21,6 +21,7 @@
 
 class Project;
 class SceneNode;
+class SerializationContext;
 
 class ProjectItem
 {
@@ -52,6 +53,9 @@ public:
     bool contains( ProjectItem* item ) const;
 
 public:
+    virtual void serialize( QVariantMap& data, SerializationContext* context ) const;
+    virtual void deserialize( const QVariantMap& data, SerializationContext* context );
+
     virtual SceneNode* createNode( SceneNode* parent );
 
 protected:
@@ -64,6 +68,8 @@ protected:
     QList<ProjectItem*> m_items;
 
     QString m_name;
+
+    friend class ProjectSerializer;
 };
 
 #endif

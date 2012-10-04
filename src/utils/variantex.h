@@ -16,29 +16,41 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#ifndef FOLDERITEM_H
-#define FOLDERITEM_H
+#ifndef VARIANTEX_H
+#define VARIANTEX_H
 
-#include "project/projectitem.h"
+template<class T>
+void operator <<( QVariant& data, const T& target )
+{
+    data = QVariant::fromValue<T>( target );
+}
 
-class FolderItem : public ProjectItem
+template<class T>
+void operator >>( const QVariant& data, T& target )
+{
+    target = data.value<T>();
+}
+
+template<class T1, class T2>
+class DeserializeCastHelper
 {
 public:
-    FolderItem( ProjectItem* parent );
-    ~FolderItem();
+    DeserializeCastHelper( T2& target ) : m_target( target ) { }
 
-public:
-    void setCode( const QString& text );
-    const QString& code() const { return m_code; }
-
-public: // overrides
-    void serialize( QVariantMap& data, SerializationContext* context ) const;
-    void deserialize( const QVariantMap& data, SerializationContext* context );
-
-    SceneNode* createNode( SceneNode* parent );
+    friend void operator >>( const QVariant& data, DeserializeCastHelper<T1, T2>& helper )
+    {
+        T1 value = data.value<T1>();
+        helper.m_target = static_cast<T2>( value );
+    }
 
 private:
-    QString m_code;
+    T2& m_target;
 };
+
+template<class T1, class T2>
+DeserializeCastHelper<T1, T2> deserialize_cast( T2& target )
+{
+    return DeserializeCastHelper<T1, T2>( target );
+}
 
 #endif

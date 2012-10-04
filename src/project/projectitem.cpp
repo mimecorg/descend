@@ -19,6 +19,8 @@
 #include "project/projectitem.h"
 
 #include "project/project.h"
+#include "project/projectserializer.h"
+#include "utils/variantex.h"
 
 ProjectItem::ProjectItem( Type type, ProjectItem* parent ) :
     m_type( type ),
@@ -59,6 +61,31 @@ bool ProjectItem::contains( ProjectItem* item ) const
         item = item->parent();
     }
     return false;
+}
+
+void ProjectItem::serialize( QVariantMap& data, SerializationContext* context ) const
+{
+    data[ "T" ] << static_cast<int>( m_type );
+    data[ "P" ] << context->serialize( m_parent );
+    if ( m_items.count() > 0 ) {
+        QVariantList list;
+        foreach ( ProjectItem* item, m_items )
+            list.append( context->serialize( item ) );
+        data[ "Ch" ] << list;
+    }
+    data[ "N" ] << m_name;
+}
+
+void ProjectItem::deserialize( const QVariantMap& data, SerializationContext* context )
+{
+    QVariantList list;
+    data[ "Ch" ] >> list;
+    foreach ( QVariant handle, list ) {
+        ProjectItem* item = context->deserialize( handle );
+        if ( item != NULL )
+            m_items.append( item );
+    }
+    data[ "N" ] >> m_name;
 }
 
 SceneNode* ProjectItem::createNode( SceneNode* /*parent*/ )

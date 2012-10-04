@@ -20,6 +20,7 @@
 
 #include "project/project.h"
 #include "scene/groupnode.h"
+#include "utils/variantex.h"
 
 GroupItem::GroupItem( ProjectItem* parent ) : ProjectItem( ProjectItem::Group, parent )
 {
@@ -38,6 +39,20 @@ void GroupItem::setCode( const QString& text )
 void GroupItem::setColor( const SceneNodeColor& color )
 {
     m_color = color;
+}
+
+void GroupItem::serialize( QVariantMap& data, SerializationContext* context ) const
+{
+    ProjectItem::serialize( data, context );
+    data[ "Code" ] << m_code;
+    data[ "Color" ] << m_color;
+}
+
+void GroupItem::deserialize( const QVariantMap& data, SerializationContext* context )
+{
+    ProjectItem::deserialize( data, context );
+    data[ "Code" ] >> m_code;
+    data[ "Color" ] >> m_color;
 }
 
 SceneNode* GroupItem::createNode( SceneNode* parent )
