@@ -30,13 +30,13 @@ GroupNode::GroupNode( const SceneNodeColor& color, SceneNode* parent ) : SceneNo
 {
     m_unit = new MiscUnit( parent->unit() );
 
-    m_unit->addVariable( MiscSymbol( Misc::MatrixType, m_scene->identifier( Scene::M_Matrix ) ) );
+    m_unit->addVariable( MiscSymbol( Misc::MatrixType, m_scene->identifier( Scene::Transform ) ) );
 
     if ( color.type( 0 ) == SceneNodeColor::Calculated ) {
-        m_unit->addVariable( MiscSymbol( Misc::VectorType, m_scene->identifier( Scene::M_Color ) ) );
+        m_unit->addVariable( MiscSymbol( Misc::VectorType, m_scene->identifier( Scene::Color ) ) );
 
         if ( color.flags() & SceneNodeColor::DualColors )
-            m_unit->addVariable( MiscSymbol( Misc::VectorType, m_scene->identifier( Scene::M_Color2 ) ) );
+            m_unit->addVariable( MiscSymbol( Misc::VectorType, m_scene->identifier( Scene::Color2 ) ) );
     }
 }
 
@@ -60,13 +60,13 @@ bool GroupNode::calculate( const SceneNodeContext& parentContext )
 {
     MiscEngine* engine = m_scene->engine();
 
-    m_unit->setVariable( m_scene->identifier( Scene::M_Matrix ), MiscValue( Misc::MatrixType, engine ) );
+    m_unit->setVariable( m_scene->identifier( Scene::Transform ), MiscValue( Misc::MatrixType, engine ) );
 
     if ( m_color.type( 0 ) == SceneNodeColor::Calculated ) {
-        m_unit->setVariable( m_scene->identifier( Scene::M_Color ), MiscValue( Misc::VectorType, engine ) );
+        m_unit->setVariable( m_scene->identifier( Scene::Color ), MiscValue( Misc::VectorType, engine ) );
 
         if ( m_color.flags() & SceneNodeColor::DualColors )
-            m_unit->setVariable( m_scene->identifier( Scene::M_Color2 ), MiscValue( Misc::VectorType, engine ) );
+            m_unit->setVariable( m_scene->identifier( Scene::Color2 ), MiscValue( Misc::VectorType, engine ) );
     }
 
     foreach ( const MiscCode& code, m_codes ) {
@@ -76,7 +76,7 @@ bool GroupNode::calculate( const SceneNodeContext& parentContext )
 
     SceneNodeContext context = parentContext;
 
-    context.transform( m_unit->variable( m_scene->identifier( Scene::M_Matrix ) ).toMatrix() );
+    context.transform( m_unit->variable( m_scene->identifier( Scene::Transform ) ).toMatrix() );
 
     context.initializeColor( parentContext, m_color, m_unit, m_scene );
 

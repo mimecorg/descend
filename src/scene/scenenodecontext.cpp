@@ -86,7 +86,7 @@ void SceneNodeContext::initializeColor( const SceneNodeContext& parentContext, c
             m_color[ 0 ] = color.color( 0 );
             break;
         case SceneNodeColor::Calculated:
-            m_color[ 0 ] = vectorToColor( unit->variable( scene->identifier( Scene::M_Color ) ).toVector() );
+            m_color[ 0 ] = vectorToColor( unit->variable( scene->identifier( Scene::Color ) ).toVector() );
             break;
         default:
             break;
@@ -101,7 +101,7 @@ void SceneNodeContext::initializeColor( const SceneNodeContext& parentContext, c
                 m_color[ 1 ] = color.color( 1 );
                 break;
             case SceneNodeColor::Calculated:
-                m_color[ 1 ] = vectorToColor( unit->variable( scene->identifier( Scene::M_Color2 ) ).toVector() );
+                m_color[ 1 ] = vectorToColor( unit->variable( scene->identifier( Scene::Color2 ) ).toVector() );
                 break;
             default:
                 break;

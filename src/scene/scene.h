@@ -28,17 +28,16 @@ class Scene : public SceneNode
 public:
     enum Id
     {
-        M_Matrix,
-        M_Color,
-        M_Color2,
-        P_Min,
-        P_Max,
-        Q_Min,
-        Q_Max,
-        P,
-        Q,
-        V_Pos,
-        V_Color,
+        U,
+        V,
+        U_Min,
+        U_Max,
+        V_Min,
+        V_Max,
+        Pos,
+        Color,
+        Color2,
+        Transform,
         IdCount
     };
 

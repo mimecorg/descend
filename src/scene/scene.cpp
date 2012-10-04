@@ -23,10 +23,8 @@
 
 static const char* const identifiers[ Scene::IdCount ] =
 {
-    "m_matrix", "m_color", "m_color2",
-    "p_min", "p_max", "q_min", "q_max",
-    "p", "q",
-    "v_pos", "v_color"
+    "u", "v", "u_min", "u_max", "v_min", "v_max",
+    "pos", "color", "color2", "transform"
 };
 
 Scene::Scene() : SceneNode( NULL )

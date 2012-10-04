@@ -35,8 +35,8 @@ public:
     void setGeometryThreshold( float threshold );
     void setAttributeThreshold( float threshold );
 
-    void setPRange( float min, float max );
-    void setQRange( float min, float max );
+    void setURange( float min, float max );
+    void setVRange( float min, float max );
 
 public:
     virtual void clear() = 0;
@@ -58,10 +58,10 @@ protected:
     float m_geometryThreshold;
     float m_attributeThreshold;
 
-    float m_pMin;
-    float m_pMax;
-    float m_qMin;
-    float m_qMax;
+    float m_uMin;
+    float m_uMax;
+    float m_vMin;
+    float m_vMax;
 };
 
 #endif

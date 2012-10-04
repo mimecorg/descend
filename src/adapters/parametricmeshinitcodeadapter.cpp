@@ -50,14 +50,14 @@ QStringList ParametricMeshInitCodeAdapter::inputs( Renderer::AttributeType /*att
 QStringList ParametricMeshInitCodeAdapter::outputs( Renderer::AttributeType attr, const SceneNodeColor& color ) const
 {
     QStringList list;
-    list << "m_matrix";
+    list << "transform";
     if ( attr == Renderer::NoAttribute && color.type( 0 ) == SceneNodeColor::Calculated ) {
-        list << "m_color";
+        list << "color";
         if ( color.flags() & SceneNodeColor::DualColors )
-            list << "m_color2";
+            list << "color2";
     }
-    list << "p_min" << "p_max";
+    list << "u_min" << "u_max";
     if ( m_mesh->type() == ProjectItem::Surface )
-        list << "q_min" << "q_max";
+        list << "v_min" << "v_max";
     return list;
 }

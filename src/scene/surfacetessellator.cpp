@@ -166,13 +166,13 @@ bool SurfaceTessellator::initialize( ParametricMeshNode* node )
 {
     Vertex v0, v1, v2, v3;
 
-    if ( !calculateVertex( node, &v0, QVector2D( m_pMin, m_qMin ) ) )
+    if ( !calculateVertex( node, &v0, QVector2D( m_uMin, m_vMin ) ) )
         return false;
-    if ( !calculateVertex( node, &v1, QVector2D( m_pMax, m_qMin ) ) )
+    if ( !calculateVertex( node, &v1, QVector2D( m_uMax, m_vMin ) ) )
         return false;
-    if ( !calculateVertex( node, &v2, QVector2D( m_pMin, m_qMax ) ) )
+    if ( !calculateVertex( node, &v2, QVector2D( m_uMin, m_vMax ) ) )
         return false;
-    if ( !calculateVertex( node, &v3, QVector2D( m_pMax, m_qMax ) ) )
+    if ( !calculateVertex( node, &v3, QVector2D( m_uMax, m_vMax ) ) )
         return false;
 
     m_vertices.append( v0 );
@@ -216,12 +216,12 @@ bool SurfaceTessellator::calculateVertex( ParametricMeshNode* node, Vertex* vert
     if ( !node->calculateVertex( param, &vertex->m_pos, &vertex->m_attr ) )
         return false;
 
-    float dp = 0.1f * ( m_pMax - m_pMin ) / (float)( 1 << ( m_lodMax / 2 ) );
-    float dq = 0.1f * ( m_qMax - m_qMin ) / (float)( 1 << ( m_lodMax / 2 ) );
+    float du = 0.1f * ( m_uMax - m_uMin ) / (float)( 1 << ( m_lodMax / 2 ) );
+    float dv = 0.1f * ( m_vMax - m_vMin ) / (float)( 1 << ( m_lodMax / 2 ) );
 
     // calculate two samples with small offset from original vertex
-    QVector2D p1 = param + QVector2D( dp, 0.0f );
-    QVector2D p2 = param + QVector2D( 0.0f, dq );
+    QVector2D p1 = param + QVector2D( du, 0.0f );
+    QVector2D p2 = param + QVector2D( 0.0f, dv );
 
     QVector3D v1, v2, attr;
     if ( !node->calculateVertex( p1, &v1, &attr ) || !node->calculateVertex( p2, &v2, &attr ) )
@@ -234,7 +234,7 @@ bool SurfaceTessellator::calculateVertex( ParametricMeshNode* node, Vertex* vert
         vertex->m_normal = preciseNormal( vertex->m_pos, v1, v2 );
     } else {
         // if one of the points coincides with the vertex, calculate a third sample
-        QVector2D p3 = param + QVector2D( dp, dq );
+        QVector2D p3 = param + QVector2D( du, dv );
         QVector3D v3;
         if ( !node->calculateVertex( p3, &v3, &attr ) )
             return false;

@@ -35,32 +35,32 @@ ParametricMeshNode::ParametricMeshNode( Renderer::MeshType type, Renderer::Attri
 {
     m_initUnit = new MiscUnit( parent->unit() ),
 
-    m_initUnit->addVariable( MiscSymbol( Misc::MatrixType, m_scene->identifier( Scene::M_Matrix ) ) );
+    m_initUnit->addVariable( MiscSymbol( Misc::MatrixType, m_scene->identifier( Scene::Transform ) ) );
 
     if ( attr == Renderer::NoAttribute && color.type( 0 ) == SceneNodeColor::Calculated ) {
-        m_initUnit->addVariable( MiscSymbol( Misc::VectorType, m_scene->identifier( Scene::M_Color ) ) );
+        m_initUnit->addVariable( MiscSymbol( Misc::VectorType, m_scene->identifier( Scene::Color ) ) );
 
         if ( color.flags() & SceneNodeColor::DualColors )
-            m_initUnit->addVariable( MiscSymbol( Misc::VectorType, m_scene->identifier( Scene::M_Color2 ) ) );
+            m_initUnit->addVariable( MiscSymbol( Misc::VectorType, m_scene->identifier( Scene::Color2 ) ) );
     }
 
-    m_initUnit->addVariable( MiscSymbol( Misc::FloatType, m_scene->identifier( Scene::P_Min ) ) );
-    m_initUnit->addVariable( MiscSymbol( Misc::FloatType, m_scene->identifier( Scene::P_Max ) ) );
+    m_initUnit->addVariable( MiscSymbol( Misc::FloatType, m_scene->identifier( Scene::U_Min ) ) );
+    m_initUnit->addVariable( MiscSymbol( Misc::FloatType, m_scene->identifier( Scene::U_Max ) ) );
 
     if ( type == Renderer::SurfaceMesh ) {
-        m_initUnit->addVariable( MiscSymbol( Misc::FloatType, m_scene->identifier( Scene::Q_Min ) ) );
-        m_initUnit->addVariable( MiscSymbol( Misc::FloatType, m_scene->identifier( Scene::Q_Max ) ) );
+        m_initUnit->addVariable( MiscSymbol( Misc::FloatType, m_scene->identifier( Scene::V_Min ) ) );
+        m_initUnit->addVariable( MiscSymbol( Misc::FloatType, m_scene->identifier( Scene::V_Max ) ) );
     }
 
     m_calcUnit = new MiscUnit( m_initUnit );
 
-    m_calcUnit->addVariable( MiscSymbol( Misc::FloatType, m_scene->identifier( Scene::P ) ) );
+    m_calcUnit->addVariable( MiscSymbol( Misc::FloatType, m_scene->identifier( Scene::U ) ) );
     if ( type == Renderer::SurfaceMesh )
-        m_calcUnit->addVariable( MiscSymbol( Misc::FloatType, m_scene->identifier( Scene::Q ) ) );
+        m_calcUnit->addVariable( MiscSymbol( Misc::FloatType, m_scene->identifier( Scene::V ) ) );
 
-    m_calcUnit->addVariable( MiscSymbol( Misc::VectorType, m_scene->identifier( Scene::V_Pos ) ) );
+    m_calcUnit->addVariable( MiscSymbol( Misc::VectorType, m_scene->identifier( Scene::Pos ) ) );
     if ( attr == Renderer::RgbAttribute )
-        m_calcUnit->addVariable( MiscSymbol( Misc::VectorType, m_scene->identifier( Scene::V_Color ) ) );
+        m_calcUnit->addVariable( MiscSymbol( Misc::VectorType, m_scene->identifier( Scene::Color ) ) );
 }
 
 ParametricMeshNode::~ParametricMeshNode()
@@ -98,21 +98,21 @@ bool ParametricMeshNode::calculate( const SceneNodeContext& parentContext )
 
     MiscEngine* engine = m_scene->engine();
 
-    m_initUnit->setVariable( m_scene->identifier( Scene::M_Matrix ), MiscValue( Misc::MatrixType, engine ) );
+    m_initUnit->setVariable( m_scene->identifier( Scene::Transform ), MiscValue( Misc::MatrixType, engine ) );
 
     if ( m_attributeType == Renderer::NoAttribute && m_color.type( 0 ) == SceneNodeColor::Calculated ) {
-        m_initUnit->setVariable( m_scene->identifier( Scene::M_Color ), MiscValue( Misc::VectorType, engine ) );
+        m_initUnit->setVariable( m_scene->identifier( Scene::Color ), MiscValue( Misc::VectorType, engine ) );
 
         if ( m_color.flags() & SceneNodeColor::DualColors )
-            m_initUnit->setVariable( m_scene->identifier( Scene::M_Color2 ), MiscValue( Misc::VectorType, engine ) );
+            m_initUnit->setVariable( m_scene->identifier( Scene::Color2 ), MiscValue( Misc::VectorType, engine ) );
     }
 
-    m_initUnit->setVariable( m_scene->identifier( Scene::P_Min ), MiscValue( 0.0f, engine ) );
-    m_initUnit->setVariable( m_scene->identifier( Scene::P_Max ), MiscValue( 1.0f, engine ) );
+    m_initUnit->setVariable( m_scene->identifier( Scene::U_Min ), MiscValue( 0.0f, engine ) );
+    m_initUnit->setVariable( m_scene->identifier( Scene::U_Max ), MiscValue( 1.0f, engine ) );
 
     if ( m_meshType == Renderer::SurfaceMesh ) {
-        m_initUnit->setVariable( m_scene->identifier( Scene::Q_Min ), MiscValue( 0.0f, engine ) );
-        m_initUnit->setVariable( m_scene->identifier( Scene::Q_Max ), MiscValue( 1.0f, engine ) );
+        m_initUnit->setVariable( m_scene->identifier( Scene::V_Min ), MiscValue( 0.0f, engine ) );
+        m_initUnit->setVariable( m_scene->identifier( Scene::V_Max ), MiscValue( 1.0f, engine ) );
     }
 
     foreach ( const MiscCode& code, m_initCodes ) {
@@ -122,21 +122,21 @@ bool ParametricMeshNode::calculate( const SceneNodeContext& parentContext )
 
     m_context = parentContext;
 
-    m_context.transform( m_initUnit->variable( m_scene->identifier( Scene::M_Matrix ) ).toMatrix() );
+    m_context.transform( m_initUnit->variable( m_scene->identifier( Scene::Transform ) ).toMatrix() );
 
     if ( m_attributeType == Renderer::NoAttribute )
         m_context.initializeColor( parentContext, m_color, m_initUnit, m_scene );
 
     Tessellator* tessellator = Renderer::currentRenderer()->tessellator( m_meshType );
 
-    float pMin = m_initUnit->variable( m_scene->identifier( Scene::P_Min ) ).toFloat();
-    float pMax = m_initUnit->variable( m_scene->identifier( Scene::P_Max ) ).toFloat();
-    tessellator->setPRange( pMin, pMax );
+    float uMin = m_initUnit->variable( m_scene->identifier( Scene::U_Min ) ).toFloat();
+    float uMax = m_initUnit->variable( m_scene->identifier( Scene::U_Max ) ).toFloat();
+    tessellator->setURange( uMin, uMax );
 
     if ( m_meshType == Renderer::SurfaceMesh ) {
-        float qMin = m_initUnit->variable( m_scene->identifier( Scene::Q_Min ) ).toFloat();
-        float qMax = m_initUnit->variable( m_scene->identifier( Scene::Q_Max ) ).toFloat();
-        tessellator->setQRange( qMin, qMax );
+        float vMin = m_initUnit->variable( m_scene->identifier( Scene::V_Min ) ).toFloat();
+        float vMax = m_initUnit->variable( m_scene->identifier( Scene::V_Max ) ).toFloat();
+        tessellator->setVRange( vMin, vMax );
     }
 
     if ( !tessellator->tessellate( this ) )
@@ -166,7 +166,7 @@ bool ParametricMeshNode::calculateVertex( float param, QVector3D* pos, QVector3D
 
     MiscEngine* engine = m_scene->engine();
 
-    m_calcUnit->setVariable( m_scene->identifier( Scene::P ), MiscValue( param, engine ) );
+    m_calcUnit->setVariable( m_scene->identifier( Scene::U ), MiscValue( param, engine ) );
 
     return calculateCommon( pos, attr );
 }
@@ -177,8 +177,8 @@ bool ParametricMeshNode::calculateVertex( const QVector2D& param, QVector3D* pos
 
     MiscEngine* engine = m_scene->engine();
 
-    m_calcUnit->setVariable( m_scene->identifier( Scene::P ), MiscValue( param.x(), engine ) );
-    m_calcUnit->setVariable( m_scene->identifier( Scene::Q ), MiscValue( param.y(), engine ) );
+    m_calcUnit->setVariable( m_scene->identifier( Scene::U ), MiscValue( param.x(), engine ) );
+    m_calcUnit->setVariable( m_scene->identifier( Scene::V ), MiscValue( param.y(), engine ) );
 
     return calculateCommon( pos, attr );
 }
@@ -187,21 +187,21 @@ bool ParametricMeshNode::calculateCommon( QVector3D* pos, QVector3D* attr )
 {
     MiscEngine* engine = m_scene->engine();
 
-    m_calcUnit->setVariable( m_scene->identifier( Scene::V_Pos ), MiscValue( Misc::VectorType, engine ) );
+    m_calcUnit->setVariable( m_scene->identifier( Scene::Pos ), MiscValue( Misc::VectorType, engine ) );
     if ( m_attributeType == Renderer::RgbAttribute )
-        m_calcUnit->setVariable( m_scene->identifier( Scene::V_Color ), MiscValue( Misc::VectorType, engine ) );
+        m_calcUnit->setVariable( m_scene->identifier( Scene::Color ), MiscValue( Misc::VectorType, engine ) );
 
     foreach ( const MiscCode& code, m_calcCodes ) {
         if ( !engine->execute( code ) )
             return false;
     }
 
-    QVector3D position = m_calcUnit->variable( m_scene->identifier( Scene::V_Pos ) ).toVector().toVector3D();
+    QVector3D position = m_calcUnit->variable( m_scene->identifier( Scene::Pos ) ).toVector().toVector3D();
 
     *pos = m_context.matrix().map( position );
 
     if ( m_attributeType == Renderer::RgbAttribute )
-        *attr = m_calcUnit->variable( m_scene->identifier( Scene::V_Color ) ).toVector().toVector3D();
+        *attr = m_calcUnit->variable( m_scene->identifier( Scene::Color ) ).toVector().toVector3D();
 
     return true;
 }

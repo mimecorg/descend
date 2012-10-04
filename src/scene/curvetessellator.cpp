@@ -93,9 +93,9 @@ bool CurveTessellator::initialize( ParametricMeshNode* node )
 {
     Vertex v0, v1;
 
-    if ( !calculateVertex( node, &v0, m_pMin ) )
+    if ( !calculateVertex( node, &v0, m_uMin ) )
         return false;
-    if ( !calculateVertex( node, &v1, m_pMax ) )
+    if ( !calculateVertex( node, &v1, m_uMax ) )
         return false;
 
     m_vertices.append( v0 );

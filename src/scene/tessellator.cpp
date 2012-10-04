@@ -23,10 +23,10 @@ Tessellator::Tessellator() :
     m_lodMax( 0 ),
     m_geometryThreshold( 0 ),
     m_attributeThreshold( 0 ),
-    m_pMin( 0 ),
-    m_pMax( 0 ),
-    m_qMin( 0 ),
-    m_qMax( 0 )
+    m_uMin( 0 ),
+    m_uMax( 0 ),
+    m_vMin( 0 ),
+    m_vMax( 0 )
 {
 }
 
@@ -50,16 +50,16 @@ void Tessellator::setAttributeThreshold( float threshold )
     m_attributeThreshold = threshold;
 }
 
-void Tessellator::setPRange( float min, float max )
+void Tessellator::setURange( float min, float max )
 {
-    m_pMin = min;
-    m_pMax = max;
+    m_uMin = min;
+    m_uMax = max;
 }
 
-void Tessellator::setQRange( float min, float max )
+void Tessellator::setVRange( float min, float max )
 {
-    m_qMin = min;
-    m_qMax = max;
+    m_vMin = min;
+    m_vMax = max;
 }
 
 // Calculate the distance from point v2 to the line going through v0 and v1 relative to the distance from v0 to v1.
