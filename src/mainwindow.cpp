@@ -292,14 +292,14 @@ void MainWindow::initializeProject()
     m_ui.treeView->expandAll();
     m_ui.treeView->setCurrentIndex( m_proxyModel->index( 0, 0 ) );
 
+    closeScene();
+
     m_ui.sceneWidget->setProject( m_project );
 
     if ( m_path.isEmpty() )
         setWindowTitle( tr( "Descend" ) );
     else
         setWindowTitle( tr( "%1 - Descend" ).arg( QDir::toNativeSeparators( m_path ) ) );
-
-    updateActions();
 }
 
 void MainWindow::openFile( QString& path )
