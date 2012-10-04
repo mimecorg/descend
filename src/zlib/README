@@ -1,0 +1,6 @@
+This directory contains headers for the zlib data compression library
+copied directly from Qt sources.
+
+Version 1.2.5, April 19th, 2010.
+
+Copyright (C) 1995-2010 Jean-loup Gailly and Mark Adler

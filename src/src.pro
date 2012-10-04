@@ -30,6 +30,7 @@ include( scene/scene.pri )
 include( utils/utils.pri )
 include( widgets/widgets.pri )
 include( xmlui/xmlui.pri )
+include( zlib/zlib.pri )
 
 INCLUDEPATH += .
 
