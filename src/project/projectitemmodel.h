@@ -54,13 +54,13 @@ public:
 
     bool deleteItem( const QModelIndex& index );
 
-    void setBoldItem( ProjectItem* item );
-    ProjectItem* boldItem() const { return m_boldItem; }
+    void setMarkedItem( ProjectItem* item );
+    ProjectItem* markedItem() const { return m_markedItem; }
 
 private:
     Project* m_project;
 
-    ProjectItem* m_boldItem;
+    ProjectItem* m_markedItem;
 };
 
 #endif

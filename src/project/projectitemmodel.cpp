@@ -23,7 +23,7 @@
 
 ProjectItemModel::ProjectItemModel( Project* project, QObject* parent ) : QAbstractItemModel( parent ),
     m_project( project ),
-    m_boldItem( NULL )
+    m_markedItem( NULL )
 {
 }
 
@@ -115,7 +115,7 @@ QVariant ProjectItemModel::data( const QModelIndex& index, int role ) const
             break;
 
         case Qt::FontRole:
-            if ( item == m_boldItem ) {
+            if ( item == m_markedItem ) {
                 QFont font;
                 font.setBold( true );
                 return font;
@@ -239,8 +239,8 @@ bool ProjectItemModel::deleteItem( const QModelIndex& index )
     if ( item == m_project )
         return false;
 
-    if ( item->contains( m_boldItem ) )
-        m_boldItem = NULL;
+    if ( item->contains( m_markedItem ) )
+        m_markedItem = NULL;
 
     ProjectItem* parentItem = item->parent();
 
@@ -255,13 +255,13 @@ bool ProjectItemModel::deleteItem( const QModelIndex& index )
     return true;
 }
 
-void ProjectItemModel::setBoldItem( ProjectItem* item )
+void ProjectItemModel::setMarkedItem( ProjectItem* item )
 {
-    if ( m_boldItem != item ) {
-        QModelIndex oldIndex = indexFromItem( m_boldItem );
+    if ( m_markedItem != item ) {
+        QModelIndex oldIndex = indexFromItem( m_markedItem );
         QModelIndex newIndex = indexFromItem( item );
 
-        m_boldItem = item;
+        m_markedItem = item;
 
         if ( oldIndex.isValid() )
             emit dataChanged( oldIndex, oldIndex );

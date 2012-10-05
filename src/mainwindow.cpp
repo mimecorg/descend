@@ -420,7 +420,7 @@ void MainWindow::drawScene()
     if ( item == NULL )
         return;
 
-    m_model->setBoldItem( NULL );
+    m_model->setMarkedItem( NULL );
 
     m_ui.sceneWidget->setScene( NULL );
 
@@ -456,7 +456,7 @@ void MainWindow::drawScene()
 
         showStatus( IconLoader::pixmap( "status-info" ), info );
 
-        m_model->setBoldItem( item );
+        m_model->setMarkedItem( item );
 
         m_ui.sceneWidget->setScene( scene );
     } else {
@@ -518,7 +518,7 @@ void MainWindow::closeScene()
 
     showStatus( QPixmap(), QString() );
 
-    m_model->setBoldItem( NULL );
+    m_model->setMarkedItem( NULL );
 
     updateActions();
 }
