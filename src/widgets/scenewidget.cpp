@@ -16,7 +16,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#include "scenewidget.h"
+#include "widgets/scenewidget.h"
 
 #include "project/project.h"
 #include "scene/glloader.h"

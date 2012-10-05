@@ -18,7 +18,6 @@
 
 #include "mainwindow.h"
 
-#include "scenewidget.h"
 #include "dialogs/propertiesdialog.h"
 #include "dialogs/colorsettingsdialog.h"
 #include "dialogs/tessellationdialog.h"

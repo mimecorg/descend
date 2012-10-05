@@ -7,13 +7,11 @@ CONFIG  += qt
 QT      += opengl xml
 
 HEADERS += application.h \
-           mainwindow.h \
-           scenewidget.h
+           mainwindow.h
 
 SOURCES += application.cpp \
            main.cpp \
-           mainwindow.cpp \
-           scenewidget.cpp
+           mainwindow.cpp
 
 FORMS   += mainwindow.ui
 
