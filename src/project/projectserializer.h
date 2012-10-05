@@ -45,6 +45,8 @@ private:
     QList<QVariantMap> m_data;
     QList<ProjectItem*> m_items;
 
+    ProjectItem* m_root;
+
     friend class SerializationContext;
 };
 

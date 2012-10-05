@@ -50,6 +50,8 @@ public:
 
     QModelIndex insertItem( ProjectItem::Type type, const QString& name, const QModelIndex& parent );
 
+    QModelIndex cloneItem( const QModelIndex& index, const QString& name );
+
     bool deleteItem( const QModelIndex& index );
 
     void setBoldItem( ProjectItem* item );

@@ -50,6 +50,7 @@ private slots:
     void insertCurve();
     void insertSurface();
 
+    void cloneItem();
     void renameItem();
     void deleteItem();
     void editProperties();

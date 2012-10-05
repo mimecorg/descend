@@ -92,6 +92,22 @@ ProjectItem* Project::createItem( ProjectItem::Type type, ProjectItem* parent )
     }
 }
 
+ProjectItem* Project::cloneItem( ProjectItem* item )
+{
+    ProjectItem* cloned = createItem( item->type(), item->parent() );
+
+    if ( cloned == NULL )
+        return NULL;
+
+    ProjectSerializer serializer( this );
+
+    serializer.serialize( item );
+    serializer.deserialize( cloned );
+
+    return cloned;
+}
+
+
 bool Project::load( const QString& path )
 {
     ZipFileReader reader( path );

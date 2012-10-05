@@ -21,7 +21,8 @@
 #include "project/project.h"
 
 ProjectSerializer::ProjectSerializer( Project* project ) :
-    m_project( project )
+    m_project( project ),
+    m_root( NULL )
 {
 }
 
@@ -37,6 +38,8 @@ void ProjectSerializer::serialize( ProjectItem* root )
     m_items.append( root );
     m_data.append( QVariantMap() );
 
+    m_root = root;
+
     SerializationContext context( this );
 
     root->serialize( m_data[ 0 ], &context );
@@ -51,6 +54,8 @@ void ProjectSerializer::deserialize( ProjectItem* root )
     for ( int i = 1; i < m_data.count(); i++ )
         m_items.append( NULL );
 
+    m_root = root;
+
     SerializationContext context( this );
 
     root->deserialize( m_data.at( 0 ), &context );
@@ -64,6 +69,11 @@ QVariant ProjectSerializer::serializeHelper( ProjectItem* item )
     for ( int i = 0; i < m_items.count(); i++ ) {
         if ( m_items.at( i ) == item )
             return i;
+    }
+
+    if ( !m_root->contains( item ) ) {
+        // NOTE: serialization of external references (outside the root item) is currently unsupported
+        return QVariant();
     }
 
     int index = m_items.count();

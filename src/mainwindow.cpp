@@ -228,7 +228,7 @@ void MainWindow::updateActions()
     action( "insertCurve" )->setEnabled( canInsertGeometry );
     action( "insertSurface" )->setEnabled( canInsertGeometry );
 
-    action( "cloneItem" )->setEnabled( false );
+    action( "cloneItem" )->setEnabled( isEditable );
     action( "renameItem" )->setEnabled( isEditable );
     action( "deleteItem" )->setEnabled( isEditable );
     action( "editProperties" )->setEnabled( item != NULL );
@@ -289,7 +289,7 @@ void MainWindow::initializeProject()
 
     m_proxyModel->setSourceModel( m_model );
 
-    m_ui.treeView->expandAll();
+    m_ui.treeView->expandToDepth( 1 );
     m_ui.treeView->setCurrentIndex( m_proxyModel->index( 0, 0 ) );
 
     closeScene();
@@ -364,6 +364,26 @@ void MainWindow::insertItem( ProjectItem::Type type, const QString& name )
         QModelIndex index = m_model->insertItem( type, name, parent );
 
         QModelIndex current = m_proxyModel->mapFromSource( index );
+
+        m_ui.treeView->setCurrentIndex( current );
+        m_ui.treeView->edit( current );
+    }
+}
+
+void MainWindow::cloneItem()
+{
+    QModelIndex index = m_proxyModel->mapToSource( m_ui.treeView->currentIndex() );
+    ProjectItem* item = m_model->itemFromIndex( index );
+
+    if ( item != NULL ) {
+        QString name = tr( "Copy of %1" ).arg( item->name() );
+
+        QModelIndex cloned = m_model->cloneItem( index, name );
+
+        QModelIndex current = m_proxyModel->mapFromSource( cloned );
+
+        if ( m_ui.treeView->isExpanded( m_ui.treeView->currentIndex() ) )
+            m_ui.treeView->expand( current );
 
         m_ui.treeView->setCurrentIndex( current );
         m_ui.treeView->edit( current );

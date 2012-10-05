@@ -56,6 +56,8 @@ public:
 
     ProjectItem* createItem( ProjectItem::Type type, ProjectItem* parent );
 
+    ProjectItem* cloneItem( ProjectItem* item );
+
     bool initializeScene( Scene* scene, ProjectItem* root );
 
 public: // overrides

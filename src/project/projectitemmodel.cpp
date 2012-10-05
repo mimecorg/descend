@@ -205,6 +205,30 @@ QModelIndex ProjectItemModel::insertItem( ProjectItem::Type type, const QString&
     return createIndex( row, 0, newItem );
 }
 
+QModelIndex ProjectItemModel::cloneItem( const QModelIndex& index, const QString& name )
+{
+    if ( !index.isValid() )
+        return QModelIndex();
+
+    ProjectItem* item = static_cast<ProjectItem*>( index.internalPointer() );
+
+    if ( item == m_project )
+        return QModelIndex();
+
+    ProjectItem* parentItem = item->parent();
+
+    int row = parentItem->items().count();
+
+    emit beginInsertRows( this->parent( index ), row, row );
+
+    ProjectItem* newItem = m_project->cloneItem( item );
+    newItem->setName( name );
+
+    emit endInsertRows();
+
+    return createIndex( row, 0, newItem );
+}
+
 bool ProjectItemModel::deleteItem( const QModelIndex& index )
 {
     if ( !index.isValid() )
