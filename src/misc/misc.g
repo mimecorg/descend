@@ -878,6 +878,8 @@ SymbolVariable ::= Id ;
 
             if ( token == T_ERROR )
                 m_errorMessage = lexer->errorMessage();
+            else if ( token == EOF_SYMBOL )
+                m_errorMessage = QString( "unexpected end of input" );
             else if ( spell[ token ] )
                 m_errorMessage = QString( "unexpected '%1'" ).arg( spell[ token ] );
 
