@@ -260,6 +260,9 @@ Misc::AST::Node* MiscUnitPrivate::parse( MiscLexer::Mode mode, const QString& te
         return NULL;
     }
 
+    if ( parser.result() == NULL )
+        return NULL;
+
 #if defined( MISC_DEBUG )
     QTextStream output( stdout );
     MiscPrintVisitor visitor( output );
