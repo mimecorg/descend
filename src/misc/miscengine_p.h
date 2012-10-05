@@ -123,7 +123,7 @@ public:
         Constants = 2,
         ConstantLast = ConstantFirst + Constants - 1,
         FunctionFirst,
-        Functions = 40,
+        Functions = 41,
         FunctionLast = FunctionFirst + Functions - 1,
         Reserved,
         SubscriptFirst = Reserved,

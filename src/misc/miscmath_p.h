@@ -604,6 +604,25 @@ inline void translate( MiscValuePrivate* result, MiscValuePrivate* arg )
 struct scale_impl
 {
     template<int R, int C>
+    static inline float calc( float arg )
+    {
+        if ( R == 3 && C == 3 )
+            return 1.0f;
+        else if ( R == C )
+            return arg;
+        else
+            return 0.0f;
+    }
+};
+
+inline void scale( MiscValuePrivate* result, float arg )
+{
+    calc_mat<scale_impl>::calc( result, arg );
+}
+
+struct scalev_impl
+{
+    template<int R, int C>
     static inline float calc( MiscValuePrivate* arg )
     {
         if ( R == 3 && C == 3 )
@@ -615,9 +634,9 @@ struct scale_impl
     }
 };
 
-inline void scale( MiscValuePrivate* result, MiscValuePrivate* arg )
+inline void scalev( MiscValuePrivate* result, MiscValuePrivate* arg )
 {
-    calc_mat<scale_impl>::calc( result, arg );
+    calc_mat<scalev_impl>::calc( result, arg );
 }
 
 inline void rotate( MiscValuePrivate* result, float t, MiscValuePrivate* u )

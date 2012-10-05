@@ -117,6 +117,7 @@ enum Code
     fn_identity,
     fn_translate,
     fn_scale,
+    fn_scalev,
     fn_rotate,
     fn_transpose,
     fn_determinant,

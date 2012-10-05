@@ -56,7 +56,8 @@ static const char* const reg_functions[ MiscEnginePrivate::Functions ] =
     "ceil", "min", "max", "clamp", "lerp",
     "isnan", "isinf", "length", "distance", "dot",
     "cross", "normalize", "lerpv", "identity", "translate",
-    "scale", "rotate", "transpose", "determinant", "inverse"
+    "scale", "scalev", "rotate", "transpose", "determinant",
+    "inverse"
 };
 
 static const char* const reg_subscripts[ MiscEnginePrivate::Subscripts ] =
@@ -949,7 +950,13 @@ bool MiscEnginePrivate::execute( char* ops, int sp, int fp )
 
             case Misc::OP::fn_scale:
                 result.m_value = newValue( Misc::MatrixType );
-                Misc::Math::scale( result.m_value, m_stack[ sp - 1 ].m_value );
+                Misc::Math::scale( result.m_value, m_stack[ sp - 1 ].m_float );
+                OP_UNARY( Matrix, Float );
+                break;
+
+            case Misc::OP::fn_scalev:
+                result.m_value = newValue( Misc::MatrixType );
+                Misc::Math::scalev( result.m_value, m_stack[ sp - 1 ].m_value );
                 OP_UNARY( Matrix, Vector );
                 break;
 
