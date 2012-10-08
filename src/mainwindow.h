@@ -39,6 +39,10 @@ public:
 private slots:
     void updateActions();
 
+    void showContextMenu( const QPoint& pos );
+
+    void doubleClicked( const QModelIndex& index );
+
     void newFile();
     void openFile();
     void saveFile();

@@ -117,6 +117,7 @@ MainWindow::MainWindow() : QMainWindow(),
     connect( action, SIGNAL( triggered() ), this, SLOT( closeScene() ) );
     setAction( "closeScene", action );
 
+    /*
     action = new QAction( IconLoader::icon( "camera" ), tr( "Camera Settings" ), this );
     connect( action, SIGNAL( triggered() ), this, SLOT( cameraSettings() ) );
     setAction( "cameraSettings", action );
@@ -154,14 +155,17 @@ MainWindow::MainWindow() : QMainWindow(),
     action->setShortcut( QKeySequence( Qt::ALT + Qt::Key_Right ) );
     connect( action, SIGNAL( triggered() ), this, SLOT( nextView() ) );
     setAction( "nextView", action );
+    */
 
     action = new QAction( IconLoader::icon( "colors" ), tr( "Color Settings" ), this );
     connect( action, SIGNAL( triggered() ), this, SLOT( colorSettings() ) );
     setAction( "colorSettings", action );
 
+    /*
     action = new QAction( IconLoader::icon( "lighting" ), tr( "Lighting Settings" ), this );
     connect( action, SIGNAL( triggered() ), this, SLOT( lightingSettings() ) );
     setAction( "lightingSettings", action );
+    */
 
     action = new QAction( IconLoader::icon( "tessellation" ), tr( "Tessellation Settings" ), this );
     connect( action, SIGNAL( triggered() ), this, SLOT( tessellationSettings() ) );
@@ -169,12 +173,12 @@ MainWindow::MainWindow() : QMainWindow(),
 
     setTitle( "sectionFile", tr( "File" ) );
     setTitle( "sectionEdit", tr( "Edit" ) );
-    setTitle( "sectionScene", tr( "Scene" ) );
+    //setTitle( "sectionScene", tr( "Scene" ) );
     setTitle( "sectionView", tr( "View" ) );
     setTitle( "sectionSettings", tr( "Settings" ) );
 
     setPopupMenu( "popupSaveFile", "menuSaveFile", "saveFile" );
-    setPopupMenu( "popupDefaultView", "menuDefaultView", "defaultView" );
+    //setPopupMenu( "popupDefaultView", "menuDefaultView", "defaultView" );
 
     loadXmlUiFile( ":/resources/mainwindow.xml" );
 
@@ -202,6 +206,8 @@ MainWindow::MainWindow() : QMainWindow(),
     m_ui.treeView->setModel( m_proxyModel );
 
     connect( m_ui.treeView->selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateActions() ) );
+    connect( m_ui.treeView, SIGNAL( customContextMenuRequested( const QPoint& ) ), this, SLOT( showContextMenu( const QPoint& ) ) );
+    connect( m_ui.treeView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( doubleClicked( const QModelIndex& ) ) );
 
     newFile();
 }
@@ -233,11 +239,26 @@ void MainWindow::updateActions()
     action( "editProperties" )->setEnabled( item != NULL );
     action( "drawScene" )->setEnabled( canDrawScene );
     action( "closeScene" )->setEnabled( m_ui.sceneWidget->scene() != NULL );
-    action( "cameraSettings" )->setEnabled( false );
-    action( "popupDefaultView" )->setEnabled( false );
-    action( "previousView" )->setEnabled( false );
-    action( "nextView" )->setEnabled( false );
-    action( "lightingSettings" )->setEnabled( false );
+}
+
+void MainWindow::showContextMenu( const QPoint& pos )
+{
+    QModelIndex index = m_ui.treeView->indexAt( pos );
+
+    if ( index.isValid() ) {
+        m_ui.treeView->selectionModel()->setCurrentIndex( index, QItemSelectionModel::Current );
+        m_ui.treeView->selectionModel()->select( index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
+
+        QMenu* menu = builder()->contextMenu( "menuItem" );
+        if ( menu )
+            menu->popup( m_ui.treeView->viewport()->mapToGlobal( pos ) );
+    }
+}
+
+void MainWindow::doubleClicked( const QModelIndex& index )
+{
+    if ( index.isValid() && action( "drawScene" )->isEnabled() )
+        drawScene();
 }
 
 void MainWindow::newFile()

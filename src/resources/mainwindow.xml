@@ -8,16 +8,17 @@
     <section id="sectionEdit">
       <action id="insertItem"/>
       <grid>
-        <action id="cloneItem"/>
-        <action id="deleteItem"/>
-        <action id="renameItem"/>
         <action id="editProperties"/>
+        <action id="cloneItem"/>
+        <action id="renameItem"/>
+        <action id="deleteItem"/>
       </grid>
     </section>
     <section id="sectionScene">
       <action id="drawScene"/>
       <action id="closeScene"/>
     </section>
+    <!--
     <section id="sectionView">
       <action id="cameraSettings"/>
       <grid>
@@ -30,9 +31,12 @@
         </row>
       </grid>
     </section>
+    -->
     <section id="sectionSettings">
       <action id="colorSettings"/>
+      <!--
       <action id="lightingSettings"/>
+      -->
       <action id="tessellationSettings"/>
     </section>
   </strip>
@@ -46,11 +50,26 @@
     <action id="insertCurve"/>
     <action id="insertSurface"/>
   </menu>
+  <!--
   <menu id="menuDefaultView">
     <action id="defaultView"/>
     <action id="frontView"/>
     <action id="topView"/>
     <action id="topLeftView"/>
     <action id="topRightView"/>
+  </menu>
+  -->
+  <menu id="menuItem">
+    <action id="editProperties"/>
+    <action id="cloneItem"/>
+    <action id="renameItem"/>
+    <action id="deleteItem"/>
+    <separator/>
+    <action id="insertFolder"/>
+    <action id="insertGroup"/>
+    <action id="insertCurve"/>
+    <action id="insertSurface"/>
+    <separator/>
+    <action id="drawScene"/>
   </menu>
 </xmlui>

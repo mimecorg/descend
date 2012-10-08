@@ -33,6 +33,9 @@
         </property>
         <item>
          <widget class="QTreeView" name="treeView">
+          <property name="contextMenuPolicy">
+           <enum>Qt::CustomContextMenu</enum>
+          </property>
           <property name="editTriggers">
            <set>QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
           </property>
@@ -41,6 +44,9 @@
           </property>
           <property name="headerHidden">
            <bool>true</bool>
+          </property>
+          <property name="expandsOnDoubleClick">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
