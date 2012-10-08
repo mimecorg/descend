@@ -28,7 +28,8 @@
 
 Application* application = NULL;
 
-Application::Application( int& argc, char** argv ) : QApplication( argc, argv )
+Application::Application( int& argc, char** argv ) : QApplication( argc, argv ),
+    m_mainWindow( NULL )
 {
     Q_INIT_RESOURCE( icons );
     Q_INIT_RESOURCE( resources );
@@ -48,6 +49,13 @@ Application::Application( int& argc, char** argv ) : QApplication( argc, argv )
 
     setWindowIcon( IconLoader::icon( "descend" ) );
 
+    QGLFormat::OpenGLVersionFlags flags = QGLFormat::openGLVersionFlags();
+
+    if ( ( flags & QGLFormat::OpenGL_Version_3_3 ) == 0 ) {
+        QMessageBox::critical( NULL, tr( "Error" ), tr( "Descend requires OpenGL version %1.%2 or higher." ).arg( 3 ).arg( 3 ) );
+        return;
+    }
+
     m_mainWindow = new MainWindow();
     m_mainWindow->show();
 }
@@ -59,6 +67,14 @@ Application::~Application()
 
     delete m_settings;
     m_settings = NULL;
+}
+
+int Application::exec()
+{
+    if ( application->m_mainWindow == NULL )
+        return 1;
+
+    return QApplication::exec();
 }
 
 void Application::initializeDefaultPaths()

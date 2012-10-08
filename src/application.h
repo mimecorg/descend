@@ -36,6 +36,9 @@ public:
 
     LocalSettings* applicationSettings() const { return m_settings; }
 
+public:
+    static int exec();
+
 private:
     void initializeDefaultPaths();
 
