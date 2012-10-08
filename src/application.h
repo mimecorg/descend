@@ -23,6 +23,7 @@
 
 class MainWindow;
 class LocalSettings;
+class AboutBox;
 
 class Application : public QApplication
 {
@@ -36,6 +37,9 @@ public:
 
     LocalSettings* applicationSettings() const { return m_settings; }
 
+public slots:
+    void about();
+
 public:
     static int exec();
 
@@ -44,12 +48,16 @@ private:
 
     bool checkAccess( const QString& path );
 
+    QString technicalInformation();
+
 private:
     QString m_dataPath;
 
     LocalSettings* m_settings;
 
     MainWindow* m_mainWindow;
+
+    QPointer<AboutBox> m_aboutBox;
 };
 
 extern Application* application;

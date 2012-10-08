@@ -46,6 +46,11 @@ MainWindow::MainWindow() : QMainWindow(),
     QAction* action;
     XmlUi::ToolStripAction* insertAction;
 
+    action = new QAction( IconLoader::icon( "about" ), tr( "About WebIssues" ), this );
+    action->setShortcut( QKeySequence( Qt::Key_F1 ) );
+    connect( action, SIGNAL( triggered() ), application, SLOT( about() ) );
+    setAction( "about", action );
+
     action = new QAction( IconLoader::icon( "file-new" ), tr( "New" ), this );
     action->setShortcut( QKeySequence( Qt::CTRL + Qt::Key_N ) );
     connect( action, SIGNAL( triggered() ), this, SLOT( newFile() ) );
@@ -186,6 +191,7 @@ MainWindow::MainWindow() : QMainWindow(),
     loadXmlUiFile( ":/resources/mainwindow.xml" );
 
     XmlUi::ToolStrip* strip = new XmlUi::ToolStrip( this );
+    strip->addAuxiliaryAction( this->action( "about" ) );
     setMenuWidget( strip );
 
     XmlUi::Builder* builder = new XmlUi::Builder( this );
@@ -661,4 +667,11 @@ void MainWindow::showStatus( const QPixmap& pixmap, const QString& text, int ico
         box.setIcon( (QMessageBox::Icon)icon );
         QAccessible::updateAccessibility( &box, 0, QAccessible::Alert );
     }
+}
+
+QString MainWindow::glVersion() const
+{
+    QGLFormat format = m_ui.sceneWidget->format();
+
+    return QString( "%1.%2" ).arg( format.majorVersion() ).arg( format.minorVersion() );
 }

@@ -1,5 +1,6 @@
 <RCC version="1.0">
 <qresource prefix="/icons">
+  <file>about-16.png</file>
   <file>camera-16.png</file>
   <file>camera-22.png</file>
   <file>close-16.png</file>
@@ -29,6 +30,8 @@
   <file>file-save-as-22.png</file>
   <file>lighting-16.png</file>
   <file>lighting-22.png</file>
+  <file>help-16.png</file>
+  <file>help-22.png</file>
   <file>item-curve-16.png</file>
   <file>item-folder-16.png</file>
   <file>item-group-16.png</file>
@@ -40,5 +43,6 @@
   <file>view-default-16.png</file>
   <file>view-next-16.png</file>
   <file>view-previous-16.png</file>
+  <file>web-16.png</file>
 </qresource>
 </RCC>

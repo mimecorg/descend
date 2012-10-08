@@ -1,8 +1,10 @@
-HEADERS += dialogs/colorsettingsdialog.h \
+HEADERS += dialogs/aboutbox.h \
+           dialogs/colorsettingsdialog.h \
            dialogs/propertiesdialog.h \
            dialogs/tessellationdialog.h
 
-SOURCES += dialogs/colorsettingsdialog.cpp \
+SOURCES += dialogs/aboutbox.cpp \
+           dialogs/colorsettingsdialog.cpp \
            dialogs/propertiesdialog.cpp \
            dialogs/tessellationdialog.cpp
 

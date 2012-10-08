@@ -36,6 +36,9 @@ public:
     MainWindow();
     ~MainWindow();
 
+public:
+    QString glVersion() const;
+
 protected: // overrides
     void closeEvent( QCloseEvent* e );
 

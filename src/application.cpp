@@ -21,6 +21,7 @@
 #include "mainwindow.h"
 #include "utils/localsettings.h"
 #include "utils/iconloader.h"
+#include "dialogs/aboutbox.h"
 
 #if defined( Q_WS_WIN )
 #include <shlobj.h>
@@ -75,6 +76,90 @@ int Application::exec()
         return 1;
 
     return QApplication::exec();
+}
+
+#if defined( Q_OS_WIN )
+extern "C" IMAGE_DOS_HEADER __ImageBase;
+#endif
+
+QString Application::technicalInformation()
+{
+#if defined( Q_OS_WIN )
+#if defined( Q_OS_WIN64 )
+    QString configBits = "64";
+#else
+    QString configBits = "32";
+#endif
+#if defined ( QT_DEBUG )
+    QString configMode = "debug";
+#else
+    QString configMode = "release";
+#endif
+#endif
+#if defined( QT_DLL )
+    QString configLink = "dynamic";
+#else
+    QString configLink = "static";
+#endif
+
+    QString qtVersion = qVersion();
+
+    QString glVersion = m_mainWindow->glVersion();
+
+    QString infoMessage;
+    infoMessage += "<h4>" + tr( "Technical Information" ) + "</h4>";
+    infoMessage += "<p>";
+
+#if defined( Q_OS_WIN )
+    const IMAGE_NT_HEADERS* header = (const IMAGE_NT_HEADERS*)( (char*)&__ImageBase + __ImageBase.e_lfanew );
+    QDateTime compiled = QDateTime::fromTime_t( header->FileHeader.TimeDateStamp );
+
+    infoMessage += tr( "Built on %1 in %2-bit %3 mode." ).arg( compiled.toString( "yyyy-MM-dd HH:mm" ), configBits, configMode ) + " ";
+#endif
+
+    infoMessage += " " + tr( "Using Qt %1 (%2 linking) and OpenGL %3." ).arg( qtVersion, configLink, glVersion ) + "</p>";
+
+    return infoMessage;
+}
+
+void Application::about()
+{
+    if ( !m_aboutBox ) {
+        QString message;
+        message += "<h3>" + tr( "Descend %1" ).arg( "0.2" ) + "</h3>";
+        message += "<p>" + tr( "Program for drawing 3D surfaces based on parametric equations." ) + "</p>";
+        message += "<p>" + tr( "This program is free software: you can redistribute it and/or modify"
+            " it under the terms of the GNU General Public License as published by"
+            " the Free Software Foundation, either version 3 of the License, or"
+            " (at your option) any later version." ) + "</p>";
+        message += "<p>" + trUtf8( "Copyright &copy; 2012 Michał Męciński" ) + "</p>";
+
+        QString link = "<a href=\"http://descend.mimec.org\">descend.mimec.org</a>";
+
+        QString helpMessage;
+        helpMessage += "<h4>" + tr( "Help" ) + "</h4>";
+        helpMessage += "<p>" + tr( "Open the Descend Quick Guide for help." ) + "</p>";
+
+        QString webMessage;
+        webMessage += "<h4>" + tr( "Website" ) + "</h4>";
+        webMessage += "<p>" + tr( "Visit %1 for more information about Descend." ).arg( link ) + "</p>";
+
+        QString infoMessage = technicalInformation();
+
+        m_aboutBox = new AboutBox( tr( "About Descend" ), message, m_mainWindow );
+
+        AboutBoxSection* helpSection = m_aboutBox->addSection( IconLoader::pixmap( "help" ), helpMessage );
+
+        QPushButton* helpButton = helpSection->addButton( tr( "&Quick Guide" ) );
+        connect( helpButton, SIGNAL( clicked() ), this, SLOT( showQuickGuide() ) );
+
+        m_aboutBox->addSection( IconLoader::pixmap( "web" ), webMessage );
+
+        m_aboutBox->addSection( IconLoader::pixmap( "status-info" ), infoMessage );
+    }
+
+    m_aboutBox->show();
+    m_aboutBox->activateWindow();
 }
 
 void Application::initializeDefaultPaths()
