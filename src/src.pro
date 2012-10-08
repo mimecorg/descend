@@ -16,6 +16,7 @@ SOURCES += application.cpp \
 FORMS   += mainwindow.ui
 
 RESOURCES += \
+           guide/guide.qrc \
            icons/icons.qrc \
            resources/resources.qrc \
            shaders/shaders.qrc

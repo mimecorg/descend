@@ -16,55 +16,27 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#ifndef APPLICATION_H
-#define APPLICATION_H
+#ifndef GUIDEDIALOG_H
+#define GUIDEDIALOG_H
 
-#include <QApplication>
+#include "xmlui/client.h"
 
-class MainWindow;
-class LocalSettings;
-class AboutBox;
-class GuideDialog;
-
-class Application : public QApplication
+class GuideDialog : public QDialog, public XmlUi::Client
 {
     Q_OBJECT
 public:
-    Application( int& argc, char** argv );
-    ~Application();
+    GuideDialog( QWidget* parent );
+    ~GuideDialog();
 
-public:
-    QString locateDataFile( const QString& name );
+private slots:
+    void goBack();
+    void goForward();
+    void goHome();
 
-    LocalSettings* applicationSettings() const { return m_settings; }
-
-public slots:
-    void about();
-
-    void showQuickGuide();
-
-public:
-    static int exec();
+    void updateActions();
 
 private:
-    void initializeDefaultPaths();
-
-    bool checkAccess( const QString& path );
-
-    QString technicalInformation();
-
-private:
-    QString m_dataPath;
-
-    LocalSettings* m_settings;
-
-    MainWindow* m_mainWindow;
-
-    QPointer<AboutBox> m_aboutBox;
-
-    QPointer<GuideDialog> m_guideDialog;
+    QTextBrowser* m_browser;
 };
-
-extern Application* application;
 
 #endif

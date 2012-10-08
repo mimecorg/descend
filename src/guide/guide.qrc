@@ -1,0 +1,6 @@
+<RCC version="1.0">
+<qresource prefix="/guide">
+  <file>index.html</file>
+  <file>style.css</file>
+</qresource>
+</RCC>
