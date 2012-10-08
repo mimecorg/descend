@@ -36,6 +36,9 @@ public:
     MainWindow();
     ~MainWindow();
 
+protected: // overrides
+    void closeEvent( QCloseEvent* e );
+
 private slots:
     void updateActions();
 
@@ -65,6 +68,8 @@ private slots:
     void colorSettings();
     void tessellationSettings();
 
+    void setModified();
+
 private:
     void initializeProject();
 
@@ -72,6 +77,8 @@ private:
     void saveFile( QString& path );
 
     void insertItem( ProjectItem::Type type, const QString& name );
+
+    bool confirmClose();
 
     void showStatus( const QPixmap& pixmap, const QString& text, int icon = 0 );
 
@@ -86,6 +93,8 @@ private:
     QSortFilterProxyModel* m_proxyModel;
 
     QString m_path;
+
+    bool m_modified;
 };
 
 #endif

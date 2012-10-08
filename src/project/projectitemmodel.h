@@ -57,6 +57,9 @@ public:
     void setMarkedItem( ProjectItem* item );
     ProjectItem* markedItem() const { return m_markedItem; }
 
+signals:
+    void projectModified();
+
 private:
     Project* m_project;
 

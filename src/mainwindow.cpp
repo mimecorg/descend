@@ -36,7 +36,8 @@
 
 MainWindow::MainWindow() : QMainWindow(),
     m_project( NULL ),
-    m_model( NULL )
+    m_model( NULL ),
+    m_modified( false )
 {
     setWindowTitle( tr( "Descend" ) );
 
@@ -263,18 +264,25 @@ void MainWindow::doubleClicked( const QModelIndex& index )
 
 void MainWindow::newFile()
 {
+    if ( !confirmClose() )
+        return;
+
     delete m_project;
     m_project = new Project();
 
     m_project->setName( "Project" );
 
     m_path.clear();
+    m_modified = false;
 
     initializeProject();
 }
 
 void MainWindow::openFile()
 {
+    if ( !confirmClose() )
+        return;
+
     QString path = QFileDialog::getOpenFileName( this, tr( "Open File" ), QString(), tr( "Descend Projects (*.dscn)" ) );
 
     if ( !path.isEmpty() )
@@ -307,6 +315,8 @@ void MainWindow::initializeProject()
     delete m_model;
     m_model = new ProjectItemModel( m_project, this );
 
+    connect( m_model, SIGNAL( projectModified() ), this, SLOT( setModified() ) );
+
     m_proxyModel->setSourceModel( m_model );
 
     m_ui.treeView->expandToDepth( 1 );
@@ -331,6 +341,7 @@ void MainWindow::openFile( QString& path )
         m_project = project;
 
         m_path = path;
+        m_modified = false;
 
         initializeProject();
     } else {
@@ -344,6 +355,7 @@ void MainWindow::saveFile( QString& path )
 {
     if ( m_project->save( path ) ) {
         m_path = path;
+        m_modified = false;
 
         setWindowTitle( tr( "%1 - Descend" ).arg( QDir::toNativeSeparators( m_path ) ) );
     } else {
@@ -418,8 +430,13 @@ void MainWindow::renameItem()
 void MainWindow::deleteItem()
 {
     QModelIndex index = m_proxyModel->mapToSource( m_ui.treeView->currentIndex() );
+    ProjectItem* item = m_model->itemFromIndex( index );
 
-    m_model->deleteItem( index );
+    if ( item != NULL ) {
+        if ( QMessageBox::warning( this, tr( "Warning" ), tr( "Are you sure you want to delete item <b>%1</b>?" ).arg( item->name() ),
+             QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
+            m_model->deleteItem( index );
+    }
 }
 
 void MainWindow::editProperties()
@@ -429,7 +446,9 @@ void MainWindow::editProperties()
 
     if ( item != NULL ) {
         PropertiesDialog dialog( item, this );
-        dialog.exec();
+        
+        if ( dialog.exec() == QDialog::Accepted )
+            m_modified = true;
     }
 }
 
@@ -547,13 +566,51 @@ void MainWindow::closeScene()
 void MainWindow::colorSettings()
 {
     ColorSettingsDialog dialog( m_project, this );
-    dialog.exec();
+
+    if ( dialog.exec() == QDialog::Accepted )
+        m_modified = true;
 }
 
 void MainWindow::tessellationSettings()
 {
     TessellationDialog dialog( m_project, this );
-    dialog.exec();
+
+    if ( dialog.exec() == QDialog::Accepted )
+        m_modified = true;
+}
+
+void MainWindow::setModified()
+{
+    m_modified = true;
+}
+
+void MainWindow::closeEvent( QCloseEvent* e )
+{
+    if ( confirmClose() )
+        e->accept();
+    else
+        e->ignore();
+}
+
+bool MainWindow::confirmClose()
+{
+    if ( !m_modified )
+        return true;
+
+    QMessageBox::StandardButton button = QMessageBox::warning( this, tr( "Warning" ), tr( "Do you want to save current project?" ),
+            QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel );
+
+    if ( button == QMessageBox::No )
+        return true;
+
+    if ( button == QMessageBox::Yes ) {
+        saveFile();
+
+        if ( !m_modified )
+            return true;
+    }
+
+    return false;
 }
 
 void MainWindow::showStatus( const QPixmap& pixmap, const QString& text, int icon /*= 0*/ )

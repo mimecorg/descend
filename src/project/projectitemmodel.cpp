@@ -179,9 +179,14 @@ bool ProjectItemModel::setData( const QModelIndex& index, const QVariant& value,
 
     ProjectItem* item = static_cast<ProjectItem*>( index.internalPointer() );
 
+    if ( name == item->name() )
+        return false;
+
     item->setName( name );
 
     emit dataChanged( index, index );
+
+    emit projectModified();
 
     return true;
 }
@@ -201,6 +206,8 @@ QModelIndex ProjectItemModel::insertItem( ProjectItem::Type type, const QString&
     newItem->setName( name );
 
     emit endInsertRows();
+
+    emit projectModified();
 
     return createIndex( row, 0, newItem );
 }
@@ -225,6 +232,8 @@ QModelIndex ProjectItemModel::cloneItem( const QModelIndex& index, const QString
     newItem->setName( name );
 
     emit endInsertRows();
+
+    emit projectModified();
 
     return createIndex( row, 0, newItem );
 }
@@ -251,6 +260,8 @@ bool ProjectItemModel::deleteItem( const QModelIndex& index )
     delete item;
 
     emit endRemoveRows();
+
+    emit projectModified();
 
     return true;
 }
