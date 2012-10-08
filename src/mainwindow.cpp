@@ -18,6 +18,7 @@
 
 #include "mainwindow.h"
 
+#include "application.h"
 #include "dialogs/propertiesdialog.h"
 #include "dialogs/colorsettingsdialog.h"
 #include "dialogs/tessellationdialog.h"
@@ -28,6 +29,7 @@
 #include "scene/scene.h"
 #include "scene/tessellator.h"
 #include "utils/iconloader.h"
+#include "utils/localsettings.h"
 #include "widgets/statuslabel.h"
 #include "xmlui/builder.h"
 #include "xmlui/toolstrip.h"
@@ -211,11 +213,26 @@ MainWindow::MainWindow() : QMainWindow(),
     connect( m_ui.treeView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( doubleClicked( const QModelIndex& ) ) );
 
     newFile();
+
+    LocalSettings* settings = application->applicationSettings();
+
+    if ( settings->contains( "MainWindowGeometry" ) )
+        restoreGeometry( settings->value( "MainWindowGeometry" ).toByteArray() );
+    else
+        setWindowState( Qt::WindowMaximized );
+
+    if ( settings->contains( "SplitterState" ) )
+        m_ui.splitter->restoreState( settings->value( "SplitterState" ).toByteArray() );
 }
 
 MainWindow::~MainWindow()
 {
     delete m_project;
+
+    LocalSettings* settings = application->applicationSettings();
+
+    settings->setValue( "MainWindowGeometry", saveGeometry() );
+    settings->setValue( "SplitterState", m_ui.splitter->saveState() );
 }
 
 void MainWindow::updateActions()
@@ -283,10 +300,19 @@ void MainWindow::openFile()
     if ( !confirmClose() )
         return;
 
-    QString path = QFileDialog::getOpenFileName( this, tr( "Open File" ), QString(), tr( "Descend Projects (*.dscn)" ) );
+    LocalSettings* settings = application->applicationSettings();
 
-    if ( !path.isEmpty() )
+    QString myDocuments = QDesktopServices::storageLocation( QDesktopServices::DocumentsLocation );
+    QString path = settings->value( "LastPath", myDocuments ).toString();
+
+    path = QFileDialog::getOpenFileName( this, tr( "Open File" ), path, tr( "Descend Projects (*.dscn)" ) );
+
+    if ( !path.isEmpty() ) {
+        QFileInfo fileInfo( path );
+        settings->setValue( "LastPath", fileInfo.absoluteDir().path() );
+
         openFile( path );
+    }
 }
 
 void MainWindow::saveFile()
@@ -299,10 +325,22 @@ void MainWindow::saveFile()
 
 void MainWindow::saveFileAs()
 {
-    QString path = QFileDialog::getSaveFileName( this, tr( "Save File As" ), m_path, tr( "Descend Projects (*.dscn)" ) );
+    LocalSettings* settings = application->applicationSettings();
+
+    QString path;
+    if ( m_path.isEmpty() ) {
+        QString myDocuments = QDesktopServices::storageLocation( QDesktopServices::DocumentsLocation );
+        path = settings->value( "LastPath", myDocuments ).toString();
+    } else {
+        path = m_path;
+    }
+
+    path = QFileDialog::getSaveFileName( this, tr( "Save File As" ), path, tr( "Descend Projects (*.dscn)" ) );
 
     if ( !path.isEmpty() ) {
         QFileInfo fileInfo( path );
+        settings->setValue( "LastPath", fileInfo.absoluteDir().path() );
+
         if ( fileInfo.suffix().isEmpty() )
             path += ".dscn";
 

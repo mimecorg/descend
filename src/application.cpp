@@ -49,7 +49,7 @@ Application::Application( int& argc, char** argv ) : QApplication( argc, argv )
     setWindowIcon( IconLoader::icon( "descend" ) );
 
     m_mainWindow = new MainWindow();
-    m_mainWindow->showMaximized();
+    m_mainWindow->show();
 }
 
 Application::~Application()
