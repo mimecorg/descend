@@ -193,12 +193,6 @@ struct EndOfDirectory
     uchar comment_length[ 2 ];
 };
 
-struct FileHeader
-{
-    CentralFileHeader h;
-    QByteArray fileName;
-};
-
 class ZipFilePrivate
 {
 public:
@@ -210,6 +204,13 @@ public:
     ~ZipFilePrivate()
     {
     }
+
+public:
+    struct FileHeader
+    {
+        CentralFileHeader h;
+        QByteArray fileName;
+    };
 
 public:
     QFile m_file;
@@ -258,7 +259,7 @@ bool ZipFileReader::open()
     d->m_file.seek( start );
 
     for ( int i = 0; i < count; i++ ) {
-        FileHeader header;
+        ZipFilePrivate::FileHeader header;
 
         int read = d->m_file.read( (char*)&header.h, sizeof( CentralFileHeader ) );
 
@@ -302,7 +303,7 @@ QByteArray ZipFileReader::fileData( const QString& path ) const
     if ( index < 0 )
         return QByteArray();
 
-    const FileHeader& header = d->m_headers.at( index );
+    const ZipFilePrivate::FileHeader& header = d->m_headers.at( index );
 
     int compressedSize = readUInt( header.h.compressed_size );
     int uncompressedSize = readUInt( header.h.uncompressed_size );
@@ -375,10 +376,10 @@ bool ZipFileWriter::open()
 
 void ZipFileWriter::addFile( const QString& path, const QByteArray& data, bool compress /*= true*/ )
 {
-    FileHeader header;
+    ZipFilePrivate::FileHeader header;
     memset( &header.h, 0, sizeof( CentralFileHeader ) );
 
-    writeUInt( header.h.signature, CFH_SIGNATURE);
+    writeUInt( header.h.signature, CFH_SIGNATURE );
     writeUShort( header.h.version_made, 0x031E );
     writeUShort( header.h.version_needed, 0x0014 );
     writeUInt( header.h.uncompressed_size, data.length() );
@@ -444,7 +445,7 @@ void ZipFileWriter::close()
     int start = d->m_file.pos();
 
     for ( int i = 0; i < d->m_headers.count(); i++ ) {
-        const FileHeader& header = d->m_headers.at( i );
+        const ZipFilePrivate::FileHeader& header = d->m_headers.at( i );
         d->m_file.write( (const char*)&header.h, sizeof( CentralFileHeader ) );
         d->m_file.write( header.fileName );
     }
