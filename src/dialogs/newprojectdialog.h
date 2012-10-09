@@ -16,59 +16,31 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **************************************************************************/
 
-#ifndef APPLICATION_H
-#define APPLICATION_H
+#ifndef NEWPROJECTDIALOG_H
+#define NEWPROJECTDIALOG_H
 
-#include <QApplication>
+#include "ui_newprojectdialog.h"
 
-class MainWindow;
-class LocalSettings;
-class AboutBox;
-class GuideDialog;
+class Project;
 
-class Application : public QApplication
+class NewProjectDialog : public QDialog
 {
     Q_OBJECT
 public:
-    Application( int& argc, char** argv );
-    ~Application();
+    NewProjectDialog( QWidget* parent );
+    ~NewProjectDialog();
 
 public:
-    QString locateDataFile( const QString& name );
+    QString templatePath() const;
 
-    const QString& templatesPath() const { return m_templatesPath; }
+private slots:
+    void on_buttonBox_clicked( QAbstractButton* button );
 
-    LocalSettings* applicationSettings() const { return m_settings; }
-
-public slots:
-    void about();
-
-    void showQuickGuide();
-
-public:
-    static int exec();
+    void on_listTemplates_itemSelectionChanged();
+    void on_listTemplates_itemDoubleClicked( QListWidgetItem* item );
 
 private:
-    void initializeDefaultPaths();
-
-    bool checkAccess( const QString& path );
-
-    QString technicalInformation();
-
-private:
-    QString m_dataPath;
-
-    QString m_templatesPath;
-
-    LocalSettings* m_settings;
-
-    MainWindow* m_mainWindow;
-
-    QPointer<AboutBox> m_aboutBox;
-
-    QPointer<GuideDialog> m_guideDialog;
+    Ui::NewProjectDialog m_ui;
 };
-
-extern Application* application;
 
 #endif

@@ -76,8 +76,10 @@ private slots:
 private:
     void initializeProject();
 
-    void openFile( QString& path );
-    void saveFile( QString& path );
+    void newFile( const QString& path );
+    void openFile( bool confirm );
+    void openFile( const QString& path );
+    void saveFile( const QString& path );
 
     void insertItem( ProjectItem::Type type, const QString& name );
 

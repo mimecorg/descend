@@ -60,6 +60,9 @@ Application::Application( int& argc, char** argv ) : QApplication( argc, argv ),
 
     m_mainWindow = new MainWindow();
     m_mainWindow->show();
+
+    if ( m_settings->value( "NewProjectOnStartup", true ).toBool() )
+        QTimer::singleShot( 100, m_mainWindow, SLOT( newFile() ) );
 }
 
 Application::~Application()
@@ -180,6 +183,15 @@ void Application::showQuickGuide()
 
 void Application::initializeDefaultPaths()
 {
+    QString appPath = applicationDirPath();
+
+#if defined( Q_WS_WIN )
+    m_templatesPath = QDir::cleanPath( appPath + "/../templates" );
+#else
+    m_templatesPath = QDir::cleanPath( appPath + "/../share/descend/templates" );
+#endif
+
+#if defined( Q_WS_WIN )
     wchar_t appDataPath[ MAX_PATH ];
     if ( SHGetSpecialFolderPath( 0, appDataPath, CSIDL_APPDATA, FALSE ) )
         m_dataPath = QDir::fromNativeSeparators( QString::fromWCharArray( appDataPath ) );
@@ -187,6 +199,10 @@ void Application::initializeDefaultPaths()
         m_dataPath = QDir::homePath();
 
     m_dataPath += QLatin1String( "/Descend" );
+#else
+    m_dataPath = QDesktopServices::storageLocation( QDesktopServices::DataLocation );
+    m_dataPath += QLatin1String( "/descend" );
+#endif
 }
 
 QString Application::locateDataFile( const QString& name )

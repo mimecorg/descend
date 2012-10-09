@@ -19,6 +19,7 @@
 #include "mainwindow.h"
 
 #include "application.h"
+#include "dialogs/newprojectdialog.h"
 #include "dialogs/propertiesdialog.h"
 #include "dialogs/colorsettingsdialog.h"
 #include "dialogs/tessellationdialog.h"
@@ -218,7 +219,7 @@ MainWindow::MainWindow() : QMainWindow(),
     connect( m_ui.treeView, SIGNAL( customContextMenuRequested( const QPoint& ) ), this, SLOT( showContextMenu( const QPoint& ) ) );
     connect( m_ui.treeView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( doubleClicked( const QModelIndex& ) ) );
 
-    newFile();
+    newFile( QString() );
 
     LocalSettings* settings = application->applicationSettings();
 
@@ -290,20 +291,24 @@ void MainWindow::newFile()
     if ( !confirmClose() )
         return;
 
-    delete m_project;
-    m_project = new Project();
+    NewProjectDialog dialog( this );
 
-    m_project->setName( "Project" );
+    int result = dialog.exec();
 
-    m_path.clear();
-    m_modified = false;
-
-    initializeProject();
+    if ( result == QDialogButtonBox::Ok )
+        newFile( dialog.templatePath() );
+    else if ( result == QDialogButtonBox::Open )
+        openFile( false );
 }
 
 void MainWindow::openFile()
 {
-    if ( !confirmClose() )
+    openFile( true );
+}
+
+void MainWindow::openFile( bool confirm )
+{
+    if ( confirm && !confirmClose() )
         return;
 
     LocalSettings* settings = application->applicationSettings();
@@ -354,6 +359,31 @@ void MainWindow::saveFileAs()
     }
 }
 
+void MainWindow::newFile( const QString& path )
+{
+    Project* project = new Project();
+
+    if ( path.isEmpty() ) {
+        project->setName( "Project" );
+    } else {
+        if ( !project->load( path ) ) {
+            delete project;
+
+            QMessageBox::warning( this, tr( "Warning" ), tr( "The selected template could not be opened." ) );
+
+            return;
+        }
+    }
+
+    delete m_project;
+    m_project = project;
+
+    m_path.clear();
+    m_modified = false;
+
+    initializeProject();
+}
+
 void MainWindow::initializeProject()
 {
     delete m_model;
@@ -376,7 +406,7 @@ void MainWindow::initializeProject()
         setWindowTitle( tr( "%1 - Descend" ).arg( QDir::toNativeSeparators( m_path ) ) );
 }
 
-void MainWindow::openFile( QString& path )
+void MainWindow::openFile( const QString& path )
 {
     Project* project = new Project();
 
@@ -395,7 +425,7 @@ void MainWindow::openFile( QString& path )
     }
 }
 
-void MainWindow::saveFile( QString& path )
+void MainWindow::saveFile( const QString& path )
 {
     if ( m_project->save( path ) ) {
         m_path = path;
