@@ -182,8 +182,8 @@ MainWindow::MainWindow() : QMainWindow(),
 
     setTitle( "sectionFile", tr( "File" ) );
     setTitle( "sectionEdit", tr( "Edit" ) );
-    //setTitle( "sectionScene", tr( "Scene" ) );
-    setTitle( "sectionView", tr( "View" ) );
+    setTitle( "sectionScene", tr( "Scene" ) );
+    //setTitle( "sectionView", tr( "View" ) );
     setTitle( "sectionSettings", tr( "Settings" ) );
 
     setPopupMenu( "popupSaveFile", "menuSaveFile", "saveFile" );
