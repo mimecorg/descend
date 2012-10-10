@@ -29,7 +29,7 @@ CodePage::CodePage( CodeAdapter* adapter, const QString& label, QWidget* parent 
     QVBoxLayout* layout = new QVBoxLayout( this );
 
     QFont font( "Consolas", 10 );
-    font.setStyleHint( QFont::SansSerif );
+    font.setStyleHint( QFont::TypeWriter );
 
     m_edit = new QPlainTextEdit( this );
     m_edit->setFont( font );
