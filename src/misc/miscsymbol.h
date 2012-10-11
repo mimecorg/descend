@@ -64,7 +64,7 @@ public:
 
 public:
     MiscSymbol();
-    MiscSymbol( Misc::Type type, const MiscIdentifier& id );
+    MiscSymbol( Misc::Type type, const MiscIdentifier& id, Misc::SymbolFlags flags = 0 );
     MiscSymbol( const MiscSymbol& other );
     ~MiscSymbol();
 

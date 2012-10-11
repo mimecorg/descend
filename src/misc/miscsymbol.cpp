@@ -27,8 +27,8 @@ MiscSymbol::MiscSymbol() :
 {
 }
 
-MiscSymbol::MiscSymbol( Misc::Type type, const MiscIdentifier& id ) :
-    d( new MiscSymbolPrivate( type, id ) )
+MiscSymbol::MiscSymbol( Misc::Type type, const MiscIdentifier& id, Misc::SymbolFlags flags /*= 0*/ ) :
+    d( new MiscSymbolPrivate( type, id, flags ) )
 {
 }
 
@@ -47,10 +47,10 @@ MiscSymbolPrivate::MiscSymbolPrivate() :
 {
 }
 
-MiscSymbolPrivate::MiscSymbolPrivate( Misc::Type type, const MiscIdentifier& id ) :
+MiscSymbolPrivate::MiscSymbolPrivate( Misc::Type type, const MiscIdentifier& id, Misc::SymbolFlags flags /*= 0*/ ) :
     m_type( type ),
     m_id( id ),
-    m_flags( 0 )
+    m_flags( flags )
 {
 }
 

@@ -27,7 +27,7 @@ class MiscSymbolPrivate : public QSharedData
 {
 public:
     MiscSymbolPrivate();
-    MiscSymbolPrivate( Misc::Type type, const MiscIdentifier& id );
+    MiscSymbolPrivate( Misc::Type type, const MiscIdentifier& id, Misc::SymbolFlags flags = 0 );
     MiscSymbolPrivate( const MiscSymbolPrivate& other );
     ~MiscSymbolPrivate();
 

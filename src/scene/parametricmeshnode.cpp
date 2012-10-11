@@ -54,9 +54,9 @@ ParametricMeshNode::ParametricMeshNode( Renderer::MeshType type, Renderer::Attri
 
     m_calcUnit = new MiscUnit( m_initUnit );
 
-    m_calcUnit->addVariable( MiscSymbol( Misc::FloatType, m_scene->identifier( Scene::U ) ) );
+    m_calcUnit->addVariable( MiscSymbol( Misc::FloatType, m_scene->identifier( Scene::U ), Misc::ConstantSymbol ) );
     if ( type == Renderer::SurfaceMesh )
-        m_calcUnit->addVariable( MiscSymbol( Misc::FloatType, m_scene->identifier( Scene::V ) ) );
+        m_calcUnit->addVariable( MiscSymbol( Misc::FloatType, m_scene->identifier( Scene::V ), Misc::ConstantSymbol ) );
 
     m_calcUnit->addVariable( MiscSymbol( Misc::VectorType, m_scene->identifier( Scene::Pos ) ) );
     if ( attr == Renderer::RgbAttribute )
