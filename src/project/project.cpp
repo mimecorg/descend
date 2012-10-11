@@ -44,8 +44,8 @@ Project::Project() : ProjectItem( ProjectItem::Project, NULL ),
 
     m_settings.insert( "MinLod", 8 );
     m_settings.insert( "MaxLod", 16 );
-    m_settings.insert( "GeometryThreshold", 0.05f );
-    m_settings.insert( "AttributeThreshold", 0.05f );
+    m_settings.insert( "GeometryThreshold", 0.0464159f );
+    m_settings.insert( "AttributeThreshold", 0.0464159f );
     m_settings.insert( "DrawEdges", false );
 }
 

@@ -49,8 +49,8 @@ TessellationDialog::TessellationDialog( Project* project, QWidget* parent ) : QD
     m_ui.minimumSlider->setValue( project->setting( "MinLod" ).toInt() );
     m_ui.maximumSlider->setValue( project->setting( "MaxLod" ).toInt() );
 
-    m_ui.geometrySlider->setValue( int( project->setting( "GeometryThreshold" ).toFloat() * 100.0f + 0.5f ) );
-    m_ui.attributesSlider->setValue( int( project->setting( "AttributeThreshold" ).toFloat() * 100.0f + 0.5f ) );
+    m_ui.geometrySlider->setValue( int( -9.0 * log10( project->setting( "GeometryThreshold" ).toFloat() ) - 8.0 + 0.5f ) );
+    m_ui.attributesSlider->setValue( int( -9.0 * log10( project->setting( "AttributeThreshold" ).toFloat() ) - 8.0 + 0.5f ) );
 
     m_ui.edgesCheckBox->setChecked( project->setting( "DrawEdges" ).toBool() );
 }
@@ -64,8 +64,8 @@ void TessellationDialog::accept()
     m_project->setSetting( "MinLod", m_ui.minimumSlider->value() );
     m_project->setSetting( "MaxLod", m_ui.maximumSlider->value() );
 
-    m_project->setSetting( "GeometryThreshold", m_ui.geometrySlider->value() * 0.01f );
-    m_project->setSetting( "AttributeThreshold", m_ui.attributesSlider->value() * 0.01f );
+    m_project->setSetting( "GeometryThreshold", pow( 10.0, ( -8.0 - m_ui.geometrySlider->value() ) / 9.0 ) );
+    m_project->setSetting( "AttributeThreshold", pow( 10.0, ( -8.0 - m_ui.attributesSlider->value() ) / 9.0 ) );
 
     m_project->setSetting( "DrawEdges", m_ui.edgesCheckBox->isChecked() );
 
