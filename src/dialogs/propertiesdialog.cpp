@@ -18,6 +18,7 @@
 
 #include "dialogs/propertiesdialog.h"
 
+#include "application.h"
 #include "adapters/projectcodeadapter.h"
 #include "adapters/foldercodeadapter.h"
 #include "adapters/groupgeneraladapter.h"
@@ -30,6 +31,7 @@
 #include "project/groupitem.h"
 #include "project/parametricmeshitem.h"
 #include "utils/iconloader.h"
+#include "utils/localsettings.h"
 #include "widgets/codepage.h"
 #include "widgets/generalpage.h"
 
@@ -84,6 +86,11 @@ PropertiesDialog::PropertiesDialog( ProjectItem* item, QWidget* parent ) : QDial
     m_ui.buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "&OK" ) );
     m_ui.buttonBox->button( QDialogButtonBox::Cancel )->setText( tr( "&Cancel" ) );
 
+    LocalSettings* settings = application->applicationSettings();
+
+    if ( settings->contains( "PropertiesDialogSize" ) )
+        resize( settings->value( "PropertiesDialogSize" ).toSize() );
+
     QWidget* widget = m_ui.tabWidget->widget( 0 );
     while ( widget && widget->focusPolicy() == Qt::NoFocus )
         widget = widget->nextInFocusChain();
@@ -93,6 +100,9 @@ PropertiesDialog::PropertiesDialog( ProjectItem* item, QWidget* parent ) : QDial
 
 PropertiesDialog::~PropertiesDialog()
 {
+    LocalSettings* settings = application->applicationSettings();
+
+    settings->setValue( "PropertiesDialogSize", size() );
 }
 
 void PropertiesDialog::accept()
