@@ -677,7 +677,7 @@ static const BuiltInFn builtin_fns[ MiscEnginePrivate::Functions ] =
     BUILTIN_FN1( scalev,      Vector, Matrix ),
     BUILTIN_FN2( rotate,      Float,  Vector, Matrix ),
     BUILTIN_FN1( transpose,   Matrix, Matrix ),
-    BUILTIN_FN1( determinant, Matrix, Matrix ),
+    BUILTIN_FN1( determinant, Matrix, Float  ),
     BUILTIN_FN1( inverse,     Matrix, Matrix )
 };
 
