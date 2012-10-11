@@ -33,7 +33,7 @@ SceneWidget::SceneWidget( QWidget* parent ) : QGLWidget( parent ),
     m_project( NULL ),
     m_scene( NULL ),
     m_rotation( 0.0 ),
-    m_angle( -45.0 ),
+    m_angle( 0.0 ),
     m_tracking( NoTracking )
 {
 }
@@ -47,6 +47,10 @@ SceneWidget::~SceneWidget()
 void SceneWidget::setProject( Project* project )
 {
     m_project = project;
+
+    m_rotation = 0.0;
+    m_angle = -45.0;
+
     updateSettings();
 }
 
