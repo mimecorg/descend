@@ -1,0 +1,203 @@
+<html>
+<head>
+  <title>Misc Built-in Symbols</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+<h1>Misc Constants and Functions</h1>
+
+<p>The following built-in constants and functions are available in Misc.</p>
+
+<h2>Constants</h2>
+
+<table width="100%">
+<tr>
+ <th>Name</th>
+ <th>Description</th>
+</tr>
+<tr>
+  <td><code>E</code></td>
+  <td>Base of the natual logarithm.</td>
+</tr>
+<tr>
+  <td><code>PI</code></td>
+  <td>The PI constant.</td>
+</tr>
+</table>
+
+<h2>Functions</h2>
+
+<table width="100%">
+<tr>
+ <th>Name</th>
+ <th>Description</th>
+</tr>
+<tr>
+  <td><code>float sin( float x )</code></td>
+  <td>Sine of x.</td>
+</tr>
+<tr>
+  <td><code>float cos( float x )</code></td>
+  <td>Cosine of x.</td>
+</tr>
+<tr>
+  <td><code>float tan( float x )</code></td>
+  <td>Tangent of x.</td>
+</tr>
+<tr>
+  <td><code>float asin( float x )</code></td>
+  <td>Inverse sine of x.</td>
+</tr>
+<tr>
+  <td><code>float acos( float x )</code></td>
+  <td>Inverse cosine of x.</td>
+</tr>
+<tr>
+  <td><code>float atan( float x )</code></td>
+  <td>Inverse tangent of x.</td>
+</tr>
+<tr>
+  <td><code>float atan2( float x, float y )</code></td>
+  <td>Inverse tangent of y/x, in the range of ( -&pi;, &pi; ].</td>
+</tr>
+<tr>
+  <td><code>float sinh( float x )</code></td>
+  <td>Hyperbolic sine of x.</td>
+</tr>
+<tr>
+  <td><code>float cosh( float x )</code></td>
+  <td>Hyperbolic cosine of x.</td>
+</tr>
+<tr>
+  <td><code>float tanh( float x )</code></td>
+  <td>Hyperbolic tangent of x.</td>
+</tr>
+<tr>
+  <td><code>float asinh( float x )</code></td>
+  <td>Inverse hyperbolic sine of x.</td>
+</tr>
+<tr>
+  <td><code>float acosh( float x )</code></td>
+  <td>Inverse hyperbolic cosine of x.</td>
+</tr>
+<tr>
+  <td><code>float atanh( float x )</code></td>
+  <td>Inverse hyperbolic tangent of x.</td>
+</tr>
+<tr>
+  <td><code>float exp( float x )</code></td>
+  <td>Eqiuvalent of e<sup>x</sup>.</td>
+</tr>
+<tr>
+  <td><code>float log( float x )</code></td>
+  <td>Natural logarithm of x.</td>
+</tr>
+<tr>
+  <td><code>float sqrt( float x )</code></td>
+  <td>Square root of x.</td>
+</tr>
+<tr>
+  <td><code>float abs( float x )</code></td>
+  <td>Absolute value of x.</td>
+</tr>
+<tr>
+  <td><code>float sign( float x )</code></td>
+  <td>The sign of x, i.e. 1 if x > 0, -1 if x < 0 or 0 if x = 0.</td>
+</tr>
+<tr>
+  <td><code>float floor( float x )</code></td>
+  <td>The largest integer not greater than x.</td>
+</tr>
+<tr>
+  <td><code>float round( float x )</code></td>
+  <td>The nearest integer to x.</td>
+</tr>
+<tr>
+  <td><code>float ceil( float x )</code></td>
+  <td>The smallest integer not less than x.</td>
+</tr>
+<tr>
+  <td><code>float min( float x, float y )</code></td>
+  <td>The smaller of two values.</td>
+</tr>
+<tr>
+  <td><code>float max( float x, float y )</code></td>
+  <td>The larger of two values.</td>
+</tr>
+<tr>
+  <td><code>float clamp( float x, float y, float z )</code></td>
+  <td>Clamp y to the range [ x, z ].</td>
+</tr>
+<tr>
+  <td><code>float lerp( float x, float y, float a )</code></td>
+  <td>Linear interpolation from x (when a = 0) to y (when a = 1).</td>
+</tr>
+<tr>
+  <td><code>bool isnan( float x )</code></td>
+  <td>Return true if x is not a valid number (e.g. the square root of a negative number).</td>
+</tr>
+<tr>
+  <td><code>bool isinf( float x )</code></td>
+  <td>Return true if x is positive or negative infinity.</td>
+</tr>
+<tr>
+  <td><code>float length( vec v )</code></td>
+  <td>The length of the vector.</td>
+</tr>
+<tr>
+  <td><code>float distance( vec v, vec w )</code></td>
+  <td>The distance between two points, i.e. the length of w-v.</td>
+</tr>
+<tr>
+  <td><code>float dot( vec v, vec w )</code></td>
+  <td>Dot product of two vectors.</td>
+</tr>
+<tr>
+  <td><code>vec cross( vec v, vec w )</code></td>
+  <td>Cross product of two vectors.</td>
+</tr>
+<tr>
+  <td><code>vec normalize( vec v )</code></td>
+  <td>A unit vector with same direction as v.</td>
+</tr>
+<tr>
+  <td><code>vec lerpv( vec v, vec w, float a )</code></td>
+  <td>Linear interpolation of two vectors from v (when a = 0) to w (when a = 1).</td>
+</tr>
+<tr>
+  <td><code>matrix identity()</code></td>
+  <td>The identity matrix.</td>
+</tr>
+<tr>
+  <td><code>matrix translate( vec v )</code></td>
+  <td>A matrix that translates the coordinate system by given vector.</td>
+</tr>
+<tr>
+  <td><code>matrix scale( float x )</code></td>
+  <td>A matrix that uniformly scales the coordinate system by given factor.</td>
+</tr>
+<tr>
+  <td><code>matrix scalev( vec v )</code></td>
+  <td>A matrix that scales the coordinate system by given vector.</td>
+</tr>
+<tr>
+  <td><code>matrix rotate( float a, vec v )</code></td>
+  <td>A matrix that rotates the coordinate system by a radians around the x vector.</td>
+</tr>
+<tr>
+  <td><code>matrix transpose( matrix m )</code></td>
+  <td>The transposed matrix.</td>
+</tr>
+<tr>
+  <td><code>float determinant( matrix m )</code></td>
+  <td>The determinant of matrix m.</td>
+</tr>
+<tr>
+  <td><code>matrix inverse( matrix m )</code></td>
+  <td>The inverse of matrix m.</td>
+</tr>
+</table>
+
+</body>
+</html>

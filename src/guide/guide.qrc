@@ -1,6 +1,10 @@
 <RCC version="1.0">
 <qresource prefix="/guide">
   <file>index.html</file>
+  <file>misc.html</file>
+  <file>properties.html</file>
+  <file>reference.html</file>
   <file>style.css</file>
+  <file>tessellation.html</file>
 </qresource>
 </RCC>

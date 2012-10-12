@@ -7,5 +7,27 @@
 
 <h1>Quick Guide to Descend</h1>
 
+<p>The main window of Descend consists of a tool strip, the project tree on the left side, the scene view taking most of the window and the status bar at the bottom.</p>
+
+<p>Use the <b>File &gt; <img src="../icons/file-new-16.png"/> New</b> (<b>Ctrl+N</b>) command to create a new project. You can start with a blank project or use one of the built in templates. You can play with these templates to learn to use Descend, make modifications and create your own projects. You can save your project using <b>File &gt; <img src="../icons/file-save-16.png"/> Save</b> (<b>Ctrl+S</b>) and open it later using <b>File &gt; <img src="../icons/file-open-16.png"/> Open</b> (<b>Ctrl+O</b>).</p>
+
+<p>The project tree shows the hierarchy of items in the project, which consists of the <img src="../icons/item-project-16.png"/> project root item, <img src="../icons/item-folder-16.png"/> folders, <img src="../icons/item-group-16.png"/> groups, <img src="../icons/item-curve-16.png"/> curves and <img src="../icons/item-surface-16.png"/> surfaces. Curves and surfaces are the primitive components of the scene. Groups are used to create objects and scenes consisting of multiple components. Folders can be used to logically organize the project.</p>
+
+<p>Use <b>Edit &gt; <img src="../icons/edit-insert-16.png"/> Insert Item</b> (<b>Ins</b>) to add a new item of the selected type as a child of the currently selected item. You can also use the <b>Edit &gt; <img src="../icons/edit-clone-16.png"/> Duplicate</b> (<b>Ctrl+D</b>) command to create an exact copy of the selected item (and its child items if any). Use <b>Edit &gt; <img src="../icons/edit-rename-16.png"/> Rename</b> (<b>F2</b>) to rename the selected item and <b>Edit &gt; <img src="../icons/edit-delete-16.png"/> Delete</b> (<b>Del</b>) to delete the selected item and all its children.</p>
+
+<p>Use the <b>Edit &gt; <img src="../icons/edit-properties-16.png"/> Properties</b> (<b>F4</b>) command to change the color of the selected item and edit the code used to generate the scene, including parametric equations of curves and surfaces and constants and functions that can be used by child items. See <a href="properties.html">item properties</a> for more information.</p>
+
+<p>Use <b>Scene &gt; <img src="../icons/descend-16.png"/> Draw Scene</b> (<b>F5</b>) to draw the currently selected curve, surface or group. You can also simply double click an item to draw it. If there is an error, it will be displayed in the status bar. Otherwise, the total number of elements (triangles and segments) and the elapsed time of calculating the scene will be shown. You can close the current scene with <b>Scene &gt; <img src="../icons/close-16.png"/> Close Scene</b> (<b>Ctrl+W</b>). You can rotate the scene using the left mouse button.</p>
+
+<p>The <b>Settings &gt; <img src="../icons/colors-16.png"/> Color Settings</b> command allows you to modify the default colors for the front and back of the surfaces; see <a href="properties.html">item properties</a> for more information. You can also modify the background color of the scene. The <b>Settings &gt; <img src="../icons/tessellation-16.png"/> Tessellation Settings</b> command allows you to specify the accuracy of the tessellation algorithm; see <a href="tessellation.html">tessellation settings</a> for more information.</a>
+
+<h2>References</h2>
+
+<ul>
+  <li><a href="properties.html">Item Properties</a></li>
+  <li><a href="misc.html">Misc Syntax Reference</a></li>
+  <li><a href="reference.html">Misc Built-in Symbols</li>
+</ul>
+
 </body>
 </html>

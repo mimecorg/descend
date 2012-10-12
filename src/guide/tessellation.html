@@ -1,0 +1,19 @@
+<html>
+<head>
+  <title>Tessellation Settings</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+<h1>Tessellation Settings</h1>
+
+<p>Curves and surfaces which consist of an infinite number of points are approximated using a finite number of segments and triangles, so that they can be displayed on the screen. This process is called tessellation. The more segments or triangles, the more accurate the representation of the curve or surface, but also more memory and time is required to calculate and draw the scene. Parameters of tessellation can be configured using the <b>Settings &gt; <img src="../icons/tessellation-16.png"/> Tessellation Settings</b> command.</p>
+
+<p>The <b>Minimum</b> parameter in the <b>Level of Detail</b> group specifies the minimum number of divisions which is used to determine the initial estimate of the shape. The <b>Maximum</b> parameter in this group specifies the maximum number of divisions that are performed, even if the target quality is not reaches, and controls the maximum number of generated elements.</p>
+
+<p>The actual number of elements (segments or triangles) can be somewhere between the minimum and maximum values, depending on the complexity of the shapes. The accuracy of representing the shapes depends on the <b>Geometry</b> parameter in the <b>Tessellation Quality</b> group. If vertex color is used, tessellation takes into account not only the geometry, but also the variation of color of the curve of surface. The accuracy of representing the color depends on the <b>Attributes</b> parameter.</p>
+
+<p>Enable the <b>Draw tessellation edges</b> option if you want to see how surfaces are divided into triangles. Note that the scene must be redrawn for the tessellation settings to take effect.</p>
+
+</body>
+</html>

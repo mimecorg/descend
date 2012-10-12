@@ -1,0 +1,186 @@
+<html>
+<head>
+  <title>Misc Syntax Reference</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+<h1>Misc Syntax Reference</h1>
+
+<p>The syntax of Misc is similar to C. Whitespace and line endings are ignored. Statements must end with a semicolon and blocks are enclosed in curly brackets. Both C style comments, between <code>/*</code> and <code>*/</code>, and C++ style comments, from <code>//</code> to the end of the line, can be used.</p>
+
+<p>Code in Misc consists of declarations or variables, constants and functions, simple statements (including assignments and function calls), conditional statements and loops.</p>
+
+<h2>Types</h2>
+
+<p>All symbols in Misc have a statically declared type. The following types are supported:</p>
+
+<table width="100%">
+<tr>
+ <th>Name</th>
+ <th>Description</th>
+</tr>
+<tr>
+  <td><code>bool</code></td>
+  <td>Boolean value, which can be either <code>true</code> or <code>false</code>.</td>
+</tr>
+<tr>
+  <td><code>float</code></td>
+  <td>A single precision floating point number. All numeric constants are floats, for example: <code>0.5</code>, <code>1</code>, <code>3.14159</code>, <code>-100</code>, <code>1.23e6</code></code>.</td>
+</tr>
+<tr>
+  <td><code>vec</code></td>
+  <td>A four-dimensional vector with the following components: x, y, z and w. A vector can be written using square brackets: <code>[ <i>c<sub>1</sub></i>, <i>c<sub>2</sub></i>, ... ]</code>. From 2 to 4 components can be specified, and remaining components are initialized with zeros. Individual components can be accessed using dot notation: <code>v.x</code>.</td>
+</tr>
+<tr>
+  <td><code>matrix</code></td>
+  <td>A four by four matrix with the following components: xx, xy, xz, ..., wz, ww. A matrix can be written using square brackets, in row major order, with rows separated with semicolons: <code> [ <i>c<sub>11</sub></i>, <i>c<sub>12</sub></i>, ... ; <i>c<sub>21</sub></i>, <i>c<sub>22</sub></i>, ... ]</code>. From 2 &times; 2 to 4 &times; 4 components can be specified, and remaining components are initialized with the identity matrix. Individual components can be accessed using dot notation: <code>m.xx</code>.</td>
+</tr>
+</table>
+
+<p>In addition, there is a <code>void</code> keyword which indicates that a function doesn't return any value.</p>
+
+<h2>Operators</h2>
+
+<p>The following operators are available in Misc, ordered from highest to lowest priority:</p>
+
+<table width="100%">
+<tr>
+ <th>Operators</th>
+ <th>Description</th>
+</tr>
+<tr>
+  <td><code>.</code></td>
+  <td>Dereference a component of a vector or matrix. Individual components can be read and modified using this operator.</td>
+</tr>
+<tr>
+  <td><code>- + !</code></td>
+  <td>Unary operators: negation (can be applied to a float, vector or matrix), unary plus operator, boolean negation.</td>
+</tr>
+<tr>
+  <td><code>^</code></td>
+  <td>Power operator (can applied to two float numbers).</td>
+</tr>
+<tr>
+  <td><code>* / %</code></td>
+  <td>Multiplication (can be applied to any combination of float, vector and matrix), division (the divident can be a float, vector or matrix; the divisor can be a float) and modulo (can be applied to two float numbers). Note that vector multiplication is performed component-wise; use dot() or cross() functions if you want dot product or cross product.</td>
+</tr>
+<tr>
+  <td><code>+ -</code></td>
+  <td>Addition and substraction (can be applied to two floats, vectors or matrices).</td>
+</tr>
+<tr>
+  <td><code>&gt; &gt;= &lt; &lt;=</code></td>
+  <td>Relational comparison operators (can be applied to two floats and returns a boolean value).</td>
+</tr>
+<tr>
+  <td><code>== !=</code></td>
+  <td>Equality and inequality operators (can be applied to two booleans, floats, vectors or matrices and returns a boolean value).</td>
+</tr>
+<tr>
+  <td><code>&amp;</code></td>
+  <td>Boolean AND operator. Note that there is no bitwise <code>&amp;</code> operator in Misc.</td>
+</tr>
+<tr>
+  <td><code>|</code></td>
+  <td>Boolean OR operator. Note that there is no bitwise <code>|</code> operator in Misc.</td>
+</tr>
+<tr>
+  <td><code>&amp;&amp;</code></td>
+  <td>Boolean AND operator. Unlike &amp;, it skips calculation of the second operand if the first one evaluates to false.</td>
+</tr>
+<tr>
+  <td><code>||</code></td>
+  <td>Boolean OR operator. Unlike |, it skips calculation of the second operand if the first one evaluates to true.</td>
+</tr>
+<tr>
+  <td><code>?:</code></td>
+  <td>Ternary conditional operator. The condition must be a boolean value, and the two other operands must be of the same type.</td>
+</tr>
+<tr>
+  <td><code>=</code></td>
+  <td>Assignment operator. The left hand side value must be a variable or a dereferenced component of a vector or matrix. Note that unlike C, assignment can only be used as a statement and not as part of a larger expression.</td>
+</tr>
+<tr>
+  <td><code>^= *= /= %= += -= &amp;= |=</code></td>
+  <td>Shorthand for assignment with a binary operator applied to the left hand side value.</td>
+</tr>
+<tr>
+  <td><code>,</code></td>
+  <td>Used to separate multiple assignments or function calls in a single statements and to separate function arguments or components of a vector or matrix. Unlike C, it cannot be used as part of a larger expression.</td>
+</tr>
+</table>
+
+<p>The order of operations can be modified using round brackets.</p>
+
+<h2>Declarations</h2>
+
+<p>Variables and constants must be declared before they are used. The declaration of variables and constants has the following general syntax:</p>
+
+<p><i>[</i> <code>const</code> <i>]</i> <code><i>type</i></code> <code><i>id<sub>1</sub></i></code> <i>[</i> <code>= <i>expr<sub>i</sub> ]</i>, ...;</code></p>
+
+<p>One or more variables or constants of the same type can be listed in a single declaration, separated by comma. Constants (with the <code>const</code> keyword prepended to the type) must be initialized with an expression of the appropriate type and cannot be modified later. Variables can be optionally initialized; when initializer is missing, the variable is initialized with false, zero, zero vector or identity matrix. Identifiers of variables, constants and functions may contain letters, digits and underscore character, and are case sensitive.</p>
+
+<p>There is no single global scope in Misc. Each item in the project has a separate scope, called a unit, and curves and surfaces have two separate units for intialization code and calculation code. Symbols declared in a unit scope are accessible from all child units, but variables cannot be directly modified from child units. The hierarchy of units corresponds to the hierarchy of items, and the calculation unit is a child of the initialization unit in case of curve and surface items.</p>
+
+<p>Variables and constants declared with a function are local to that function, and variables and constants declared in a block statement are local to that block. It is possible to hide a variable or constant by redeclaring it in an inner scope (including a function, block statement or child unit).</p>
+
+<p>Functions must be declared in the unit scope and they can be used before they are declared. There are two forms of function declarations. The simple form has the following syntax:</p>
+
+<p><code><i>type</i></code> <code><i>id</i>(</code> <i>[</i> <code><i>type<sub>1</sub></i> <i>arg<sub>1</sub></i>, ...</code> <i>]</i> <code>) = <i>expr</i>;</code></p>
+
+<p>The extended form has the following syntax:</p>
+
+<p><code><i>type</i></code> <code><i>id</i>(</code> <i>[</i> <code><i>type<sub>1</sub></i> <i>arg<sub>1</sub></i>, ...</code> <i>]</i> <code>)<br>{<br>&nbsp;&nbsp;&nbsp;&nbsp;...<br>}</code></p>
+
+<p>Functions can have zero or more arguments of any type. In the simple form, they return the result of the expression. In the extended form, they can contain any number of statements, and they use the <code>return</code> statement to return the result. Extended functions declared with <code>void</code> type don't return any value.</p>
+
+<h2>Statements</h2>
+
+<p>Statements can be placed both the unit scope and the function scope. Unit statements are executed each time the unit is calculated. The following statements can be used in Misc:</p>
+
+<table width="100%">
+<tr>
+ <th>Statement</th>
+ <th>Description</th>
+</tr>
+<tr>
+  <td><code><i>expr<sub>1</sub></i>, ...;</code></td>
+  <td>One or more assignment or call of a void function, separated with comma and terminated with semicolon. Other kinds of expressions cannot be used as statements.</td>
+</tr>
+<tr>
+  <td><code>{</code> <i>[</i> <code><i>stat<sub>1</i> ...</code> <i>]</i> <code>}</code></td>
+  <td>Zero or more statements and variable or constant declarations can be grouped together using curly braces.</td>
+</tr>
+<tr>
+  <td><code>if ( <i>cond</i> ) <i>stat<sub>1</sub></i></code> <i>[</i> <code>else <i>stat<sub>2</sub></i></code> <i>]</i></td>
+  <td>The first statement is only executed if the boolean expression evaluates to true. The optional second statement is executed otherwise.</td>
+</tr>
+<tr>
+  <td><code>while ( <i>cond</i> ) <i>stat</i></code></td>
+  <td>The statement is repeated zero or more times, as long the boolean expression evaluates to true.</td>
+</tr>
+<tr>
+  <td><code>do <i>stat</i> while ( <i>cond</i> );</code></td>
+  <td>The statement is repeated one or more times, as long the boolean expression evaluates to true.</td>
+</tr>
+<tr>
+  <td><code>for (<code> <i>[</i> <code><i>stat<sub>1</sub></i></code> <i>]</i> <code>;</code> <i>[</i> <code><i>cond</i></code> <i>]</i> <code>;</code> <i>[</i> <code><i>stat<sub>2</sub></i></code> <i>]</i> <code>)</code> <i>stat<sub>3</sub></i></code></td>
+  <td>The third statement is repeated zero or more times, as long the condition is true. The first statement is executed before entering the loop; it can also be a variable declaration. The second statement is executed after each iteration. Both statements and the condition are optional, but the semicolons are not.</td>
+</tr>
+<tr>
+  <td><code>return</code> <i>[</i> <code><i>expr</i></code> <i>]</i><code>;</code></td>
+  <td>Stop execution of the current function and return the result of the expression. In case of a void function, the expression must not be specified. This statement can only be used within a function.</td>
+</tr>
+<tr>
+  <td><code>break;</code></td>
+  <td>Stop execution of the innermost loop. This statement can only be used within a <code>while</code>, <code>do</code> or <code>for</code> loop.</td>
+</tr>
+<tr>
+  <td><code>continue;</code></td>
+  <td>Stop execution of the current iteration of the innermost loop. This statement can only be used within a <code>while</code>, <code>do</code> or <code>for</code> loop.</td>
+</tr>
+</table>
+
+</body>
+</html>

@@ -34,3 +34,7 @@ td
   background-color: #eee;
   padding: 0.2em;
 }
+code
+{
+  font-family: consolas, courier;
+}

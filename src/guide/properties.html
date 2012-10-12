@@ -1,0 +1,122 @@
+<html>
+<head>
+  <title>Item Properties</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+<h1>Item Properties</h1>
+
+<p>This section describes properties of various types of items that can be edited using the <b>Edit &gt; <img src="../icons/edit-properties-16.png"/> Properties</b> (<b>F4</b>) command.
+
+<h2>Project and Folders</h2>
+
+<p>Folders can be used to logically organize the structure of a project. The project root item is a special folder that cannot be renamed or deleted, but its properties can be modified as well.</p>
+
+<p>Project and folders have one property tab that allows you to specify the code that will be executed when drawing a scene. It can include definitions of constants, variables and functions. Refer to the <a href="misc.html">Misc Syntax Reference</a> for more information. Note that child items can access constants, variables and functions defined in parent folders and the project root item, but they cannot modify these variables.</p>
+
+<h2>Groups</h2>
+
+<p>Groups can be used to create objects and scenes consisting of multiple components, including curves, surfaces and nested groups.</p>
+
+<p>On the <b>General</b> tab you can specify the color of the objects in the group. By default a group inherits color from the parent group, or from the global color settings (specified using the <b>Settings &gt; <img src="../icons/colors-16.png"/> Color Settings</b> command) if there is no parent group. In the <b>Dual Colors</b> mode, there are separate primary and secondary colors. In the <b>Single Color</b> mode, the secondary color is the same as the primary color.</p>
+
+<p>To select a custom color for the group, choose <b>Custom</b> from the primary or secondary color drop down list, and click the button to the right to open the color selector. Choose <b>Calculated</b> if you want to compute the color using the initialization code.</p>
+
+<p>On the <b>Initialization</b> tab you can specify the code that will be executed when drawing a scene. All constants, variables and functions will be accessible to child items. The initialization code can also modify the following predefined variables:</p>
+
+<table width="100%">
+<tr>
+ <th>Name</th>
+ <th>Description</th>
+</tr>
+<tr>
+  <td><code>transform</code></td>
+  <td>The matrix that defines the affine transformation of the group coordinate system relative to the parent group or scene coordinates. The default value is the identity matrix.</td>
+</tr>
+<tr>
+  <td><code>color</code></td>
+  <td>The vector that defines the primary color of the group. Only available when <b>Calculated</b> color is selected. The x, y and z components correspond to the red, green and blue values in scale from 0 to 1. The w component is ignored.</td>
+</tr>
+<tr>
+  <td><code>color2</code></td>
+  <td>The vector that defines the secondary color of the group. Only available in <b>Dual Colors</b> mode when <b>Calculated<b> color are selected.</td>
+</tr>
+</table>
+
+<h2>Curves and Surfaces</h2>
+
+<p>Curves transform a single parameter, <code>u</code>, into 3D coordinates. Surfaces transform two parameters, <code>u</code> and <code>v</code>, into 3D coordinates.</p>
+
+<p>On the <b>General</b> tab you can specify the color of the curve or surface. A curve by default inherits the primary color from the parent group, or from the global color settings (specified using the <b>Settings &gt; <img src="../icons/colors-16.png"/> Color Settings</b> command). A surface by default inherts both primary and secondary colors, that are used to draw the front and back face. In the <b>Single Color</b> mode, both faces are drawn using the same color. In the <b>Vertex Color</b> mode, the color of each point can be computed by the calculation code.</p>
+
+<p>To select a custom color for the curve or surface, choose <b>Custom</b> from the primary or secondary color drop down list, and click the button to open the color selector. Choose <b>Calculated</b> if you want to compute the color using the initialization code.</p>
+
+<p>Select the <b>Swap front and back face of the surface</b> option to reverse the front and back colors. This option is only enabled in <b>Dual Colors</b> mode.</p>
+
+<p>On the <b>Initialization</b> tab you can specify the code that will be executed just once when drawing the curve or surface. All constants, variables and functions will be accessible to the calculation code. The initialization code can also modify the following predefined variables:</p>
+
+<table width="100%">
+<tr>
+ <th>Name</th>
+ <th>Description</th>
+</tr>
+<tr>
+  <td><code>transform</code></td>
+  <td>The matrix that defines the affine transformation of the object coordinate system relative to the parent group or scene coordinates. The default value is the identity matrix.</td>
+</tr>
+<tr>
+  <td><code>color</code></td>
+  <td>The vector that defines the primary color of the object. Only available when <b>Calculated</b> color is selected. The x, y and z components correspond to the red, green and blue values in scale from 0 to 1. The w component is ignored.</td>
+</tr>
+<tr>
+  <td><code>color2</code></td>
+  <td>The vector that defines the secondary color of the group. Only available for surfaces when <b>Dual Colors</b> mode and <b>Calculated</b> color are selected.</td>
+</tr>
+<tr>
+  <td><code>u_min</code></td>
+  <td>Minimum value of the <code>u</code> parameter. The default value is 0.</td>
+</tr>
+<tr>
+  <td><code>u_max</code></td>
+  <td>Maximum value of the <code>u</code> parameter. The default value is 1.</td>
+</tr>
+<tr>
+  <td><code>v_min</code></td>
+  <td>Minimum value of the <code>v</code> parameter. Only available for surfaces. The default value is 0.</td>
+</tr>
+<tr>
+  <td><code>v_max</code></td>
+  <td>Maxnimum value of the <code>v</code> parameter. Only available for surfaces. The default value is 1.</td>
+</tr>
+</table>
+
+<p>On the <b>Calculation</b> tab you can specify the code that will be executed for each sampled point of the curve or surface. The calculation code can use the following predefined variables:</p>
+
+<table width="100%">
+<tr>
+ <th>Name</th>
+ <th>Description</th>
+</tr>
+<tr>
+  <td><code>u</code></td>
+  <td>The parameter of the curve or surface, taking values from <code>u_min</code> to <code>u_max</code>, inclusive. Cannot be modified by the calculation code.</td>
+</tr>
+<tr>
+  <td><code>v</code></td>
+  <td>The second parameter of the surface, taking values from <code>v_min</code> to <code>v_max</code>, inclusive. Cannot be modified by the calculation code.</td>
+</tr>
+<tr>
+  <td><code>pos</code></td>
+  <td>The position of the point corresponding to the given values of parameters. Only the x, y and z components are used.</td>
+</tr>
+<tr>
+  <td><code>color</code></td>
+  <td>The calculated color of the point. Only available when <b>Vertex Color</b> mode is selected.</td>
+</tr>
+</table>
+
+<p>The number of samples calculated in order to draw the curve or surface depends on its complexity and the <a href="tessellation.html">tessellation settings</a>.</p>
+
+</body>
+</html>
