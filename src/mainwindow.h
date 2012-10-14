@@ -39,6 +39,8 @@ public:
 public:
     QString glVersion() const;
 
+    void openFile( const QString& path );
+
 protected: // overrides
     void closeEvent( QCloseEvent* e );
 
@@ -78,7 +80,6 @@ private:
 
     void newFile( const QString& path );
     void openFile( bool confirm );
-    void openFile( const QString& path );
     void saveFile( const QString& path );
 
     void insertItem( ProjectItem::Type type, const QString& name );

@@ -61,7 +61,9 @@ Application::Application( int& argc, char** argv ) : QApplication( argc, argv ),
     m_mainWindow = new MainWindow();
     m_mainWindow->show();
 
-    if ( m_settings->value( "NewProjectOnStartup", true ).toBool() )
+    if ( argc > 1 )
+        m_mainWindow->openFile( QString( argv[ 1 ] ) );
+    else if ( m_settings->value( "NewProjectOnStartup", true ).toBool() )
         QTimer::singleShot( 100, m_mainWindow, SLOT( newFile() ) );
 }
 
