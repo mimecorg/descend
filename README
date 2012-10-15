@@ -1,12 +1,23 @@
 Descend
-Version 0.2
+Version 0.2 (2012-10-15)
 
-Program for drawing 3D surfaces based on parametric equations.
+Program for drawing 3D surfaces from parametric equations.
+
+Descend is an open source program for drawing 3D surfaces from parametric
+equations. It uses a custom, very fast language called Misc to calculate
+the geometry. It also uses OpenGL to render scenes with high quality
+shaders.
+
+NOTE: OpenGL 3.3 or newer is required to run this program.
+
 
 Copyrights
 ==========
 
 Copyright (C) 2012 Michał Męciński
+
+Icons based on the KDE Crystal theme copyright (C) 2002 and following
+years KDE Artists
 
 
 License
@@ -25,10 +36,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-In addition, as a special exception, the WebIssues Team gives
-permission to link the code of this program with the OpenSSL library
-and distribute linked combinations including the two. You must obey
-the GNU General Public License in all respects for all of the code
-used other than OpenSSL. You may extend this exception to your version
-of the program, but you are not obligated to do so. If you do not wish
-to do so, delete this exception statement from your version.
+
+Resources
+=========
+
+Website
+    http://descend.mimec.org/
+
+Forum
+    http://descend.mimec.org/forum/general
+
+Bugs & Requests
+    http://descend.mimec.org/forum/tracker

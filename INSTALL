@@ -1,7 +1,9 @@
 Requirements
 ============
 
- * Qt framework, version 4.7 or newer (http://qt.nokia.com/products)
+ * Qt framework, version 4.7 or newer (http://qt.digia.com/product/)
+
+ * OpenGL version 3.3 or newer and a compatible graphics card
 
 The program can be built using the standard 'qmake' tool from Qt. Simple configure
 scripts are available for both Linux and Windows which create a configuration file
