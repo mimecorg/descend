@@ -23,6 +23,12 @@
 #include "xmlui/builder.h"
 #include "xmlui/toolstrip.h"
 
+#include <QBoxLayout>
+#include <QLabel>
+#include <QTextBrowser>
+#include <QDialogButtonBox>
+#include <QPushButton>
+
 GuideDialog::GuideDialog( QWidget* parent ) : QDialog( parent )
 {
     setAttribute( Qt::WA_DeleteOnClose, true );

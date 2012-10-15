@@ -21,6 +21,8 @@
 #include "project/project.h"
 #include "utils/iconloader.h"
 
+#include <QFont>
+
 ProjectItemModel::ProjectItemModel( Project* project, QObject* parent ) : QAbstractItemModel( parent ),
     m_project( project ),
     m_markedItem( NULL )

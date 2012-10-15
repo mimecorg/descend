@@ -20,6 +20,8 @@
 
 #include "scene/parametricmeshnode.h"
 
+#include <qmath.h>
+
 SurfaceTessellator::SurfaceTessellator()
 {
 }

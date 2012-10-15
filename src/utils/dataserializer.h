@@ -19,6 +19,8 @@
 #ifndef DATASERIALIZER_H
 #define DATASERIALIZER_H
 
+#include <QDataStream>
+
 class DataSerializer
 {
 public:

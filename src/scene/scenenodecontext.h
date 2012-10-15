@@ -23,6 +23,9 @@ class SceneNodeColor;
 class MiscUnit;
 class Scene;
 
+#include <QMatrix4x4>
+#include <QColor>
+
 class SceneNodeContext
 {
 public:

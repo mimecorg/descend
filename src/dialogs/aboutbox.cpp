@@ -22,6 +22,11 @@
 #include "utils/iconloader.h"
 #include "xmlui/gradientwidget.h"
 
+#include <QBoxLayout>
+#include <QLabel>
+#include <QDialogButtonBox>
+#include <QPushButton>
+
 AboutBox::AboutBox( const QString& title, const QString& message, QWidget* parent ) : QDialog( parent )
 {
     setAttribute( Qt::WA_DeleteOnClose, true );

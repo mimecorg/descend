@@ -18,6 +18,9 @@
 
 #include "widgets/colorbutton.h"
 
+#include <QColorDialog>
+#include <QPainter>
+
 ColorButton::ColorButton( QWidget* parent ) : QToolButton( parent )
 {
     connect( this, SIGNAL( clicked( bool ) ), this, SLOT( selectColor() ) );

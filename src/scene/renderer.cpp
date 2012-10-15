@@ -22,6 +22,9 @@
 #include "scene/glloader.h"
 #include "scene/surfacetessellator.h"
 
+#include <QGLShaderProgram>
+#include <QGLBuffer>
+
 Renderer* Renderer::m_current = NULL;
 
 static const char* const shaders[] = { "lit", "lit-rgb", "plain", "plain-rgb" };

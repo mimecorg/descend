@@ -18,6 +18,9 @@
 
 #include "utils/dataserializer.h"
 
+#include <QFile>
+#include <QBuffer>
+
 int DataSerializer::m_dataVersion = 0;
 
 static const int MagicHeader = 0xD053C7D1;

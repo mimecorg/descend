@@ -25,6 +25,8 @@
 #include "scene/scenenodecontext.h"
 #include "scene/renderer.h"
 
+#include <QGLBuffer>
+
 class ParametricMeshNode : public SceneNode
 {
 public:

@@ -19,7 +19,14 @@
 #ifndef ABOUTBOX_H
 #define ABOUTBOX_H
 
+#include <QDialog>
+#include <QFrame>
+#include <QScrollArea>
+
 class AboutBoxSection;
+
+class QBoxLayout;
+class QLabel;
 
 class AboutBox : public QDialog
 {

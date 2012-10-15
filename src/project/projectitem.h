@@ -19,6 +19,8 @@
 #ifndef PROJECTITEM_H
 #define PROJECTITEM_H
 
+#include <QVariant>
+
 class Project;
 class SceneNode;
 class SerializationContext;

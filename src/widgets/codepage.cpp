@@ -21,6 +21,9 @@
 #include "adapters/codeadapter.h"
 #include "widgets/elidedlabel.h"
 
+#include <QBoxLayout>
+#include <QPlainTextEdit>
+
 CodePage::CodePage( CodeAdapter* adapter, const QString& label, QWidget* parent ) : QWidget( parent ),
     m_inOutLabel( NULL ),
     m_adapter( adapter ),

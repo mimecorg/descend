@@ -22,6 +22,8 @@
 class Project;
 class ProjectItem;
 
+#include <QVariant>
+
 class ProjectSerializer
 {
 public:

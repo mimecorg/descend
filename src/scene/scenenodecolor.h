@@ -19,6 +19,8 @@
 #ifndef SCENENODECOLOR_H
 #define SCENENODECOLOR_H
 
+#include <QColor>
+
 class SceneNodeColor
 {
 public:

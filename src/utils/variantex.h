@@ -19,6 +19,8 @@
 #ifndef VARIANTEX_H
 #define VARIANTEX_H
 
+#include <QVariant>
+
 template<class T>
 void operator <<( QVariant& data, const T& target )
 {

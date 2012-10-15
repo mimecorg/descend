@@ -19,15 +19,17 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-
 #include "ui_mainwindow.h"
 #include "xmlui/client.h"
 #include "project/projectitem.h"
 
+#include <QMainWindow>
+
 class StatusLabel;
 class Project;
 class ProjectItemModel;
+
+class QSortFilterProxyModel;
 
 class MainWindow : public QMainWindow, public XmlUi::Client
 {

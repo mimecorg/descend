@@ -19,7 +19,14 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+#include <QObject>
+#include <QColor>
+#include <QMatrix4x4>
+
 class Tessellator;
+
+class QGLBuffer;
+class QGLShaderProgram;
 
 class Renderer : public QObject
 {

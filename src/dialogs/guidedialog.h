@@ -21,6 +21,10 @@
 
 #include "xmlui/client.h"
 
+#include <QDialog>
+
+class QTextBrowser;
+
 class GuideDialog : public QDialog, public XmlUi::Client
 {
     Q_OBJECT

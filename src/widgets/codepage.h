@@ -21,9 +21,13 @@
 
 #include "scene/renderer.h"
 
+#include <QWidget>
+
 class CodeAdapter;
 class SceneNodeColor;
 class ElidedLabel;
+
+class QPlainTextEdit;
 
 class CodePage : public QWidget
 {

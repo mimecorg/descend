@@ -25,8 +25,7 @@
 #include "scene/tessellator.h"
 
 #include <QMouseEvent>
-
-#include <math.h>
+#include <qmath.h>
 
 SceneWidget::SceneWidget( QWidget* parent ) : QGLWidget( parent ),
     m_renderer( NULL ),

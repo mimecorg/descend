@@ -21,6 +21,8 @@
 
 #include "project/projectitem.h"
 
+#include <QAbstractItemModel>
+
 class Project;
 
 class ProjectItemModel : public QAbstractItemModel

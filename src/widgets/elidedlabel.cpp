@@ -18,6 +18,10 @@
 
 #include "widgets/elidedlabel.h"
 
+#include <QPainter>
+#include <QStyle>
+#include <QStyleOption>
+
 ElidedLabel::ElidedLabel( QWidget* parent ) : QLabel( parent ),
     m_lastWidth( 0 )
 {

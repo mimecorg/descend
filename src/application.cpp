@@ -24,6 +24,12 @@
 #include "dialogs/aboutbox.h"
 #include "dialogs/guidedialog.h"
 
+#include <QMessageBox>
+#include <QTimer>
+#include <QDateTime>
+#include <QPushButton>
+#include <QDir>
+
 #if defined( Q_WS_WIN )
 #include <shlobj.h>
 #endif

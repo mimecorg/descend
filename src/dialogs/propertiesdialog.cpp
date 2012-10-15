@@ -35,6 +35,8 @@
 #include "widgets/codepage.h"
 #include "widgets/generalpage.h"
 
+#include <QPushButton>
+
 PropertiesDialog::PropertiesDialog( ProjectItem* item, QWidget* parent ) : QDialog( parent ),
     m_item( item ),
     m_generalPage( NULL )

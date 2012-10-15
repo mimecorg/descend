@@ -21,6 +21,8 @@
 
 #include "scene/tessellator.h"
 
+#include <QVector2D>
+
 class SurfaceTessellator : public Tessellator
 {
 public:

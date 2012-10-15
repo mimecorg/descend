@@ -36,6 +36,15 @@
 #include "xmlui/toolstrip.h"
 
 #include <QElapsedTimer>
+#include <QStatusBar>
+#include <QSortFilterProxyModel>
+#include <QMenu>
+#include <QDesktopServices>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QMessageBox>
+#include <QCloseEvent>
+#include <QAccessible>
 
 MainWindow::MainWindow() : QMainWindow(),
     m_project( NULL ),

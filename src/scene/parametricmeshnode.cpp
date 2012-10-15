@@ -25,6 +25,8 @@
 #include "scene/scene.h"
 #include "scene/tessellator.h"
 
+#include <QVector2D>
+
 ParametricMeshNode::ParametricMeshNode( Renderer::MeshType type, Renderer::AttributeType attr, const SceneNodeColor& color, SceneNode* parent ) : SceneNode( parent ),
     m_meshType( type ),
     m_attributeType( attr ),

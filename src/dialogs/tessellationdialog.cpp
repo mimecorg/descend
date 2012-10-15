@@ -21,6 +21,8 @@
 #include "project/project.h"
 #include "utils/iconloader.h"
 
+#include <QPushButton>
+
 TessellationDialog::TessellationDialog( Project* project, QWidget* parent ) : QDialog( parent ),
     m_project( project )
 {

@@ -24,6 +24,8 @@ class MiscUnit;
 class SceneNodeColor;
 class SceneNodeContext;
 
+#include <QList>
+
 class SceneNode
 {
 public:

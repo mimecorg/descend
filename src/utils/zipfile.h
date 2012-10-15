@@ -19,6 +19,8 @@
 #ifndef ZIPFILE_H
 #define ZIPFILE_H
 
+#include <qglobal.h>
+
 class ZipFilePrivate;
 
 class ZipFileReader

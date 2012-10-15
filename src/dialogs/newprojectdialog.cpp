@@ -22,6 +22,9 @@
 #include "utils/iconloader.h"
 #include "utils/localsettings.h"
 
+#include <QPushButton>
+#include <QSettings>
+
 NewProjectDialog::NewProjectDialog( QWidget* parent ) : QDialog( parent )
 {
     m_ui.setupUi( this );

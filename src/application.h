@@ -20,6 +20,7 @@
 #define APPLICATION_H
 
 #include <QApplication>
+#include <QPointer>
 
 class MainWindow;
 class LocalSettings;
