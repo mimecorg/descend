@@ -174,3 +174,7 @@ QByteArray CurveTessellator::indexArray()
 
     return buffer;
 }
+
+void CurveTessellator::exportMesh( QDataStream& /*stream*/, MeshHeader* /*header*/ )
+{
+}

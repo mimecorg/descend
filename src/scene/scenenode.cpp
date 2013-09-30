@@ -53,6 +53,16 @@ bool SceneNode::calculateNodes( const SceneNodeContext& context )
     return true;
 }
 
+bool SceneNode::exportNodes( QDataStream& stream, MeshHeader* header, const SceneNodeContext& context )
+{
+    foreach ( SceneNode* node, m_nodes ) {
+        if ( !node->exportMesh( stream, header, context ) )
+            return false;
+    }
+
+    return true;
+}
+
 void SceneNode::renderNodes()
 {
     foreach ( SceneNode* node, m_nodes )

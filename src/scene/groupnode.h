@@ -42,6 +42,12 @@ public:
     void render();
 
 protected:
+    bool exportMesh( QDataStream& stream, MeshHeader* header, const SceneNodeContext& parentContext );
+
+private:
+    bool calculateCommon( const SceneNodeContext& parentContext, SceneNodeContext* context );
+
+protected:
     SceneNodeColor m_color;
 
     MiscUnit* m_unit;

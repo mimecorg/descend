@@ -66,6 +66,57 @@ bool Scene::calculate( const SceneNodeContext& parentContext )
     return calculateNodes( parentContext );
 }
 
+bool Scene::exportMesh( const QString& path, const SceneNodeContext& parentContext )
+{
+    QFile file( path );
+
+    if ( !file.open( QFile::WriteOnly ) )
+        return false;
+
+    QDataStream stream( &file );
+    stream.setVersion( QDataStream::Qt_4_6 );
+    stream.setFloatingPointPrecision( QDataStream::SinglePrecision );
+    stream.setByteOrder( QDataStream::LittleEndian );
+
+    MeshHeader header;
+    header.m_header[ 0 ] = 'D';
+    header.m_header[ 1 ] = 'M';
+    header.m_header[ 2 ] = 'S';
+    header.m_header[ 3 ] = 'H';
+    header.m_format = 1;
+    header.m_vertexSize = 6 * sizeof( float );
+    header.m_parts = 0;
+    header.m_vertices = 0;
+    header.m_indices = 0;
+
+    writeMeshHeader( stream, header );
+
+    if ( !exportMesh( stream, &header, parentContext ) )
+        return false;
+
+    file.seek( 0 );
+
+    writeMeshHeader( stream, header );
+
+    return true;
+}
+
+void Scene::writeMeshHeader( QDataStream& stream, const MeshHeader& header )
+{
+    stream << header.m_header[ 0 ] << header.m_header[ 1 ] << header.m_header[ 2 ] << header.m_header[ 3 ];
+    stream << header.m_format << header.m_vertexSize << header.m_parts << header.m_vertices << header.m_indices;
+}
+
+bool Scene::exportMesh( QDataStream& stream, MeshHeader* header, const SceneNodeContext& parentContext )
+{
+    foreach ( const MiscCode& code, m_codes ) {
+        if ( !m_engine->execute( code ) )
+            return false;
+    }
+
+    return exportNodes( stream, header, parentContext );
+}
+
 void Scene::render()
 {
     renderNodes();

@@ -58,6 +58,8 @@ private slots:
     void saveFile();
     void saveFileAs();
 
+    void exportMesh();
+
     void insertItem();
     void insertFolder();
     void insertGroup();
@@ -83,6 +85,8 @@ private:
     void newFile( const QString& path );
     void openFile( bool confirm );
     void saveFile( const QString& path );
+
+    void exportMesh( const QString& path );
 
     void insertItem( ProjectItem::Type type, const QString& name );
 

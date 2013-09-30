@@ -98,6 +98,45 @@ bool ParametricMeshNode::calculate( const SceneNodeContext& parentContext )
     m_vertexBuffer.destroy();
     m_indexBuffer.destroy();
 
+    Tessellator* tessellator = calculateCommon( parentContext );
+
+    if ( !tessellator )
+        return false;
+
+    m_count = tessellator->count();
+
+    QByteArray vertexArray = tessellator->vertexArray( m_attributeType );
+    QByteArray indexArray = tessellator->indexArray();
+
+    tessellator->clear();
+
+    m_vertexBuffer.create();
+    m_vertexBuffer.bind();
+    m_vertexBuffer.allocate( vertexArray.constData(), vertexArray.size() );
+
+    m_indexBuffer.create();
+    m_indexBuffer.bind();
+    m_indexBuffer.allocate( indexArray.constData(), indexArray.size() );
+
+    return true;
+}
+
+bool ParametricMeshNode::exportMesh( QDataStream& stream, MeshHeader* header, const SceneNodeContext& parentContext )
+{
+    if ( m_meshType == Renderer::SurfaceMesh ) {
+        Tessellator* tessellator = calculateCommon( parentContext );
+
+        if ( !tessellator )
+            return false;
+
+        tessellator->exportMesh( stream, header );
+    }
+
+    return true;
+}
+
+Tessellator* ParametricMeshNode::calculateCommon( const SceneNodeContext& parentContext )
+{
     MiscEngine* engine = m_scene->engine();
 
     m_initUnit->setVariable( m_scene->identifier( Scene::Transform ), MiscValue( Misc::MatrixType, engine ) );
@@ -119,7 +158,7 @@ bool ParametricMeshNode::calculate( const SceneNodeContext& parentContext )
 
     foreach ( const MiscCode& code, m_initCodes ) {
         if ( !engine->execute( code ) )
-            return false;
+            return NULL;
     }
 
     m_context = parentContext;
@@ -142,24 +181,9 @@ bool ParametricMeshNode::calculate( const SceneNodeContext& parentContext )
     }
 
     if ( !tessellator->tessellate( this ) )
-        return false;
+        return NULL;
 
-    m_count = tessellator->count();
-
-    QByteArray vertexArray = tessellator->vertexArray( m_attributeType );
-    QByteArray indexArray = tessellator->indexArray();
-
-    tessellator->clear();
-
-    m_vertexBuffer.create();
-    m_vertexBuffer.bind();
-    m_vertexBuffer.allocate( vertexArray.constData(), vertexArray.size() );
-
-    m_indexBuffer.create();
-    m_indexBuffer.bind();
-    m_indexBuffer.allocate( indexArray.constData(), indexArray.size() );
-
-    return true;
+    return tessellator;
 }
 
 bool ParametricMeshNode::calculateVertex( float param, QVector3D* pos, QVector3D* attr )
@@ -170,7 +194,7 @@ bool ParametricMeshNode::calculateVertex( float param, QVector3D* pos, QVector3D
 
     m_calcUnit->setVariable( m_scene->identifier( Scene::U ), MiscValue( param, engine ) );
 
-    return calculateCommon( pos, attr );
+    return calculateVertexCommon( pos, attr );
 }
 
 bool ParametricMeshNode::calculateVertex( const QVector2D& param, QVector3D* pos, QVector3D* attr )
@@ -182,10 +206,10 @@ bool ParametricMeshNode::calculateVertex( const QVector2D& param, QVector3D* pos
     m_calcUnit->setVariable( m_scene->identifier( Scene::U ), MiscValue( param.x(), engine ) );
     m_calcUnit->setVariable( m_scene->identifier( Scene::V ), MiscValue( param.y(), engine ) );
 
-    return calculateCommon( pos, attr );
+    return calculateVertexCommon( pos, attr );
 }
 
-bool ParametricMeshNode::calculateCommon( QVector3D* pos, QVector3D* attr )
+bool ParametricMeshNode::calculateVertexCommon( QVector3D* pos, QVector3D* attr )
 {
     MiscEngine* engine = m_scene->engine();
 

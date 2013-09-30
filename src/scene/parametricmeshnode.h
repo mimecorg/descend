@@ -55,7 +55,12 @@ public:
     int elementsCount() const { return m_count; }
 
 protected:
-    bool calculateCommon( QVector3D* pos, QVector3D* attr );
+    bool exportMesh( QDataStream& stream, MeshHeader* header, const SceneNodeContext& parentContext );
+
+protected:
+    Tessellator* calculateCommon( const SceneNodeContext& parentContext );
+
+    bool calculateVertexCommon( QVector3D* pos, QVector3D* attr );
 
 protected:
     Renderer::MeshType m_meshType;

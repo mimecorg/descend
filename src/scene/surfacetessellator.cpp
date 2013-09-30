@@ -307,3 +307,29 @@ QByteArray SurfaceTessellator::indexArray()
 
     return buffer;
 }
+
+void SurfaceTessellator::exportMesh( QDataStream& stream, MeshHeader* header )
+{
+    quint32 vertices = m_vertices.count();
+    quint32 indices = 3 * m_faces.count();
+
+    stream << vertices << indices;
+
+    const Vertex* vertex = m_vertices.constData();
+
+    for ( int i = 0; i < m_vertices.count(); i++ ) {
+        stream << vertex[ i ].m_pos.x() << vertex[ i ].m_pos.y() << vertex[ i ].m_pos.z();
+        stream << vertex[ i ].m_normal.x() << vertex[ i ].m_normal.y() << vertex[ i ].m_normal.z();
+    }
+
+    const Face* face = m_faces.constData();
+
+    for ( int i = 0; i < m_faces.count(); i++ ) {
+        for ( int j = 0; j < 3; j++ )
+            stream << m_edges[ face[ i ].m_e[ j ] ].m_v[ face[ i ].m_dir[ j ] ] + header->m_vertices;
+    }
+
+    header->m_parts++;
+    header->m_vertices += vertices;
+    header->m_indices += indices;
+}

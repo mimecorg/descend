@@ -58,6 +58,26 @@ bool GroupNode::addCode( const QString& text )
 
 bool GroupNode::calculate( const SceneNodeContext& parentContext )
 {
+    SceneNodeContext context;
+
+    if ( !calculateCommon( parentContext, &context ) )
+        return false;
+
+    return calculateNodes( context );
+}
+
+bool GroupNode::exportMesh( QDataStream& stream, MeshHeader* header, const SceneNodeContext& parentContext )
+{
+    SceneNodeContext context;
+
+    if ( !calculateCommon( parentContext, &context ) )
+        return false;
+
+    return exportNodes( stream, header, context );
+}
+
+bool GroupNode::calculateCommon( const SceneNodeContext& parentContext, SceneNodeContext* context )
+{
     MiscEngine* engine = m_scene->engine();
 
     m_unit->setVariable( m_scene->identifier( Scene::Transform ), MiscValue( Misc::MatrixType, engine ) );
@@ -74,13 +94,13 @@ bool GroupNode::calculate( const SceneNodeContext& parentContext )
             return false;
     }
 
-    SceneNodeContext context = parentContext;
+    *context = parentContext;
 
-    context.transform( m_unit->variable( m_scene->identifier( Scene::Transform ) ).toMatrix() );
+    context->transform( m_unit->variable( m_scene->identifier( Scene::Transform ) ).toMatrix() );
 
-    context.initializeColor( parentContext, m_color, m_unit, m_scene );
+    context->initializeColor( parentContext, m_color, m_unit, m_scene );
 
-    return calculateNodes( context );
+    return true;
 }
 
 void GroupNode::render()

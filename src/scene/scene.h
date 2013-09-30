@@ -52,12 +52,20 @@ public:
 
     bool addCode( const QString& text );
 
+    bool exportMesh( const QString& path, const SceneNodeContext& parentContext );
+
 public:
     MiscUnit* unit() const { return m_unit; }
 
     bool calculate( const SceneNodeContext& parentContext );
 
     void render();
+
+protected:
+    bool exportMesh( QDataStream& stream, MeshHeader* header, const SceneNodeContext& parentContext );
+
+private:
+    void writeMeshHeader( QDataStream& stream, const MeshHeader& header );
 
 private:
     MiscEngine* m_engine;

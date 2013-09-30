@@ -37,6 +37,8 @@ public:
     QByteArray vertexArray( Renderer::AttributeType attr );
     QByteArray indexArray();
 
+    void exportMesh( QDataStream& stream, MeshHeader* header );
+
 private:
     struct Vertex
     {

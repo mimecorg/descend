@@ -83,6 +83,10 @@ MainWindow::MainWindow() : QMainWindow(),
     connect( action, SIGNAL( triggered() ), this, SLOT( saveFileAs() ) );
     setAction( "saveFileAs", action );
 
+    action = new QAction( IconLoader::icon( "file-export" ), tr( "Export Mesh" ), this );
+    connect( action, SIGNAL( triggered() ), this, SLOT( exportMesh() ) );
+    setAction( "exportMesh", action );
+
     insertAction = new XmlUi::ToolStripAction( IconLoader::icon( "edit-insert" ), tr( "Insert Item" ), this );
     insertAction->setShortcut( QKeySequence( Qt::Key_Insert ) );
     insertAction->setPopupMode( QToolButton::InstantPopup );
@@ -273,6 +277,7 @@ void MainWindow::updateActions()
     action( "editProperties" )->setEnabled( item != NULL );
     action( "drawScene" )->setEnabled( canDrawScene );
     action( "closeScene" )->setEnabled( m_ui.sceneWidget->scene() != NULL );
+    action( "exportMesh" )->setEnabled( m_model->markedItem() != NULL );
 }
 
 void MainWindow::showContextMenu( const QPoint& pos )
@@ -325,7 +330,7 @@ void MainWindow::openFile( bool confirm )
     QString myDocuments = QDesktopServices::storageLocation( QDesktopServices::DocumentsLocation );
     QString path = settings->value( "LastPath", myDocuments ).toString();
 
-    path = QFileDialog::getOpenFileName( this, tr( "Open File" ), path, tr( "Descend Projects (*.dscn)" ) );
+    path = QFileDialog::getOpenFileName( this, tr( "Open File" ), path, tr( "Descend Project (*.dscn)" ) );
 
     if ( !path.isEmpty() ) {
         QFileInfo fileInfo( path );
@@ -355,7 +360,7 @@ void MainWindow::saveFileAs()
         path = m_path;
     }
 
-    path = QFileDialog::getSaveFileName( this, tr( "Save File As" ), path, tr( "Descend Projects (*.dscn)" ) );
+    path = QFileDialog::getSaveFileName( this, tr( "Save File As" ), path, tr( "Descend Project (*.dscn)" ) );
 
     if ( !path.isEmpty() ) {
         QFileInfo fileInfo( path );
@@ -444,6 +449,53 @@ void MainWindow::saveFile( const QString& path )
     } else {
         QMessageBox::warning( this, tr( "Warning" ), tr( "The selected file could not be saved." ) );
     }
+}
+
+void MainWindow::exportMesh()
+{
+    LocalSettings* settings = application->applicationSettings();
+
+    QString myDocuments = QDesktopServices::storageLocation( QDesktopServices::DocumentsLocation );
+    QString path = settings->value( "LastExportPath", myDocuments ).toString();
+
+    path = QFileDialog::getSaveFileName( this, tr( "Export Mesh" ), path, tr( "Descend Mesh (*.dmsh)" ) );
+
+    if ( !path.isEmpty() ) {
+        QFileInfo fileInfo( path );
+        settings->setValue( "LastExportPath", fileInfo.absoluteDir().path() );
+
+        if ( fileInfo.suffix().isEmpty() )
+            path += ".dmsh";
+
+        exportMesh( path );
+    }
+}
+
+void MainWindow::exportMesh( const QString& path )
+{
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+
+    bool ok = false;
+
+    Scene* scene = new Scene();
+
+    if ( m_project->initializeScene( scene, m_model->markedItem() ) ) {
+        QColor color = m_project->setting( "Color" ).value<QColor>();
+        QColor color2 = m_project->setting( "Color2" ).value<QColor>();
+
+        SceneNodeContext context;
+        context.setColor( 0, color );
+        context.setColor( 1, color2.isValid() ? color2 : color );
+
+        ok = scene->exportMesh( path, context );
+    }
+
+    if ( !ok )
+        showStatus( IconLoader::pixmap( "status-error" ), tr( "The mesh could not be exported." ), QMessageBox::Warning );
+
+    delete scene;
+
+    QApplication::restoreOverrideCursor();
 }
 
 void MainWindow::insertItem()

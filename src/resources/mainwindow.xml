@@ -4,6 +4,7 @@
       <action id="newFile"/>
       <action id="openFile"/>
       <action id="popupSaveFile"/>
+      <action id="exportMesh"/>
     </section>
     <section id="sectionEdit">
       <action id="insertItem"/>

@@ -26,6 +26,16 @@ class SceneNodeContext;
 
 #include <QList>
 
+struct MeshHeader
+{
+    qint8 m_header[ 4 ];
+    quint32 m_format;
+    quint32 m_vertexSize;
+    quint32 m_parts;
+    quint32 m_vertices;
+    quint32 m_indices;
+};
+
 class SceneNode
 {
 public:
@@ -41,11 +51,15 @@ public:
 
     virtual int elementsCount() const;
 
+protected:
+    virtual bool exportMesh( QDataStream& stream, MeshHeader* header, const SceneNodeContext& parentContext ) = 0;
+
 public:
     Scene* scene() const { return m_scene; }
 
 protected:
     bool calculateNodes( const SceneNodeContext& context );
+    bool exportNodes( QDataStream& stream, MeshHeader* header, const SceneNodeContext& context );
 
     void renderNodes();
 

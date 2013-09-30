@@ -20,6 +20,7 @@
 #define TESSELLATOR_H
 
 #include "scene/renderer.h"
+#include "scene/scenenode.h"
 
 class ParametricMeshNode;
 
@@ -47,6 +48,8 @@ public:
 
     virtual QByteArray vertexArray( Renderer::AttributeType attr ) = 0;
     virtual QByteArray indexArray() = 0;
+
+    virtual void exportMesh( QDataStream& stream, MeshHeader* header ) = 0;
 
 protected:
     static float delta( const QVector3D& v0, const QVector3D& v1, const QVector3D& v2 );
