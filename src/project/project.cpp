@@ -249,9 +249,18 @@ bool Project::initializeScene( Scene* scene, ProjectItem* root )
     return createChildNodes( root, parent );
 }
 
+static bool compareItems( ProjectItem* i1, ProjectItem* i2 )
+{
+    return QString::localeAwareCompare( i1->name(), i2->name() ) < 0;
+}
+
 bool Project::createChildNodes( ProjectItem* item, SceneNode* parent )
 {
-    foreach ( ProjectItem* child, item->items() ) {
+    QList<ProjectItem*> items = item->items();
+
+    qSort( items.begin(), items.end(), &compareItems );
+
+    foreach ( ProjectItem* child, items ) {
         SceneNode* node = child->createNode( parent );
         if ( !node )
             return false;
