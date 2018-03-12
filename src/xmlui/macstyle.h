@@ -1,6 +1,6 @@
 /****************************************************************************
-* Simple XML-based UI builder for Qt4
-* Copyright (C) 2007-2012 Michał Męciński
+* Simple XML-based UI builder for Qt
+* Copyright (C) 2007-2017 Michał Męciński
 *
 * Redistribution and use in source and binary forms, with or without
 * modification, are permitted provided that the following conditions are met:
@@ -31,13 +31,13 @@
 
 #include <QtGlobal>
 
-#if !defined( Q_WS_MAC ) || defined( QT_NO_STYLE_AQUA )
+#if !defined( Q_OS_MAC ) || defined( QT_NO_STYLE_AQUA )
 #define XMLUI_NO_STYLE_MAC
 #endif
 
 #if !defined( XMLUI_NO_STYLE_MAC )
 
-#include <QMacStyle>
+#include <QProxyStyle>
 
 namespace XmlUi
 {
@@ -47,7 +47,7 @@ namespace XmlUi
 *
 * The style override default QToolButton rendering which are ugly on mac os x.
 */
-class MacStyle : public QMacStyle
+class MacStyle : public QProxyStyle
 {
     Q_OBJECT
 public:

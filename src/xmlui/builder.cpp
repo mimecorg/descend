@@ -1,6 +1,6 @@
 /****************************************************************************
-* Simple XML-based UI builder for Qt4
-* Copyright (C) 2007-2012 Michał Męciński
+* Simple XML-based UI builder for Qt
+* Copyright (C) 2007-2017 Michał Męciński
 *
 * Redistribution and use in source and binary forms, with or without
 * modification, are permitted provided that the following conditions are met:
@@ -460,7 +460,7 @@ QAction* Builder::findAction( const QString& id )
     return NULL;
 }
 
-QString Builder::findTitle( const QString& id, const QString& defaultTitle /*= QString()*/ )
+QString Builder::findTitle( const QString& id, const QString& defaultTitle )
 {
     for ( int i = m_clients.count() - 1; i >= 0; i-- ) {
         QString title = m_clients.at( i )->title( id );
