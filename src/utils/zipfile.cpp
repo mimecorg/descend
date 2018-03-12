@@ -21,7 +21,11 @@
 
 #include "utils/zipfile.h"
 
+#if ( QT_VERSION >= 0x050000 )
+#include <QtZlib/zlib.h>
+#else
 #include "zlib.h"
+#endif
 
 #include <QDateTime>
 #include <QFile>

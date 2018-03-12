@@ -327,7 +327,7 @@ void MainWindow::openFile( bool confirm )
 
     LocalSettings* settings = application->applicationSettings();
 
-    QString myDocuments = QDesktopServices::storageLocation( QDesktopServices::DocumentsLocation );
+    QString myDocuments = QStandardPaths::writableLocation( QStandardPaths::DocumentsLocation );
     QString path = settings->value( "LastPath", myDocuments ).toString();
 
     path = QFileDialog::getOpenFileName( this, tr( "Open File" ), path, tr( "Descend Project (*.dscn)" ) );
@@ -354,7 +354,7 @@ void MainWindow::saveFileAs()
 
     QString path;
     if ( m_path.isEmpty() ) {
-        QString myDocuments = QDesktopServices::storageLocation( QDesktopServices::DocumentsLocation );
+        QString myDocuments = QStandardPaths::writableLocation( QStandardPaths::DocumentsLocation );
         path = settings->value( "LastPath", myDocuments ).toString();
     } else {
         path = m_path;
@@ -455,7 +455,7 @@ void MainWindow::exportMesh()
 {
     LocalSettings* settings = application->applicationSettings();
 
-    QString myDocuments = QDesktopServices::storageLocation( QDesktopServices::DocumentsLocation );
+    QString myDocuments = QStandardPaths::writableLocation( QStandardPaths::DocumentsLocation );
     QString path = settings->value( "LastExportPath", myDocuments ).toString();
 
     path = QFileDialog::getSaveFileName( this, tr( "Export Mesh" ), path, tr( "Descend Mesh (*.dmsh)" ) );
@@ -756,7 +756,8 @@ void MainWindow::showStatus( const QPixmap& pixmap, const QString& text, int ico
     if ( icon != 0 && topLevelWidget()->isActiveWindow() ) {
         QMessageBox box;
         box.setIcon( (QMessageBox::Icon)icon );
-        QAccessible::updateAccessibility( &box, 0, QAccessible::Alert );
+        QAccessibleEvent event( &box, QAccessible::Alert );
+        QAccessible::updateAccessibility( &event );
     }
 }
 

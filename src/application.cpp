@@ -24,13 +24,19 @@
 #include "dialogs/aboutbox.h"
 #include "dialogs/guidedialog.h"
 
+#if defined( Q_OS_WIN )
+#include "xmlui/windowsstyle.h"
+#elif defined( Q_OS_MAC )
+#include "xmlui/macstyle.h"
+#endif
+
 #include <QMessageBox>
 #include <QTimer>
 #include <QDateTime>
 #include <QPushButton>
 #include <QDir>
 
-#if defined( Q_WS_WIN )
+#if defined( Q_OS_WIN )
 #include <shlobj.h>
 #endif
 
@@ -49,10 +55,10 @@ Application::Application( int& argc, char** argv ) : QApplication( argc, argv ),
 
     m_settings = new LocalSettings( locateDataFile( "settings.dat" ), this );
 
-#if defined( Q_WS_WIN )
-    setStyle( "XmlUi::WindowsStyle" );
-#elif defined( Q_WS_MAC )
-    setStyle( "XmlUi::MacStyle" );
+#if defined( Q_OS_WIN ) && !defined( XMLUI_NO_STYLE_WINDOWS )
+    setStyle( new XmlUi::WindowsStyle() );
+#elif defined( Q_OS_MAC ) && !defined( XMLUI_NO_STYLE_MAC )
+    setStyle( new XmlUi::MacStyle() );
 #endif
 
     setWindowIcon( IconLoader::icon( "descend" ) );
@@ -193,13 +199,13 @@ void Application::initializeDefaultPaths()
 {
     QString appPath = applicationDirPath();
 
-#if defined( Q_WS_WIN )
+#if defined( Q_OS_WIN )
     m_templatesPath = QDir::cleanPath( appPath + "/../templates" );
 #else
     m_templatesPath = QDir::cleanPath( appPath + "/../share/descend/templates" );
 #endif
 
-#if defined( Q_WS_WIN )
+#if defined( Q_OS_WIN )
     wchar_t appDataPath[ MAX_PATH ];
     if ( SHGetSpecialFolderPath( 0, appDataPath, CSIDL_APPDATA, FALSE ) )
         m_dataPath = QDir::fromNativeSeparators( QString::fromWCharArray( appDataPath ) );
@@ -208,8 +214,7 @@ void Application::initializeDefaultPaths()
 
     m_dataPath += QLatin1String( "/Descend" );
 #else
-    m_dataPath = QDesktopServices::storageLocation( QDesktopServices::DataLocation );
-    m_dataPath += QLatin1String( "/descend" );
+    m_dataPath = QStandardPaths::writableLocation( QStandardPaths::AppDataLocation );
 #endif
 }
 

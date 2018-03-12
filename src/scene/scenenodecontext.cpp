@@ -73,7 +73,7 @@ QColor SceneNodeContext::color( int index ) const
 
 static QColor vectorToColor( const QVector4D& vector )
 {
-    return QColor::fromRgbF( qBound( 0.0, vector.x(), 1.0 ), qBound( 0.0, vector.y(), 1.0 ), qBound( 0.0, vector.z(), 1.0 ) );
+    return QColor::fromRgbF( qBound( 0.0, (double)vector.x(), 1.0 ), qBound( 0.0, (double)vector.y(), 1.0 ), qBound( 0.0, (double)vector.z(), 1.0 ) );
 }
 
 void SceneNodeContext::initializeColor( const SceneNodeContext& parentContext, const SceneNodeColor& color, MiscUnit* unit, Scene* scene )
