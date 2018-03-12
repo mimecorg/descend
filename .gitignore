@@ -1,0 +1,12 @@
+debug
+release
+src/precompiled.h.cpp
+src/descend.vcxproj
+src/descend.vcxproj.filters
+src/descend.vcxproj.user
+tmp
+.qmake.stash
+config.pri
+configure-msvc.bat
+descend.sln
+descend.v12.suo
